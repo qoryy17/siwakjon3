@@ -31,7 +31,7 @@ class PengawasanController extends Controller
             'breadcumbs' => $breadcumb
         ];
 
-        return view('pengawasan.data-rapat-pengawasan', $data);
+        return view('pengawasan.data-rapat-pengawasan', data: $data);
     }
 
     public function detailPengawasan(Request $request)
