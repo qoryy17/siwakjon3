@@ -3,7 +3,7 @@
 
 ## About
 
-Sistem Informasi Pengawasan Dan Kendali Jadwal Pelaporan Dokumen (SIWAKJON) Merupakan Inovasi Dari Pengadilan Negeri Lubuk Pakam. Yang Bertujuan Untuk Memudahkan Penataan Dokumen Rapat Dan Pengawasan Pada Lingkungan Pengadilan Negeri Lubuk Pakam.
+Sistem Informasi Pengawasan Dan Kendali Jadwal Pelaporan (SIWAKJON) Merupakan Inovasi Dari Pengadilan Negeri Lubuk Pakam. Yang Bertujuan Untuk Memudahkan Penataan Dokumen Rapat, Pengawasan, Laporan Monitoring dan Evaluasi Serta Arsip Surat Keputusan Pada Lingkungan Pengadilan Negeri Lubuk Pakam.
 
 Fitur Pada Aplikasi
 - Manajemen Dokumen Rapat
@@ -20,5 +20,5 @@ Relase Version 3.0.0
 
 ## License
 
-The SIWAKJON is not open-sourced software licensed under the PT. Era DigiSoft Solution
+The SIWAKJON is not open-sourced software licensed under the Era DigiSoft Solution
 If you want to use this application, contact Qori Chairawan,S.Kom
