@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enum\RolesEnum;
+use App\Helpers\RouteLink;
 use App\Helpers\TimeSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -18,7 +20,7 @@ class HomeController extends Controller
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
             'routeHome' => route('home.superadmin'),
             'breadcumbs' => $breadcumb,
-            'welcome' => 'Selamat ' . TimeSession::istime() . ', Qori Chairawan'
+            'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name
         ];
 
         return view('home.home-superadmin', $data);
@@ -34,7 +36,7 @@ class HomeController extends Controller
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
             'routeHome' => route('home.administrator'),
             'breadcumbs' => $breadcumb,
-            'welcome' => 'Selamat ' . TimeSession::istime() . ', Qori Chairawan'
+            'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name
         ];
 
         return view('home.home-admin', $data);
@@ -50,7 +52,7 @@ class HomeController extends Controller
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
             'routeHome' => route('home.user'),
             'breadcumbs' => $breadcumb,
-            'welcome' => 'Selamat ' . TimeSession::istime() . ', Qori Chairawan'
+            'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name
         ];
 
         return view('home.home-user', $data);
@@ -58,13 +60,8 @@ class HomeController extends Controller
 
     public function version()
     {
-        if (RolesEnum::SUPERADMIN->value == 'Superadmin') {
-            $route = route('home.superadmin');
-        } elseif (RolesEnum::SUPERADMIN->value == 'Administrator') {
-            $route = route('home.administrator');
-        } else {
-            $route = route('home.user');
-        }
+        // Redirect home page for role
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -83,13 +80,8 @@ class HomeController extends Controller
 
     public function logs()
     {
-        if (RolesEnum::SUPERADMIN->value == 'Superadmin') {
-            $route = route('home.superadmin');
-        } elseif (RolesEnum::SUPERADMIN->value == 'Administrator') {
-            $route = route('home.administrator');
-        } else {
-            $route = route('home.user');
-        }
+        // Redirect home page for role
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -108,13 +100,8 @@ class HomeController extends Controller
 
     public function pintasanRapat()
     {
-        if (RolesEnum::SUPERADMIN->value == 'Superadmin') {
-            $route = route('home.superadmin');
-        } elseif (RolesEnum::SUPERADMIN->value == 'Administrator') {
-            $route = route('home.administrator');
-        } else {
-            $route = route('home.user');
-        }
+        // Redirect home page for role
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -133,13 +120,8 @@ class HomeController extends Controller
 
     public function pintasanPengawasan()
     {
-        if (RolesEnum::SUPERADMIN->value == 'Superadmin') {
-            $route = route('home.superadmin');
-        } elseif (RolesEnum::SUPERADMIN->value == 'Administrator') {
-            $route = route('home.administrator');
-        } else {
-            $route = route('home.user');
-        }
+        // Redirect home page for role
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -157,13 +139,8 @@ class HomeController extends Controller
 
     public function pintasanMonev()
     {
-        if (RolesEnum::SUPERADMIN->value == 'Superadmin') {
-            $route = route('home.superadmin');
-        } elseif (RolesEnum::SUPERADMIN->value == 'Administrator') {
-            $route = route('home.administrator');
-        } else {
-            $route = route('home.user');
-        }
+        // Redirect home page for role
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -181,13 +158,8 @@ class HomeController extends Controller
 
     public function pintasanSK()
     {
-        if (RolesEnum::SUPERADMIN->value == 'Superadmin') {
-            $route = route('home.superadmin');
-        } elseif (RolesEnum::SUPERADMIN->value == 'Administrator') {
-            $route = route('home.administrator');
-        } else {
-            $route = route('home.user');
-        }
+        // Redirect home page for role
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -205,13 +177,8 @@ class HomeController extends Controller
 
     public function notifikasi()
     {
-        if (RolesEnum::SUPERADMIN->value == 'Superadmin') {
-            $route = route('home.superadmin');
-        } elseif (RolesEnum::SUPERADMIN->value == 'Administrator') {
-            $route = route('home.administrator');
-        } else {
-            $route = route('home.user');
-        }
+        // Redirect home page for role
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],

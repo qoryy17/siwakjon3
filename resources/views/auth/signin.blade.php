@@ -34,6 +34,29 @@
 
 <body data-pc-preset="preset-8" data-pc-sidebar-theme="light" data-pc-sidebar-caption="true" data-pc-direction="ltr"
     data-pc-theme="light">
+    @if (session()->has('success'))
+        <script>
+            'use strict';
+            window.onload = function() {
+                Swal.fire({
+                    icon: "success",
+                    title: "Notifikasi",
+                    text: "{{ session('success') }}"
+                });
+            }
+        </script>
+    @elseif (session()->has('error'))
+        <script>
+            'use strict';
+            window.onload = function() {
+                Swal.fire({
+                    icon: "error",
+                    title: "Notifikasi",
+                    text: "{{ session('error') }}"
+                });
+            }
+        </script>
+    @endif
     <!-- [ Pre-loader ] start -->
     <div class="loader-bg">
         <div class="loader-track">
@@ -55,25 +78,29 @@
                                 {{ env('APP_DESC') }}
                             </p>
                         </div>
-                        <div class="mb-3">
-                            <label for="email">Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="email" placeholder="Email..." required
-                                value="{{ old('email') }}">
-                            @error('email')
-                                <small class="text-danger mt-2">* {{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="password">Password <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" id="password" placeholder="Password..."
-                                required value="{{ old('password') }}">
-                            @error('password')
-                                <small class="text-danger mt-2">* {{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="d-grid mt-4">
-                            <button type="button" class="btn btn-primary">Login</button>
-                        </div>
+                        <form action="{{ route('auth.signin') }}" method="POST">
+                            @csrf
+                            @method('POST')
+                            <div class="mb-3">
+                                <label for="email">Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" placeholder="Email..."
+                                    required value="{{ old('email') }}" name="email">
+                                @error('email')
+                                    <small class="text-danger mt-2">* {{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="password">Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" id="password" placeholder="Password..."
+                                    required value="{{ old('password') }}" name="password">
+                                @error('password')
+                                    <small class="text-danger mt-2">* {{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                        </form>
                         <div class="saprator my-1">
                             <span>Belum punya akun ?</span>
                         </div>
@@ -130,6 +157,7 @@
     <script>
         preset_change("preset-8");
     </script>
+    <script src="{{ asset('assets/js/plugins/sweetalert2.all.min.js') }}"></script>
 </body>
 <!-- [Body] end -->
 

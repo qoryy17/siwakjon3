@@ -6,6 +6,7 @@ use App\Enum\RolesEnum;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 
 class DevelopmentController extends Controller
@@ -13,7 +14,7 @@ class DevelopmentController extends Controller
     public function indexCatatanPengembang()
     {
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -44,7 +45,7 @@ class DevelopmentController extends Controller
         }
 
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -66,7 +67,7 @@ class DevelopmentController extends Controller
     public function indexVersion()
     {
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -97,7 +98,7 @@ class DevelopmentController extends Controller
         }
 
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],

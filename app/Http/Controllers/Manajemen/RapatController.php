@@ -6,6 +6,7 @@ use App\Enum\RolesEnum;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 
 class RapatController extends Controller
@@ -13,7 +14,7 @@ class RapatController extends Controller
     public function indexRapat()
     {
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -32,7 +33,7 @@ class RapatController extends Controller
     public function detailRapat(Request $request)
     {
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -66,7 +67,7 @@ class RapatController extends Controller
         }
 
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -102,7 +103,7 @@ class RapatController extends Controller
         }
 
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -125,7 +126,7 @@ class RapatController extends Controller
     public function formDokumentasi(Request $request)
     {
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],

@@ -26,7 +26,7 @@ class AplikasiModel extends Model
         'email',
         'website',
         'logo',
-        'licensi',
+        'license',
     ];
 
     public $timestamps = true;

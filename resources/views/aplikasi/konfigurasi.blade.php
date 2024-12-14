@@ -27,46 +27,78 @@
                     <small>Pengaturan konfigurasi sistem aplikasi</small>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <form action="{{ route('aplikasi.simpan-konfigurasi') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
                         <div class="mb-3">
                             <label class="form-label" for="lembaga">Lembaga <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" placeholder="Lembaga..." id="lembaga" required>
+                            <input type="text" class="form-control" placeholder="Lembaga..." id="lembaga"
+                                name="lembaga" required value="{{ $konfigurasi ? $konfigurasi->lembaga : old('lembaga') }}">
+                            @error('lembaga')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="badanPeradilan">Badan Peradilan
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" placeholder="Badan Peradilan..." id="badanPeradilan"
-                                required>
+                                name="badanPeradilan" required
+                                value="{{ $konfigurasi ? $konfigurasi->badan_peradilan : old('badanPeradilan') }}">
+                            @error('badanPeradilan')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="wilayahHukum">Wilayah Hukum
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" placeholder="Wilayah Hukum..." id="wilayahHukum"
-                                required>
+                                name="wilayahHukum" required
+                                value="{{ $konfigurasi ? $konfigurasi->wilayah_hukum : old('wilayahHukum') }}">
+                            @error('wilayahHukum')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="kodeSatker">Kode Satuan Kerja
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" placeholder="Kode Satuan Kerja..." id="kodeSatker"
-                                required>
+                                name="kodeSatker" required
+                                value="{{ $konfigurasi ? $konfigurasi->kode_satker : old('kodeSatker') }}">
+                            @error('kodeSatker')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="satuanKerja">Nama Satuan Kerja
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" placeholder="Nama Satuan Kerja..." id="satuanKerja"
-                                required>
+                                name="satuanKerja" required
+                                value="{{ $konfigurasi ? $konfigurasi->satuan_kerja : old('satuanKerja') }}">
+                            @error('satuanKerja')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="alamat">Alamat
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="alamat" id="alamat" class="form-control" placeholder="Alamat..." required></textarea>
+                            <textarea name="alamat" id="alamat" name="alamat" class="form-control" placeholder="Alamat..." required>{{ $konfigurasi ? $konfigurasi->alamat : old('alamat') }}</textarea>
+                            @error('alamat')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
@@ -75,8 +107,12 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" placeholder="Provinsi..." id="provinsi"
-                                        required>
+                                        name="provinsi" required
+                                        value="{{ $konfigurasi ? $konfigurasi->provinsi : old('provinsi') }}">
                                 </div>
+                                @error('provinsi')
+                                    <small class="text-danger mt-1">* {{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="mb-3">
@@ -84,7 +120,11 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" placeholder="Kota/Kabupaten..."
-                                        id="kota" required>
+                                        id="kota" name="kota" required
+                                        value="{{ $konfigurasi ? $konfigurasi->kota : old('kota') }}">
+                                    @error('kota')
+                                        <small class="text-danger mt-1">* {{ $message }}</small>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -95,8 +135,12 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" placeholder="Kode Pos..." id="kodePos"
-                                        required>
+                                        name="kodePos" required
+                                        value="{{ $konfigurasi ? $konfigurasi->kode_pos : old('kodePos') }}">
                                 </div>
+                                @error('kodePos')
+                                    <small class="text-danger mt-1">* {{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="mb-3">
@@ -104,7 +148,11 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" placeholder="Telepon..." id="telepon"
-                                        required>
+                                        name="telepon" required
+                                        value="{{ $konfigurasi ? $konfigurasi->telepon : old('telepon') }}">
+                                    @error('telepon')
+                                        <small class="text-danger mt-1">* {{ $message }}</small>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -115,7 +163,11 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="email" class="form-control" placeholder="Email..." id="email"
-                                        required>
+                                        name="email" required
+                                        value="{{ $konfigurasi ? $konfigurasi->email : old('email') }}">
+                                    @error('email')
+                                        <small class="text-danger mt-1">* {{ $message }}</small>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-12">
@@ -124,7 +176,11 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" placeholder="Website..." id="website"
-                                        required>
+                                        name="website" required
+                                        value="{{ $konfigurasi ? $konfigurasi->website : old('website') }}">
+                                    @error('website')
+                                        <small class="text-danger mt-1">* {{ $message }}</small>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -132,10 +188,23 @@
                             <label class="form-label" for="logo">Logo
                                 <span class="text-danger">*</span>
                             </label>
-                            <input type="file" class="form-control" aria-label="logo" id="logo" required="">
+                            <input type="file" class="form-control" aria-label="logo" id="logo" name="logo">
+                            @error('logo')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
+                            @if ($konfigurasi)
+                                <small class="text-danger mt-1">* Kosongkan jika tidak ingin memperbarui logo</small>
+                            @endif
                         </div>
-                        <div class="mt-1">
-                            <button class="btn btn-sm btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                        @if ($konfigurasi)
+                            <div class="mt-1">
+                                <img src="{{ asset('storage/' . $konfigurasi->logo) }}" alt="logo"
+                                    class="img img-thumbnail" style="max-width: 200px">
+                            </div>
+                        @endif
+                        <div class="mt-2">
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i>
+                                Simpan</button>
                         </div>
                     </form>
                 </div>

@@ -5,7 +5,8 @@
         window.onload = function() {
             Swal.fire({
                 icon: "success",
-                title: "{{ session('success') }}"
+                title: "Notifikasi",
+                text: "{{ session('success') }}"
             });
         }
     </script>
@@ -15,10 +16,23 @@
         window.onload = function() {
             Swal.fire({
                 icon: "error",
-                title: "{{ session('error') }}"
+                title: "Notifikasi",
+                text: "{{ session('error') }}"
             });
         }
     </script>
+@endif
+@php
+    $pegawai = \App\Helpers\ViewUser::pegawai();
+@endphp
+@if ($pegawai && $pegawai->foto != null)
+    @php
+        $foto = asset('storage/images/' . $pegawai->foto);
+    @endphp
+@else
+    @php
+        $foto = asset('assets/images/user.png');
+    @endphp
 @endif
 <!-- [ Pre-loader ] start -->
 <div class="loader-bg">
@@ -212,8 +226,7 @@
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
-                        <img src="{{ asset('assets/images/user/avatar-1.jpg') }}" alt="user-image"
-                            class="user-avtar wid-45 rounded-circle" />
+                        <img src="{{ $foto }}" alt="user-image" class="user-avtar wid-45 rounded-circle" />
                     </div>
                     <div class="flex-grow-1 ms-3">
                         <div class="dropdown">
@@ -221,8 +234,8 @@
                                 aria-expanded="false" data-bs-offset="0,20">
                                 <div class="d-flex align-items-center">
                                     <div class="flex-grow-1 me-2">
-                                        <h6 class="mb-0">Qori Chairawan,S.Kom</h6>
-                                        <small>Superadmin</small>
+                                        <h6 class="mb-0">{{ Auth::user()->name }}</h6>
+                                        <small>{{ Auth::user()->roles }}</small>
                                     </div>
                                     <div class="flex-shrink-0">
                                         <div class="btn btn-icon btn-link-secondary avtar">
@@ -252,7 +265,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="pc-user-links">
+                                        <a class="pc-user-links" onclick="signOut();">
                                             <i class="ph-duotone ph-power"></i>
                                             <span>Logout</span>
                                         </a>
@@ -405,12 +418,11 @@
                 <li class="dropdown pc-h-item header-user-profile">
                     <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                         role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
-                        <img src="{{ asset('assets/images/user/avatar-2.jpg') }}" alt="user-image"
-                            class="user-avtar" />
+                        <img src="{{ $foto }}" alt="user-image" class="user-avtar" />
                     </a>
                     <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                         <div class="dropdown-header d-flex align-items-center justify-content-between">
-                            <h5 class="m-0">Pranata Komputer Ahli Pertama</h5>
+                            <h5 class="m-0">{{ \App\Helpers\ViewUser::jabatan() }}</h5>
                         </div>
                         <div class="dropdown-body">
                             <div class="profile-notification-scroll position-relative"
@@ -419,15 +431,15 @@
                                     <li class="list-group-item">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-shrink-0">
-                                                <img src="{{ asset('assets/images/user/avatar-2.jpg') }}"
-                                                    alt="user-image" class="wid-50 rounded-circle" />
+                                                <img src="{{ $foto }}" alt="user-image"
+                                                    class="wid-50 rounded-circle" />
                                             </div>
                                             <div class="flex-grow-1 mx-3">
-                                                <h5 class="mb-0">Carson Darrin</h5>
+                                                <h5 class="mb-0">{{ Auth::user()->name }}</h5>
                                                 <a class="link-primary"
-                                                    href="mailto:carson.darrin@company.io">carson.darrin@company.io</a>
+                                                    href="javascript:void(0);">{{ Auth::user()->email }}</a>
                                             </div>
-                                            <span class="badge bg-primary">User</span>
+                                            <span class="badge bg-primary">{{ Auth::user()->roles }}</span>
                                         </div>
                                     </li>
                                     <li class="list-group-item">
@@ -463,7 +475,7 @@
                                                 <span>Logs Aktivitas</span>
                                             </span>
                                         </a>
-                                        <a href="#" class="dropdown-item">
+                                        <a href="javascript:void(0);" onclick="signOut();" class="dropdown-item">
                                             <span class="d-flex align-items-center">
                                                 <i class="ph-duotone ph-power"></i>
                                                 <span>Logout</span>
@@ -518,6 +530,10 @@
         </div>
     </div>
 </form>
+<form action="{{ route('auth.signout') }}" method="POST" id="formLogout">
+    @method('POST')
+    @csrf
+</form>
 <script>
     var animateModal = document.getElementById('animateModal');
     animateModal.addEventListener('show.bs.modal', function(event) {
@@ -564,4 +580,10 @@
         </div>
     </div>
 </footer>
+<script>
+    function signOut() {
+        let formLogout = document.getElementById('formLogout');
+        formLogout.submit();
+    }
+</script>
 @include('layout.footer')
