@@ -152,8 +152,13 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(DevelopmentController::class)->group(function () {
         Route::get('/pengaturan-aplikasi/catatan-pengembang', 'indexCatatanPengembang')->name('aplikasi.pengembang');
         Route::get('/pengaturan-aplikasi/catatan-pengembang/form/{param}/{id}', 'formCatatanPengembang')->name('aplikasi.form-pengembang');
+        Route::post('/pengaturan-aplikasi/simpan-catatan', 'saveCatatanPengembang')->name('aplikasi.simpan-pengembang');
+        Route::delete('/pengaturan-aplikasi/hapus-catatan', 'deleteCatatanPengembang')->name('aplikasi.hapus-pengembang');
+
         Route::get('/pengaturan-aplikasi/version', 'indexVersion')->name('aplikasi.version');
         Route::get('/pengaturan-aplikasi/version/form/{param}/{id}', 'formVersion')->name('aplikasi.form-version');
+        Route::post('/pengaturan-aplikasi/simpan-version', 'saveVersion')->name(name: 'aplikasi.simpan-version');
+        Route::delete('/pengaturan-aplikasi/hapus-version', 'deleteVersion')->name('aplikasi.hapus-version');
     });
 });
 

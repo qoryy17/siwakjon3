@@ -44,19 +44,31 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-start">1</td>
-                                    <td>Masih ditemukan beberapa dokumen rapat tidak dilengkap</td>
-                                    <td>Qori Chairawan</td>
-                                    <td>Aktif</td>
-                                    <td>{{ now() }}</td>
-                                    <td>{{ now() }}</td>
-                                    <td>
-                                        <a href="#" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-eye f-20"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($catatan as $item)
+                                    @php
+                                        $pengembang = \App\Models\User::find($item->pengembang);
+                                    @endphp
+                                    <tr>
+                                        <td class="text-start">1</td>
+                                        <td>{{ Str::limit($item->catatan, 50) }}</td>
+                                        <td>{{ $pengembang->name }}</td>
+                                        <td>{{ $item->aktif }}</td>
+                                        <td>{{ $item->created_at }}</td>
+                                        <td>{{ $item->updated_at }}</td>
+                                        <td>
+                                            <a href="{{ route('aplikasi.form-pengembang', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
+                                                class="avtar avtar-xs btn-link-secondary">
+                                                <i class="ti ti-edit f-20"></i>
+                                            </a>
+                                            <a href="#" class="avtar avtar-xs btn-link-secondary">
+                                                <i class="ti ti-trash f-20"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

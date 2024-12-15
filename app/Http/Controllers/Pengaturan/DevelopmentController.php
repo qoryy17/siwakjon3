@@ -7,7 +7,12 @@ use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\Pengaturan\NoteDeveloperModel;
+use App\Http\Requests\Pengaturan\CatatanPengembangRequest;
+use App\Http\Requests\Pengaturan\VersionRequest;
+use App\Models\Pengaturan\VersionModel;
 
 class DevelopmentController extends Controller
 {
@@ -25,7 +30,8 @@ class DevelopmentController extends Controller
         $data = [
             'title' => 'Pengaturan Aplikasi | Catatan Pengembang',
             'routeHome' => route('home.superadmin'),
-            'breadcumbs' => $breadcumb
+            'breadcumbs' => $breadcumb,
+            'catatan' => NoteDeveloperModel::orderBy('created_at', 'desc')->get()
         ];
 
         return view('aplikasi.data-catatan-pengembang', $data);
@@ -37,9 +43,11 @@ class DevelopmentController extends Controller
         if (Crypt::decrypt($request->param) == 'add') {
             $paramOutgoing = 'save';
             $formTitle = 'Tambah';
+            $searchCatatan = null;
         } elseif (Crypt::decrypt($request->param) == 'edit') {
             $paramOutgoing = 'update';
             $formTitle = 'Edit';
+            $searchCatatan = NoteDeveloperModel::findOrFail(Crypt::decrypt($request->id));
         } else {
             return redirect()->back()->with('error', 'Parameter tidak ditemukan !');
         }
@@ -58,10 +66,57 @@ class DevelopmentController extends Controller
             'title' => 'Pengaturan Aplikasi | ' . $formTitle . ' Catatan Pengembang',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'formTitle' => $formTitle . ' Catatan Pengembang'
+            'formTitle' => $formTitle . ' Catatan Pengembang',
+            'paramOutgoing' => Crypt::encrypt($paramOutgoing),
+            'catatan' => $searchCatatan
         ];
 
         return view('aplikasi.form-catatan-pengembang', $data);
+    }
+
+    public function saveCatatanPengembang(CatatanPengembangRequest $request): RedirectResponse
+    {
+        // Run validated
+        $request->validated();
+
+        $formData = [
+            'catatan' => $request->input('catatan'),
+            'pengembang' => Auth::user()->id,
+            'aktif' => htmlspecialchars($request->input('aktif')),
+        ];
+
+        $paramIncoming = Crypt::decrypt($request->input('param'));
+        $save = null;
+
+        if ($paramIncoming == 'save') {
+            $save = NoteDeveloperModel::create($formData);
+            $success = 'Catatan berhasil di simpan !';
+            $error = 'Catatan gagal di simpan !';
+        } elseif ($paramIncoming == 'update') {
+            $search = NoteDeveloperModel::findOrFail(Crypt::decrypt($request->input('id')));
+            $save = $search->update($formData);
+            $success = 'Catatan berhasil di perbarui !';
+            $error = 'Catatan gagal di perbarui !';
+        } else {
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
+        }
+
+        if (!$save) {
+            return redirect()->back()->with('error', $error);
+        }
+
+        return redirect()->route('aplikasi.pengembang')->with('success', $success);
+    }
+
+    public function deleteCatatanPengembang(Request $request): RedirectResponse
+    {
+        // Checking data catatan on database
+        $catatan = NoteDeveloperModel::findOrFail(Crypt::decrypt($request->id));
+        if ($catatan) {
+            $catatan->delete();
+            return redirect()->route('aplikasi.pengembang')->with('error', 'Catatan pengembang gagal di hapus !');
+        }
+        return redirect()->route('aplikasi.pengembang')->with('success', 'Catatan pengembang berhasil di hapus !');
     }
 
     public function indexVersion()
@@ -111,9 +166,55 @@ class DevelopmentController extends Controller
             'title' => 'Pengaturan Aplikasi | ' . $formTitle . ' Version',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'formTitle' => $formTitle . ' Version'
+            'formTitle' => $formTitle . ' Version',
+            'paramOutgoing' => $paramOutgoing
         ];
 
         return view('aplikasi.form-versi', $data);
+    }
+
+    public function saveVersion(VersionRequest $request): RedirectResponse
+    {
+        // Run validated
+        $request->validated();
+
+        $formData = [
+            'releaseDate' => $request->input('catatan'),
+            'pengembang' => Auth::user()->id,
+            'aktif' => htmlspecialchars($request->input('aktif')),
+        ];
+
+        $paramIncoming = Crypt::decrypt($request->input('param'));
+        $save = null;
+
+        if ($paramIncoming == 'save') {
+            $save = NoteDeveloperModel::create($formData);
+            $success = 'Catatan gagal di simpan !';
+            $error = 'Catatan gagal di simpan !';
+        } elseif ($paramIncoming == 'update') {
+            $search = NoteDeveloperModel::findOrFail($request->input('id'));
+            $save = $search->update($formData);
+            $success = 'Catatan gagal di perbarui !';
+            $error = 'Catatan gagal di perbarui !';
+        } else {
+            return redirect()->back()->with('error', 'Parameter tidak valid !');
+        }
+
+        if (!$save) {
+            return redirect()->back()->with('error', $error);
+        }
+
+        return redirect()->route('aplikasi.pengembang')->with('success', $success);
+    }
+
+    public function deleteVersion(Request $request): RedirectResponse
+    {
+        // Checking data version on database
+        $version = VersionModel::findOrFail(Crypt::decrypt($request->id));
+        if ($version) {
+            $version->delete();
+            return redirect()->route('aplikasi.version')->with('error', 'Version gagal di hapus !');
+        }
+        return redirect()->route('aplikasi.version')->with('success', 'Version berhasil di hapus !');
     }
 }
