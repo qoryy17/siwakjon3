@@ -32,12 +32,11 @@ Route::middleware(NonAuthMiddleware::class)->group(function () {
     });
 });
 
-Route::middleware(NonAuthMiddleware::class)->group(function () {
-    Route::controller(AuthenticationController::class)->group(function () {
-        Route::post('/auth/signin', 'login')->name('auth.signin');
-        Route::post('/auth/signout', 'logout')->name('auth.signout');
-    });
+Route::controller(AuthenticationController::class)->group(function () {
+    Route::post('/auth/signin', 'login')->name('auth.signin');
+    Route::post('/auth/signout', 'logout')->name('auth.signout');
 });
+
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(HomeController::class)->group(function () {
