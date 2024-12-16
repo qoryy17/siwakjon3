@@ -31,7 +31,7 @@
                         @csrf
                         @method('POST')
                         @if (Crypt::decrypt($paramOutgoing) == 'update')
-                            <div class="mb-3">
+                            <div class="mb-3" hidden>
                                 <input type="text" class="form-control" readonly name="id"
                                     value="{{ Crypt::encrypt($catatan->id) }}">
                             </div>

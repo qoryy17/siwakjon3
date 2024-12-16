@@ -63,9 +63,27 @@
                                                 class="avtar avtar-xs btn-link-secondary">
                                                 <i class="ti ti-edit f-20"></i>
                                             </a>
-                                            <a href="#" class="avtar avtar-xs btn-link-secondary">
+                                            <a href="#" class="avtar avtar-xs btn-link-secondary"
+                                                onclick=" Swal.fire({
+                                                    icon: 'warning',
+                                                    title: 'Hapus Data ?',
+                                                    text: 'Data yang dihapus tidak dapat dikembalikan !',
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Hapus',
+                                                    cancelButtonText: 'Batal',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('deleteForm{{ $no }}').submit();
+                                                    }
+                                                });">
                                                 <i class="ti ti-trash f-20"></i>
                                             </a>
+                                            <form id="deleteForm{{ $no }}"
+                                                action="{{ route('aplikasi.hapus-pengembang',['id' => Crypt::encrypt($item->id)]) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach

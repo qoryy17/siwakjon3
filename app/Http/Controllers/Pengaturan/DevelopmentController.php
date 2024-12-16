@@ -114,9 +114,9 @@ class DevelopmentController extends Controller
         $catatan = NoteDeveloperModel::findOrFail(Crypt::decrypt($request->id));
         if ($catatan) {
             $catatan->delete();
-            return redirect()->route('aplikasi.pengembang')->with('error', 'Catatan pengembang gagal di hapus !');
+            return redirect()->route('aplikasi.pengembang')->with('success', 'Catatan pengembang berhasil di hapus !');
         }
-        return redirect()->route('aplikasi.pengembang')->with('success', 'Catatan pengembang berhasil di hapus !');
+        return redirect()->route('aplikasi.pengembang')->with('error', 'Catatan pengembang gagal di hapus !');
     }
 
     public function indexVersion()
@@ -213,8 +213,8 @@ class DevelopmentController extends Controller
         $version = VersionModel::findOrFail(Crypt::decrypt($request->id));
         if ($version) {
             $version->delete();
-            return redirect()->route('aplikasi.version')->with('error', 'Version gagal di hapus !');
+            return redirect()->route('aplikasi.version')->with('success', 'Version berhasil di hapus !');
         }
-        return redirect()->route('aplikasi.version')->with('success', 'Version berhasil di hapus !');
+        return redirect()->route('aplikasi.version')->with('error', 'Version gagal di hapus !');
     }
 }
