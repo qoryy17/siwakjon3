@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -70,11 +69,13 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->unsignedBigInteger('pegawai_id')->nullable();
+            $table->unsignedBigInteger('unit_kerja_id')->nullable();
             $table->enum('active', ['1', '0'])->default('0');
             $table->string('roles');
             $table->timestamps();
 
             $table->foreign('pegawai_id')->references('id')->on('sw_pegawai')->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('unit_kerja_id')->references('id')->on('sw_unit_kerja')->onDelete('set null')->onUpdate('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
