@@ -15,14 +15,14 @@ class PejabatPenggantiModel extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'nip',
         'pejabat',
         'aktif',
     ];
 
     public $timestamps = true;
 
-    public function manajemenRapat(): BelongsTo{
+    public function manajemenRapat(): BelongsTo
+    {
         return $this->belongsTo(ManajemenRapatModel::class);
     }
 

@@ -133,6 +133,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(PejabatPenggantiController::class)->group(function () {
         Route::get('/manajemen-pengaturan/pejabat-pengganti', 'indexPejabatPengganti')->name('pejabatPengganti.index');
         Route::get('/manajemen-pengaturan/pejabat-pengganti/form/{param}/{id}', 'formPejabatPengganti')->name('pejabatPengganti.form');
+        Route::post('/manajemen-pengaturan/simpan-pejabat-pengganti', 'save')->name('pejabatPengganti.simpan');
+        Route::delete('/manajemen-pengaturan/hapus-pejabat-pengganti', 'delete')->name('pejabatPengganti.hapus');
     });
 });
 

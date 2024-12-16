@@ -6,14 +6,18 @@ use App\Enum\RolesEnum;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Pengaturan\PejabatPenggantiRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\Pengguna\PejabatPenggantiModel;
 
 class PejabatPenggantiController extends Controller
 {
     public function indexPejabatPengganti()
     {
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -23,7 +27,8 @@ class PejabatPenggantiController extends Controller
         $data = [
             'title' => 'Manajemen Pengaturan | Pejabat Pengganti',
             'routeHome' => $route,
-            'breadcumbs' => $breadcumb
+            'breadcumbs' => $breadcumb,
+            'pejabatPengganti' => PejabatPenggantiModel::orderBy('updated_at', 'desc')->get()
         ];
 
         return view('pengaturan.data-pejabat-pengganti', $data);
@@ -35,15 +40,17 @@ class PejabatPenggantiController extends Controller
         if (Crypt::decrypt($request->param) == 'add') {
             $paramOutgoing = 'save';
             $formTitle = 'Tambah';
+            $searchPejabatPengganti = null;
         } elseif (Crypt::decrypt($request->param) == 'edit') {
             $paramOutgoing = 'update';
             $formTitle = 'Edit';
+            $searchPejabatPengganti = PejabatPenggantiModel::findOrFail(Crypt::decrypt($request->id));
         } else {
             return redirect()->back()->with('error', 'Parameter tidak ditemukan !');
         }
 
         // Redirect home page for role
-        $route = RouteLink::homePage();
+        $route = RouteLink::homePage(Auth::user()->roles);
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -56,9 +63,55 @@ class PejabatPenggantiController extends Controller
             'title' => 'Manajemen Pengaturan | ' . $formTitle . ' Pejabat Pengganti',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'formTitle' => $formTitle . ' Pejabat Pengganti'
+            'formTitle' => $formTitle . ' Pejabat Pengganti',
+            'paramOutgoing' => Crypt::encrypt($paramOutgoing),
+            'pejabatPengganti' => $searchPejabatPengganti
         ];
 
         return view('pengaturan.form-pejabat-pengganti', $data);
+    }
+
+    public function save(PejabatPenggantiRequest $request): RedirectResponse
+    {
+        // Run validated
+        $request->validated();
+
+        $formData = [
+            'pejabat' => htmlspecialchars($request->input('pejabatPengganti')),
+            'aktif' => htmlspecialchars($request->input('aktif')),
+        ];
+
+        $paramIncoming = Crypt::decrypt($request->input('param'));
+        $save = null;
+
+        if ($paramIncoming == 'save') {
+            $save = PejabatPenggantiModel::create($formData);
+            $success = 'Pejabat Pengganti berhasil di simpan !';
+            $error = 'Pejabat Pengganti gagal di simpan !';
+        } elseif ($paramIncoming == 'update') {
+            $search = PejabatPenggantiModel::findOrFail(Crypt::decrypt($request->input('id')));
+            $save = $search->update($formData);
+            $success = 'Pejabat Pengganti berhasil di perbarui !';
+            $error = 'Pejabat Pengganti gagal di perbarui !';
+        } else {
+            return redirect()->back()->with('error', 'Parameter tidak valid !');
+        }
+
+        if (!$save) {
+            return redirect()->back()->with('error', $error);
+        }
+
+        return redirect()->route('pejabatPengganti.index')->with('success', $success);
+    }
+
+    public function delete(Request $request): RedirectResponse
+    {
+        // Checking data pejabat pengganti on database
+        $pejabatPengganti = PejabatPenggantiModel::findOrFail(Crypt::decrypt($request->id));
+        if ($pejabatPengganti) {
+            $pejabatPengganti->delete();
+            return redirect()->route('pejabatPengganti.index')->with('success', 'Pejabat Pengganti berhasil di hapus !');
+        }
+        return redirect()->route('pejabatPengganti.index')->with('error', 'Pejabat Pengganti gagal di hapus !');
     }
 }

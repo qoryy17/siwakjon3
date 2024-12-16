@@ -27,15 +27,28 @@
                     <a href="{{ route('pejabatPengganti.index') }}">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST">
+                    <form action="{{ route('pejabatPengganti.simpan') }}" method="POST">
                         @csrf
                         @method('POST')
+                        @if (Crypt::decrypt($paramOutgoing) == 'update')
+                            <div class="mb-3" hidden>
+                                <input type="text" class="form-control" readonly name="id"
+                                    value="{{ Crypt::encrypt($pejabatPengganti->id) }}">
+                            </div>
+                        @endif
+                        <div class="mb-3" hidden>
+                            <input type="text" class="form-control" name="param" readonly value="{{ $paramOutgoing }}">
+                        </div>
                         <div class="mb-3">
-                            <label class="form-label" for="pejabat">Pejabat Pengganti
+                            <label class="form-label" for="pejabatPengganti">Pejabat Pengganti
                                 <span class="text-danger">*</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="Pejabat Pengganti..." id="pejabat"
-                                required>
+                            <input type="text" class="form-control" placeholder="Pejabat Pengganti..."
+                                id="pejabatPengganti" name="pejabatPengganti" required
+                                value="{{ $pejabatPengganti ? $pejabatPengganti->pejabat : old('pejabatPengganti') }}">
+                            @error('pejabatPengganti')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="aktif">Aktif
@@ -43,9 +56,16 @@
                             </label>
                             <select name="aktif" id="aktif" class="form-control" required>
                                 <option value="">Pilih</option>
-                                <option value="Y">Aktif</option>
-                                <option value="T">Non Aktif</option>
+                                <option value="Y"
+                                    @if (old('aktif') == 'Y') selected @elseif ($pejabatPengganti && $pejabatPengganti->aktif == 'Y') selected @endif>
+                                    Aktif</option>
+                                <option value="T"
+                                    @if (old('aktif') == 'T') selected @elseif ($pejabatPengganti && $pejabatPengganti->aktif == 'T') selected @endif>
+                                    Non Aktif</option>
                             </select>
+                            @error('aktif')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mt-1">
                             <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i>
