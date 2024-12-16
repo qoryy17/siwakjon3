@@ -52,7 +52,7 @@
                                         $pengembang = \App\Models\User::find($item->pengembang);
                                     @endphp
                                     <tr>
-                                        <td class="text-start">1</td>
+                                        <td class="text-start">{{ $no }}</td>
                                         <td>{{ Str::limit($item->catatan, 50) }}</td>
                                         <td>{{ $pengembang->name }}</td>
                                         <td>{{ $item->aktif }}</td>
@@ -79,13 +79,16 @@
                                                 <i class="ti ti-trash f-20"></i>
                                             </a>
                                             <form id="deleteForm{{ $no }}"
-                                                action="{{ route('aplikasi.hapus-pengembang',['id' => Crypt::encrypt($item->id)]) }}"
+                                                action="{{ route('aplikasi.hapus-pengembang', ['id' => Crypt::encrypt($item->id)]) }}"
                                                 method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
                                         </td>
                                     </tr>
+                                    @php
+                                        $no++;
+                                    @endphp
                                 @endforeach
                             </tbody>
                         </table>

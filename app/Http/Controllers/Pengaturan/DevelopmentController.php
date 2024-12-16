@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Pengaturan;
 
+use Carbon\Carbon;
 use App\Enum\RolesEnum;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
@@ -9,10 +10,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
-use App\Models\Pengaturan\NoteDeveloperModel;
-use App\Http\Requests\Pengaturan\CatatanPengembangRequest;
-use App\Http\Requests\Pengaturan\VersionRequest;
 use App\Models\Pengaturan\VersionModel;
+use App\Models\Pengaturan\NoteDeveloperModel;
+use App\Http\Requests\Pengaturan\VersionRequest;
+use App\Http\Requests\Pengaturan\CatatanPengembangRequest;
 
 class DevelopmentController extends Controller
 {
@@ -133,7 +134,8 @@ class DevelopmentController extends Controller
         $data = [
             'title' => 'Pengaturan Aplikasi | Version',
             'routeHome' => route('home.superadmin'),
-            'breadcumbs' => $breadcumb
+            'breadcumbs' => $breadcumb,
+            'version' => VersionModel::orderBy('created_at', 'desc')->get()
         ];
 
         return view('aplikasi.data-versi', $data);
@@ -145,9 +147,11 @@ class DevelopmentController extends Controller
         if (Crypt::decrypt($request->param) == 'add') {
             $paramOutgoing = 'save';
             $formTitle = 'Tambah';
+            $searchVersion = null;
         } elseif (Crypt::decrypt($request->param) == 'edit') {
             $paramOutgoing = 'update';
             $formTitle = 'Edit';
+            $searchVersion = VersionModel::findOrFail(Crypt::decrypt($request->id));
         } else {
             return redirect()->back()->with('error', 'Parameter tidak ditemukan !');
         }
@@ -167,35 +171,37 @@ class DevelopmentController extends Controller
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'formTitle' => $formTitle . ' Version',
-            'paramOutgoing' => $paramOutgoing
+            'paramOutgoing' => Crypt::encrypt($paramOutgoing),
+            'version' => $searchVersion
         ];
 
         return view('aplikasi.form-versi', $data);
     }
 
-    public function saveVersion(VersionRequest $request): RedirectResponse
+    public function saveVersion(VersionRequest $request)//: RedirectResponse
     {
         // Run validated
         $request->validated();
 
         $formData = [
-            'releaseDate' => $request->input('catatan'),
-            'pengembang' => Auth::user()->id,
-            'aktif' => htmlspecialchars($request->input('aktif')),
+            'release_date' => Carbon::createFromFormat('m/d/Y', htmlentities($request->input('releaseDate')))->format('Y-m-d'),
+            'category' => htmlspecialchars($request->input('category')),
+            'patch_version' => htmlspecialchars($request->input('patchVersion')),
+            'note' => $request->input('note')
         ];
 
         $paramIncoming = Crypt::decrypt($request->input('param'));
         $save = null;
 
         if ($paramIncoming == 'save') {
-            $save = NoteDeveloperModel::create($formData);
-            $success = 'Catatan gagal di simpan !';
-            $error = 'Catatan gagal di simpan !';
+            $save = VersionModel::create($formData);
+            $success = 'Version berhasil di simpan !';
+            $error = 'Version gagal di simpan !';
         } elseif ($paramIncoming == 'update') {
-            $search = NoteDeveloperModel::findOrFail($request->input('id'));
+            $search = VersionModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
-            $success = 'Catatan gagal di perbarui !';
-            $error = 'Catatan gagal di perbarui !';
+            $success = 'Version berhasil di perbarui !';
+            $error = 'Version gagal di perbarui !';
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -204,7 +210,7 @@ class DevelopmentController extends Controller
             return redirect()->back()->with('error', $error);
         }
 
-        return redirect()->route('aplikasi.pengembang')->with('success', $success);
+        return redirect()->route('aplikasi.version')->with('success', $success);
     }
 
     public function deleteVersion(Request $request): RedirectResponse
