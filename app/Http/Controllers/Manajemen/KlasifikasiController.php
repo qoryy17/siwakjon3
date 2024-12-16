@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manajemen;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Pengaturan\KlasifikasiJabatanRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
@@ -195,6 +196,52 @@ class KlasifikasiController extends Controller
             return redirect()->route('klasifikasi.index', ['param' => 'surat'])->with('success', 'Klasifikasi Surat berhasil di hapus !');
         }
         return redirect()->route('klasifikasi.index', ['param' => 'surat'])->with('error', 'Klasifikasi Surat gagal di hapus !');
+    }
+
+    public function saveKlasifikasiJabatan(KlasifikasiJabatanRequest $request): RedirectResponse
+    {
+        // Run validated
+        $request->validated();
+
+        $formData = [
+            'jabatan' => htmlspecialchars($request->input('jabatan')),
+            'kode_jabatan' => htmlspecialchars($request->input('kodeJabatan')),
+            'keterangan' => nl2br(htmlspecialchars($request->input('keterangan'))),
+            'aktif' => htmlspecialchars($request->input('aktif')),
+        ];
+
+        $paramIncoming = Crypt::decrypt($request->input('param'));
+        $save = null;
+
+        if ($paramIncoming == 'save') {
+            $save = KlasifikasiJabatanModel::create($formData);
+            $success = 'Klasifikasi Jabatan berhasil di simpan !';
+            $error = 'Klasifikasi Jabatan gagal di simpan !';
+        } elseif ($paramIncoming == 'update') {
+            $search = KlasifikasiJabatanModel::findOrFail(Crypt::decrypt($request->input('id')));
+            $save = $search->update($formData);
+            $success = 'Klasifikasi Jabatan berhasil di perbarui !';
+            $error = 'Klasifikasi Jabatan gagal di perbarui !';
+        } else {
+            return redirect()->back()->with('error', 'Parameter tidak valid !');
+        }
+
+        if (!$save) {
+            return redirect()->back()->with('error', $error);
+        }
+
+        return redirect()->route('klasifikasi.index', ['param' => 'jabatan'])->with('success', $success);
+    }
+
+    public function deleteKlasifikasiJabatan(Request $request): RedirectResponse
+    {
+        // Checking data klasifikasi jabatan on database
+        $klasifikasiJabatan = KlasifikasiJabatanModel::findOrFail(Crypt::decrypt($request->id));
+        if ($klasifikasiJabatan) {
+            $klasifikasiJabatan->delete();
+            return redirect()->route('klasifikasi.index', ['param' => 'jabatan'])->with('success', 'Klasifikasi Jabatan berhasil di hapus !');
+        }
+        return redirect()->route('klasifikasi.index', ['param' => 'jabatan'])->with('error', 'Klasifikasi Jabatan gagal di hapus !');
     }
 
     public function indexSetKode()

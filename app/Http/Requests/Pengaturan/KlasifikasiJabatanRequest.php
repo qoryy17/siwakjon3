@@ -11,7 +11,7 @@ class KlasifikasiJabatanRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,23 @@ class KlasifikasiJabatanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'jabatan' => 'required|string|max:255',
+            'kodeJabatan' => 'required|string|max:255',
+            'aktif' => 'required|string',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'jabatan.required' => 'Jabatan harus di isi !',
+            'jabatan.string' => 'Jabatan harus berupa karakter valid !',
+            'jabatan.max' => 'Jabatan maksimal 255 karakter !',
+            'kodeJabatan.required' => 'Kode Klasifikasi harus di isi !',
+            'kodeJabatan.string' => 'Kode Klasifikasi harus berupa karakter valid !',
+            'kodeJabatan.max' => 'Kode Klasifikasi maksimal 255 karakter !',
+            'aktif.required' => 'Status Aktif harus di isi !',
+            'aktif.string' => 'Status Aktif harus berupa karakter valid !',
         ];
     }
 }

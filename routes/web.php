@@ -152,8 +152,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::delete('/manajemen-pengaturan/klasifikasi/hapus-surat', 'deleteKlasifikasiSurat')->name('klasifikasi.hapus-surat');
 
         // For klasifikasi jabatan
-        Route::post('/manajemen-pengaturan/klasifikasi/simpan-jabatan', 'saveKlasifikasiSurat')->name('klasifikasi.simpan-jabatan');
-        Route::delete('/manajemen-pengaturan/klasifikasi/hapus-jabatan', 'deleteKlasifikasiSurat')->name('klasifikasi.hapus-jabatan');
+        Route::post('/manajemen-pengaturan/klasifikasi/simpan-jabatan', 'saveKlasifikasiJabatan')->name('klasifikasi.simpan-jabatan');
+        Route::delete('/manajemen-pengaturan/klasifikasi/hapus-jabatan', 'deleteKlasifikasiJabatan')->name('klasifikasi.hapus-jabatan');
 
         Route::get('/manajemen-pengaturan/set-kode-rapat/', 'indexSetKode')->name('klasifikasi.set-kode');
     });
