@@ -143,6 +143,18 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/manajemen-pengaturan/klasifikasi/{param}', 'indexKlasifikasi')->name('klasifikasi.index');
         Route::get('/manajemen-pengaturan/klasifikasi/{klaster}/form/{param}/{id}', 'formKlasifikasi')->name('klasifikasi.form');
 
+        // For klasifikasi rapat
+        Route::post('/manajemen-pengaturan/klasifikasi/simpan-rapat', 'saveKlasifikasiRapat')->name('klasifikasi.simpan-rapat');
+        Route::delete('/manajemen-pengaturan/klasifikasi/hapus-rapat', 'deleteKlasifikasiRapat')->name('klasifikasi.hapus-rapat');
+
+        // For klasifikasi surat
+        Route::post('/manajemen-pengaturan/klasifikasi/simpan-surat', 'saveKlasifikasiSurat')->name('klasifikasi.simpan-surat');
+        Route::delete('/manajemen-pengaturan/klasifikasi/hapus-surat', 'deleteKlasifikasiSurat')->name('klasifikasi.hapus-surat');
+
+        // For klasifikasi jabatan
+        Route::post('/manajemen-pengaturan/klasifikasi/simpan-jabatan', 'saveKlasifikasiSurat')->name('klasifikasi.simpan-jabatan');
+        Route::delete('/manajemen-pengaturan/klasifikasi/hapus-jabatan', 'deleteKlasifikasiSurat')->name('klasifikasi.hapus-jabatan');
+
         Route::get('/manajemen-pengaturan/set-kode-rapat/', 'indexSetKode')->name('klasifikasi.set-kode');
     });
 });
