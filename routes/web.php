@@ -115,7 +115,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(JabatanController::class)->group(function () {
         Route::get('/manajemen-pengaturan/jabatan', 'indexJabatan')->name('jabatan.index');
         Route::get('/manajemen-pengaturan/jabatan/form/{param}/{id}', 'formJabatan')->name('jabatan.form');
-        Route::post('/manajemen-pengaturan/simpan', 'save')->name('jabatan.simpan');
+        Route::post('/manajemen-pengaturan/simpan-jabatan', 'save')->name('jabatan.simpan');
         Route::delete('/manajemen-pengaturan/hapus-jabatan', 'delete')->name('jabatan.hapus');
     });
 });
@@ -124,6 +124,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(UnitKerjaController::class)->group(function () {
         Route::get('/manajemen-pengaturan/unit-kerja', 'indexUnitKerja')->name('unitKerja.index');
         Route::get('/manajemen-pengaturan/unit-kerja/form/{param}/{id}', 'formUnitKerja')->name('unitKerja.form');
+        Route::post('/manajemen-pengaturan/simpan-unit-kerja', 'save')->name('unitKerja.simpan');
+        Route::delete('/manajemen-pengaturan/hapus-unit-kerja', 'delete')->name('unitKerja.hapus');
     });
 });
 

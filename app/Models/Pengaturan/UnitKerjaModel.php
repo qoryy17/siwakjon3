@@ -2,10 +2,11 @@
 
 namespace App\Models\Pengaturan;
 
-use App\Models\Hakim\HakimPengawasModel;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Hakim\HakimPengawasModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UnitKerjaModel extends Model
 {
@@ -21,7 +22,13 @@ class UnitKerjaModel extends Model
 
     public $timestamps = true;
 
-    public function hakimPengawas(): BelongsTo{
+    public function hakimPengawas(): BelongsTo
+    {
         return $this->belongsTo(HakimPengawasModel::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

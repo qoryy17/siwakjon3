@@ -65,10 +65,10 @@
                             <select name="aktif" id="aktif" class="form-control" required>
                                 <option value="">Pilih</option>
                                 <option value="Y"
-                                    @if (old('aktif') == '1') selected @elseif ($jabatan && $jabatan->aktif == 'Y') selected @endif>
+                                    @if (old('aktif') == 'Y') selected @elseif ($jabatan && $jabatan->aktif == 'Y') selected @endif>
                                     Aktif</option>
                                 <option value="T"
-                                    @if (old('aktif') == '0') selected @elseif ($jabatan && $jabatan->aktif == 'T') selected @endif>
+                                    @if (old('aktif') == 'T') selected @elseif ($jabatan && $jabatan->aktif == 'T') selected @endif>
                                     Non Aktif</option>
                             </select>
                         </div>
