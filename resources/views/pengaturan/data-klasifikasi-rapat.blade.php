@@ -58,7 +58,7 @@
                                         <td>{{ $item->created_at }}</td>
                                         <td>{{ $item->updated_at }}</td>
                                         <td>
-                                            <a href="{{ route('pejabatPengganti.form', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
+                                            <a href="{{ route('klasifikasi.form', ['klaster' => 'rapat', 'param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
                                                 class="avtar avtar-xs btn-link-secondary">
                                                 <i class="ti ti-edit f-20"></i>
                                             </a>
@@ -66,7 +66,7 @@
                                                 onclick=" Swal.fire({
                                                     icon: 'warning',
                                                     title: 'Hapus Data ?',
-                                                    text: 'Data yang dihapus tidak dapat dikembalikan ! \n Data yang terikat pejabat pengganti ini akan di set menjadi null',
+                                                    text: 'Data yang dihapus tidak dapat dikembalikan ! \n Data yang terikat klasifikasi ini akan di set menjadi null',
                                                     showCancelButton: true,
                                                     confirmButtonText: 'Hapus',
                                                     cancelButtonText: 'Batal',
@@ -78,7 +78,7 @@
                                                 <i class="ti ti-trash f-20"></i>
                                             </a>
                                             <form id="deleteForm{{ $no }}"
-                                                action="{{ route('pejabatPengganti.hapus', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                action="{{ route('klasifikasi.hapus-rapat', ['id' => Crypt::encrypt($item->id)]) }}"
                                                 method="POST">
                                                 @csrf
                                                 @method('DELETE')

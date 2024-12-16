@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Manajemen;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Manajemen\KlasifikasiJabatanModel;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Crypt;
 use App\Models\Manajemen\KlasifikasiRapatModel;
 use App\Models\Manajemen\KlasifikasiSuratModel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
+use App\Models\Manajemen\KlasifikasiJabatanModel;
+use App\Http\Requests\Pengaturan\KlasifikasiRapatRequest;
 
 class KlasifikasiController extends Controller
 {
@@ -100,6 +102,52 @@ class KlasifikasiController extends Controller
         ];
 
         return view($view, $data);
+    }
+
+    public function saveKlasifikasiRapat(KlasifikasiRapatRequest $request): RedirectResponse
+    {
+        // Run validated
+        $request->validated();
+
+        $formData = [
+            'rapat' => htmlspecialchars($request->input('rapat')),
+            'kode_klasifikasi' => htmlspecialchars($request->input('kodeKlasifikasi')),
+            'keterangan' => nl2br(htmlspecialchars($request->input('keterangan'))),
+            'aktif' => htmlspecialchars($request->input('aktif')),
+        ];
+
+        $paramIncoming = Crypt::decrypt($request->input('param'));
+        $save = null;
+
+        if ($paramIncoming == 'save') {
+            $save = KlasifikasiRapatModel::create($formData);
+            $success = 'Klasifikasi Rapat berhasil di simpan !';
+            $error = 'Klasifikasi Rapat gagal di simpan !';
+        } elseif ($paramIncoming == 'update') {
+            $search = KlasifikasiRapatModel::findOrFail(Crypt::decrypt($request->input('id')));
+            $save = $search->update($formData);
+            $success = 'Klasifikasi Rapat berhasil di perbarui !';
+            $error = 'Klasifikasi Rapat gagal di perbarui !';
+        } else {
+            return redirect()->back()->with('error', 'Parameter tidak valid !');
+        }
+
+        if (!$save) {
+            return redirect()->back()->with('error', $error);
+        }
+
+        return redirect()->route('klasifikasi.index', ['param' => 'rapat'])->with('success', $success);
+    }
+
+    public function deleteKlasifikasiRapat(Request $request): RedirectResponse
+    {
+        // Checking data klasifikasi rapat on database
+        $klasifikasiRapat = KlasifikasiRapatModel::findOrFail(Crypt::decrypt($request->id));
+        if ($klasifikasiRapat) {
+            $klasifikasiRapat->delete();
+            return redirect()->route('klasifikasi.index', ['param' => 'rapat'])->with('success', 'Klasifikasi Rapat berhasil di hapus !');
+        }
+        return redirect()->route('klasifikasi.index', ['param' => 'rapat'])->with('error', 'Klasifikasi Rapat gagal di hapus !');
     }
 
     public function indexSetKode()

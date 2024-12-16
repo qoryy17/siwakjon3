@@ -27,13 +27,13 @@
                     <a href="{{ route('klasifikasi.index', ['param' => 'rapat']) }}">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST">
+                    <form action="{{ route('klasifikasi.simpan-rapat') }}" method="POST">
                         @csrf
                         @method('POST')
                         @if (Crypt::decrypt($paramOutgoing) == 'update')
                             <div class="mb-3" hidden>
                                 <input type="text" class="form-control" readonly name="id"
-                                    value="{{ Crypt::encrypt($unitKerja->id) }}">
+                                    value="{{ Crypt::encrypt($klasifikasi->id) }}">
                             </div>
                         @endif
                         <div class="mb-3" hidden>
@@ -62,7 +62,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="keterangan">Keterangan</label>
-                            <textarea name="keterangan" id="keterangan" class="form-control" placeholder="Keterangan..." required>{{ $klasifikasi ? $klasifikasi->keterangan : old('keterangan') }}</textarea>
+                            <textarea name="keterangan" id="keterangan" class="form-control" placeholder="Keterangan...">{{ $klasifikasi ? $klasifikasi->keterangan : old('keterangan') }}</textarea>
                             @error('keterangan')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
