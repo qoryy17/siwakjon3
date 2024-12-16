@@ -28,7 +28,7 @@ class UnitKerjaController extends Controller
             'title' => 'Manajemen Pengaturan | Unit Kerja',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'unitKerja' => UnitKerjaModel::orderBy('created_at', 'asc')->get()
+            'unitKerja' => UnitKerjaModel::orderBy('updated_at', 'desc')->get()
         ];
 
         return view('pengaturan.data-unit-kerja', $data);

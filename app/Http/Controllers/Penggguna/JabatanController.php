@@ -27,7 +27,7 @@ class JabatanController extends Controller
             'title' => 'Manajemen Pengaturan | Jabatan',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'jabatan' => JabatanModel::orderBy('created_at', 'asc')->get()
+            'jabatan' => JabatanModel::orderBy('updated_at', 'desc')->get()
         ];
 
         return view('pengaturan.data-jabatan', $data);
