@@ -90,7 +90,7 @@
                             </button>
                             <a href="{{ route('klasifikasi.index', ['param' => 'rapat']) }}"
                                 class="btn btn-sm btn-warning">
-                                <i class="fas fa-reply"></i> Kembali
+                                <i class="fas fa-reply-all"></i> Kembali
                             </a>
                         </div>
                     </form>

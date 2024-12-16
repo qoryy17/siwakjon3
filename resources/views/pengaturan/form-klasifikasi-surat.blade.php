@@ -27,25 +27,46 @@
                     <a href="{{ route('klasifikasi.index', ['param' => 'surat']) }}">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST">
+                    <form action="{{ route('klasifikasi.simpan-surat') }}" method="POST">
                         @csrf
                         @method('POST')
+                        @if (Crypt::decrypt($paramOutgoing) == 'update')
+                            <div class="mb-3" hidden>
+                                <input type="text" class="form-control" readonly name="id"
+                                    value="{{ Crypt::encrypt($klasifikasi->id) }}">
+                            </div>
+                        @endif
+                        <div class="mb-3" hidden>
+                            <input type="text" class="form-control" name="param" readonly value="{{ $paramOutgoing }}">
+                        </div>
                         <div class="mb-3">
-                            <label class="form-label" for="kodeRapat">Kode Rapat
+                            <label class="form-label" for="kodeSurat">Kode Surat
                                 <span class="text-danger">*</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="Kode Rapat..." id="kodeRapat" required>
+                            <input type="text" class="form-control" placeholder="Kode Surat..." id="kodeSurat"
+                                name="kodeSurat" required
+                                value="{{ $klasifikasi ? $klasifikasi->kode_surat : old('kodeSurat') }}">
+                            @error('kodeSurat')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="kodeKlasifikasi">Kode Klasifikasi
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" placeholder="Kode Klasifikasi..."
-                                id="kodeKlasifikasi" required>
+                                id="kodeKlasifikasi" name="kodeKlasifikasi" required
+                                value="{{ $klasifikasi ? $klasifikasi->kode_klasifikasi : old('kodeKlasifikasi') }}">
+                            @error('kodeKlasifikasi')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="keterangan">Keterangan</label>
-                            <textarea name="keterangan" id="keterangan" class="form-control" placeholder="Keterangan..."></textarea>
+                            <textarea name="keterangan" id="keterangan" class="form-control" placeholder="Keterangan...">{{ $klasifikasi ? $klasifikasi->keterangan : old('keterangan') }}</textarea>
+                            @error('keterangan')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="aktif">Aktif
@@ -53,17 +74,24 @@
                             </label>
                             <select name="aktif" id="aktif" class="form-control" required>
                                 <option value="">Pilih</option>
-                                <option value="Y">Aktif</option>
-                                <option value="T">Non Aktif</option>
+                                <option value="Y"
+                                    @if (old('aktif') == 'Y') selected @elseif ($klasifikasi && $klasifikasi->aktif == 'Y') selected @endif>
+                                    Aktif</option>
+                                <option value="T"
+                                    @if (old('aktif') == 'T') selected @elseif ($klasifikasi && $klasifikasi->aktif == 'T') selected @endif>
+                                    Non Aktif</option>
                             </select>
                         </div>
                         <div class="mt-1">
-                            <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i>
-                                Simpan</button>
-                            <button type="reset" class="btn btn-sm btn-secondary"><i class="fas fa-recycle"></i>
-                                Batal</button>
-                            <a href="{{ route('klasifikasi.index', ['param' => 'surat']) }}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-reply"></i> Kembali
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fas fa-save"></i> Simpan
+                            </button>
+                            <button type="reset" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-recycle"></i> Batal
+                            </button>
+                            <a href="{{ route('klasifikasi.index', ['param' => 'surat']) }}"
+                                class="btn btn-sm btn-warning">
+                                <i class="fas fa-reply-all"></i> Kembali
                             </a>
                         </div>
                     </form>

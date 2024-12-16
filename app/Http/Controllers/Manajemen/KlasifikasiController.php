@@ -12,6 +12,7 @@ use App\Models\Manajemen\KlasifikasiRapatModel;
 use App\Models\Manajemen\KlasifikasiSuratModel;
 use App\Models\Manajemen\KlasifikasiJabatanModel;
 use App\Http\Requests\Pengaturan\KlasifikasiRapatRequest;
+use App\Http\Requests\Pengaturan\KlasifikasiSuratRequest;
 
 class KlasifikasiController extends Controller
 {
@@ -148,6 +149,52 @@ class KlasifikasiController extends Controller
             return redirect()->route('klasifikasi.index', ['param' => 'rapat'])->with('success', 'Klasifikasi Rapat berhasil di hapus !');
         }
         return redirect()->route('klasifikasi.index', ['param' => 'rapat'])->with('error', 'Klasifikasi Rapat gagal di hapus !');
+    }
+
+    public function saveKlasifikasiSurat(KlasifikasiSuratRequest $request): RedirectResponse
+    {
+        // Run validated
+        $request->validated();
+
+        $formData = [
+            'kode_surat' => htmlspecialchars($request->input('kodeSurat')),
+            'kode_klasifikasi' => htmlspecialchars($request->input('kodeKlasifikasi')),
+            'keterangan' => nl2br(htmlspecialchars($request->input('keterangan'))),
+            'aktif' => htmlspecialchars($request->input('aktif')),
+        ];
+
+        $paramIncoming = Crypt::decrypt($request->input('param'));
+        $save = null;
+
+        if ($paramIncoming == 'save') {
+            $save = KlasifikasiSuratModel::create($formData);
+            $success = 'Klasifikasi Surat berhasil di simpan !';
+            $error = 'Klasifikasi Surat gagal di simpan !';
+        } elseif ($paramIncoming == 'update') {
+            $search = KlasifikasiSuratModel::findOrFail(Crypt::decrypt($request->input('id')));
+            $save = $search->update($formData);
+            $success = 'Klasifikasi Surat berhasil di perbarui !';
+            $error = 'Klasifikasi Surat gagal di perbarui !';
+        } else {
+            return redirect()->back()->with('error', 'Parameter tidak valid !');
+        }
+
+        if (!$save) {
+            return redirect()->back()->with('error', $error);
+        }
+
+        return redirect()->route('klasifikasi.index', ['param' => 'surat'])->with('success', $success);
+    }
+
+    public function deleteKlasifikasiSurat(Request $request): RedirectResponse
+    {
+        // Checking data klasifikasi surat on database
+        $klasifikasiSurat = KlasifikasiSuratModel::findOrFail(Crypt::decrypt($request->id));
+        if ($klasifikasiSurat) {
+            $klasifikasiSurat->delete();
+            return redirect()->route('klasifikasi.index', ['param' => 'surat'])->with('success', 'Klasifikasi Surat berhasil di hapus !');
+        }
+        return redirect()->route('klasifikasi.index', ['param' => 'surat'])->with('error', 'Klasifikasi Surat gagal di hapus !');
     }
 
     public function indexSetKode()
