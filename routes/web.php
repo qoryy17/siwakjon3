@@ -113,31 +113,33 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(JabatanController::class)->group(function () {
-        Route::get('manajemen-pengaturan/jabatan', 'indexJabatan')->name('jabatan.index');
-        Route::get('manajemen-pengaturan/jabatan/form/{param}/{id}', 'formJabatan')->name('jabatan.form');
+        Route::get('/manajemen-pengaturan/jabatan', 'indexJabatan')->name('jabatan.index');
+        Route::get('/manajemen-pengaturan/jabatan/form/{param}/{id}', 'formJabatan')->name('jabatan.form');
+        Route::post('/manajemen-pengaturan/simpan', 'save')->name('jabatan.simpan');
+        Route::delete('/manajemen-pengaturan/hapus-jabatan', 'delete')->name('jabatan.hapus');
     });
 });
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(UnitKerjaController::class)->group(function () {
-        Route::get('manajemen-pengaturan/unit-kerja', 'indexUnitKerja')->name('unitKerja.index');
-        Route::get('manajemen-pengaturan/unit-kerja/form/{param}/{id}', 'formUnitKerja')->name('unitKerja.form');
+        Route::get('/manajemen-pengaturan/unit-kerja', 'indexUnitKerja')->name('unitKerja.index');
+        Route::get('/manajemen-pengaturan/unit-kerja/form/{param}/{id}', 'formUnitKerja')->name('unitKerja.form');
     });
 });
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(PejabatPenggantiController::class)->group(function () {
-        Route::get('manajemen-pengaturan/pejabat-pengganti', 'indexPejabatPengganti')->name('pejabatPengganti.index');
-        Route::get('manajemen-pengaturan/pejabat-pengganti/form/{param}/{id}', 'formPejabatPengganti')->name('pejabatPengganti.form');
+        Route::get('/manajemen-pengaturan/pejabat-pengganti', 'indexPejabatPengganti')->name('pejabatPengganti.index');
+        Route::get('/manajemen-pengaturan/pejabat-pengganti/form/{param}/{id}', 'formPejabatPengganti')->name('pejabatPengganti.form');
     });
 });
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(KlasifikasiController::class)->group(function () {
-        Route::get('manajemen-pengaturan/klasifikasi/{param}', 'indexKlasifikasi')->name('klasifikasi.index');
-        Route::get('manajemen-pengaturan/klasifikasi/{klaster}/form/{param}/{id}', 'formKlasifikasi')->name('klasifikasi.form');
+        Route::get('/manajemen-pengaturan/klasifikasi/{param}', 'indexKlasifikasi')->name('klasifikasi.index');
+        Route::get('/manajemen-pengaturan/klasifikasi/{klaster}/form/{param}/{id}', 'formKlasifikasi')->name('klasifikasi.form');
 
-        Route::get('manajemen-pengaturan/set-kode-rapat/', 'indexSetKode')->name('klasifikasi.set-kode');
+        Route::get('/manajemen-pengaturan/set-kode-rapat/', 'indexSetKode')->name('klasifikasi.set-kode');
     });
 });
 

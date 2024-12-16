@@ -27,28 +27,49 @@
                     <a href="{{ route('jabatan.index') }}">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST">
+                    <form action="{{ route('jabatan.simpan') }}" method="POST">
                         @csrf
                         @method('POST')
+                        @if (Crypt::decrypt($paramOutgoing) == 'update')
+                            <div class="mb-3" hidden>
+                                <input type="text" class="form-control" readonly name="id"
+                                    value="{{ Crypt::encrypt($jabatan->id) }}">
+                            </div>
+                        @endif
+                        <div class="mb-3" hidden>
+                            <input type="text" class="form-control" name="param" readonly value="{{ $paramOutgoing }}">
+                        </div>
                         <div class="mb-3">
                             <label class="form-label" for="jabatan">Jabatan <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" placeholder="Jabatan..." id="jabatan" required>
+                            <input type="text" class="form-control" placeholder="Jabatan..." id="jabatan"
+                                name="jabatan" required value="{{ $jabatan ? $jabatan->jabatan : old('jabatan') }}">
+                            @error('jabatan')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="kodeJabatan">Kode Jabatan
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" placeholder="Kode Jabatan..." id="kodeJabatan"
-                                required>
+                                name="kodeJabatan" required
+                                value="{{ $jabatan ? $jabatan->kode_jabatan : old('kodeJabatan') }}">
+                            @error('kodeJabatan')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="active">Aktif
+                            <label class="form-label" for="aktif">Aktif
                                 <span class="text-danger">*</span>
                             </label>
-                            <select name="active" id="active" class="form-control" required>
+                            <select name="aktif" id="aktif" class="form-control" required>
                                 <option value="">Pilih</option>
-                                <option value="1">Aktif</option>
-                                <option value="0">Non Aktif</option>
+                                <option value="Y"
+                                    @if (old('aktif') == '1') selected @elseif ($jabatan && $jabatan->aktif == 'Y') selected @endif>
+                                    Aktif</option>
+                                <option value="T"
+                                    @if (old('aktif') == '0') selected @elseif ($jabatan && $jabatan->aktif == 'T') selected @endif>
+                                    Non Aktif</option>
                             </select>
                         </div>
                         <div class="mt-1">
@@ -57,7 +78,7 @@
                             <button type="reset" class="btn btn-sm btn-secondary"><i class="fas fa-recycle"></i>
                                 Batal</button>
                             <a href="{{ route('jabatan.index') }}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-reply"></i> Kembali
+                                <i class="fas fa-reply-all"></i> Kembali
                             </a>
                         </div>
                     </form>

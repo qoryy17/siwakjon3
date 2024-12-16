@@ -50,8 +50,7 @@
                                 @endphp
                                 @foreach ($version as $item)
                                     <tr>
-                                        <td class="text-start">1</td>
-                                        {{-- <td>{{ $item->release_date }}</td> --}}
+                                        <td class="text-start">{{ $no }}</td>
                                         <td>{{ Carbon\Carbon::createFromFormat('Y-m-d', $item->release_date)->format('d-m-Y') }}
                                         </td>
                                         <td>{{ $item->category }}</td>

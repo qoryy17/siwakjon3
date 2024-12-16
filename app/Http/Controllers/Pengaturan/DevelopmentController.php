@@ -178,7 +178,7 @@ class DevelopmentController extends Controller
         return view('aplikasi.form-versi', $data);
     }
 
-    public function saveVersion(VersionRequest $request)//: RedirectResponse
+    public function saveVersion(VersionRequest $request): RedirectResponse
     {
         // Run validated
         $request->validated();

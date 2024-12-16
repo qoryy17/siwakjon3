@@ -10,7 +10,7 @@ class JabatanModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'sw_unit_kerja';
+    protected $table = 'sw_jabatan';
     protected $primaryKey = 'id';
 
     protected $fillable = [
@@ -21,7 +21,8 @@ class JabatanModel extends Model
 
     public $timestamps = true;
 
-    public function pegawai(): HasOne{
+    public function pegawai(): HasOne
+    {
         return $this->hasOne(PegawaiModel::class);
     }
 }
