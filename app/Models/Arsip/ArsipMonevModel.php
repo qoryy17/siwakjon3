@@ -14,17 +14,25 @@ class ArsipMonevModel extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'tanggal_monev',
+        'agenda_monev_id',
         'judul_monev',
-        'periode_monev',
-        'path_laporan_monev_pdf',
-        'path_laporan_monev_word',
-        'diunggah'
+        'tanggal_monev',
+        'periode_monev_id',
+        'path_monev',
+        'status',
+        'diunggah',
+        'waktu_unggah'
     ];
 
     public $timestamps = true;
 
-    public function periodeMonev(): BelongsTo{
+    public function agendaMonev(): BelongsTo
+    {
+        return $this->belongsTo(AgendaMonevModel::class);
+    }
+
+    public function periodeMonev(): BelongsTo
+    {
         return $this->belongsTo(PeriodeMonevModel::class);
     }
 }

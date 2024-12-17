@@ -2,6 +2,7 @@
 
 namespace App\Models\Pengaturan;
 
+use App\Models\Arsip\AgendaMonevModel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Hakim\HakimPengawasModel;
@@ -30,5 +31,10 @@ class UnitKerjaModel extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function agendaMonev(): BelongsTo
+    {
+        return $this->belongsTo(AgendaMonevModel::class);
     }
 }

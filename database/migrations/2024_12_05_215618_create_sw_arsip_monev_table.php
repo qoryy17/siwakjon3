@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,17 +18,32 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        // create table sw_periode_monev
+        Schema::create('sw_agenda_monev', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('nomor_agenda');
+            $table->unsignedBigInteger('unit_kerja_id')->nullable();
+            $table->enum('aktif', ['Y', 'T'])->default('T');
+            $table->unsignedBigInteger('dibuat')->nullable();
+            $table->timestamps();
+
+            $table->foreign('unit_kerja_id')->references('id')->on('sw_unit_kerja')->onDelete('set null')->onUpdate('cascade');
+        });
+
         // create table sw_arsip_monev
         Schema::create('sw_arsip_monev', function (Blueprint $table) {
             $table->id();
-            $table->date('tanggal_monev');
+            $table->unsignedBigInteger('agenda_monev_id');
             $table->text('judul_monev');
+            $table->date('tanggal_monev');
             $table->unsignedBigInteger('periode_monev_id')->nullable();
-            $table->text('path_laporan_monev_pdf');
-            $table->text('path_laporan_monev_word');
+            $table->text('path_monev');
+            $table->enum('status', ['Terlambat', 'Tepat Waktu'])->default('Terlambat');
             $table->unsignedBigInteger('diunggah');
+            $table->dateTime('waktu_unggah')->nullable();
             $table->timestamps();
 
+            $table->foreign('agenda_monev_id')->references('id')->on('sw_agenda_monev')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('periode_monev_id')->references('id')->on('sw_periode_monev')->onDelete('set null')->onUpdate('cascade');
         });
     }
