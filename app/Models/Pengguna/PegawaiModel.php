@@ -18,18 +18,20 @@ class PegawaiModel extends Model
         'nip',
         'nama',
         'jabatan_id',
-        'foto',
         'aktif',
         'keterangan',
+        'foto',
     ];
 
     public $timestamps = true;
 
-    public function user(): HasOne{
+    public function user(): HasOne
+    {
         return $this->hasOne(User::class);
     }
 
-    public function jabatan(): HasOne{
+    public function jabatan(): HasOne
+    {
         return $this->hasOne(JabatanModel::class);
     }
 }

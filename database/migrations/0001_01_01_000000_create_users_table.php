@@ -25,9 +25,9 @@ return new class extends Migration {
             $table->string('nip')->nullable();
             $table->string('nama');
             $table->unsignedBigInteger('jabatan_id')->nullable();
-            $table->text('foto')->nullable();
             $table->enum('aktif', ['Y', 'T'])->default('T');
             $table->text('keterangan')->nullable();
+            $table->text('foto')->nullable();
             $table->timestamps();
 
             $table->foreign('jabatan_id')->references('id')->on('sw_jabatan')->onDelete('set null')->onUpdate('cascade');

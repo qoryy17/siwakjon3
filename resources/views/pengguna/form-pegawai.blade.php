@@ -27,62 +27,93 @@
                     <a href="{{ route('pengguna.pegawai') }}">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('pengguna.simpan-pegawai') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
+                        @if (Crypt::decrypt($paramOutgoing) == 'update')
+                            <div class="mb-3" hidden>
+                                <input type="text" class="form-control" readonly name="id"
+                                    value="{{ Crypt::encrypt($pegawai->id) }}">
+                            </div>
+                        @endif
+                        <div class="mb-3" hidden>
+                            <input type="text" class="form-control" name="param" readonly value="{{ $paramOutgoing }}">
+                        </div>
                         <div class="mb-3">
                             <label class="form-label" for="nip">NIP</label>
-                            <input type="text" class="form-control" placeholder="NIP..." id="nip" required>
+                            <input type="text" class="form-control" placeholder="NIP..." id="nip" name="nip"
+                                value="{{ $pegawai ? $pegawai->nip : old('nip') }}">
                             <small class="text-danger">* Kosongkan jika tidak ada</small>
+                            @error('nip')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="nama">Nama Lengkap
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" placeholder="Nama Lengkap..." id="nama"
-                                required>
+                                name="nama" required value="{{ $pegawai ? $pegawai->nama : old('nama') }}">
+                            @error('nama')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="jabatan">Jabatan
                                 <span class="text-danger">*</span>
                             </label>
-                            <select class="form-control" data-trigger name="jabatan" id="jabatan">
+                            <select class="form-control" data-trigger name="jabatan" id="jabatan" required>
                                 <option value="">Pilih Jabatan</option>
-                                <option value="Choice 1">Choice 1</option>
-                                <option value="Choice 2">Choice 2</option>
-                                <option value="Choice 3">Choice 3</option>
+                                @foreach ($jabatan as $item)
+                                    <option value="{{ $item->id }}" @if ($pegawai && $pegawai->jabatan_id == $item->id) selected @endif>
+                                        {{ $item->jabatan }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="active">Aktif
+                            <label class="form-label" for="aktif">Aktif
                                 <span class="text-danger">*</span>
                             </label>
-                            <select name="active" id="active" class="form-control" required>
+                            <select name="aktif" id="aktif" class="form-control" required>
                                 <option value="">Pilih</option>
-                                <option value="1">Aktif</option>
-                                <option value="0">Non Aktif</option>
+                                <option value="Y"
+                                    @if (old('aktif') == 'Y') selected @elseif ($pegawai && $pegawai->aktif == 'Y') selected @endif>
+                                    Aktif</option>
+                                <option value="T"
+                                    @if (old('aktif') == 'T') selected @elseif ($pegawai && $pegawai->aktif == 'T') selected @endif>
+                                    Non Aktif</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="keterangan">Keterangan</label>
-                            <textarea name="keterangan" id="keterangan" class="form-control" placeholder="Keterangan..."></textarea>
+                            <textarea name="keterangan" id="keterangan" class="form-control" placeholder="Keterangan...">{{ $pegawai ? $pegawai->keterangan : old('keterangan') }}</textarea>
+                            @error('keterangan')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="form-file mb-3">
                             <label class="form-label" for="foto">Foto</label>
-                            <input type="file" class="form-control" aria-label="foto" id="foto">
-                            <small class="text-danger">* Unggah jika ada</small>
+                            <input type="file" class="form-control" aria-label="foto" id="foto" name="foto">
+                            <small class="text-danger">* Unggah jika ada, maksimal 5MB</small>
                         </div>
                         <div class="mb-3">
                             <img src="" alt="Pratinjau Gambar" class="img img-thumbnail" id="imgPreview"
                                 style="display: none; max-width: 200px;">
+
+                            @if ($pegawai)
+                                <img src="{{ $pegawai ? asset('storage/' . $pegawai->foto) : '' }}" alt="Pratinjau Gambar"
+                                    class="img img-thumbnail" style="max-width: 200px;">
+                            @endif
                         </div>
                         <div class="mt-1">
-                            <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i>
-                                Simpan</button>
-                            <button type="reset" class="btn btn-sm btn-secondary"><i class="fas fa-recycle"></i>
-                                Batal</button>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fas fa-save"></i> Simpan
+                            </button>
+                            <button type="reset" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-recycle"></i> Batal
+                            </button>
                             <a href="{{ route('pengguna.pegawai') }}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-reply"></i> Kembali
+                                <i class="fas fa-reply-all"></i> Kembali
                             </a>
                         </div>
                     </form>

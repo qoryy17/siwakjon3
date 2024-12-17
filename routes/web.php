@@ -105,9 +105,13 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(PenggunaController::class)->group(function () {
         Route::get('/manajemen-pengguna/akun-pengguna', 'indexAkunPengguna')->name('pengguna.akun');
         Route::get('/manajemen-pengguna/akun-pengguna/form/{param}/{id}', 'formAkunPengguna')->name('pengguna.form-akun');
+        Route::post('/manajamen-pengguna/simpan-pengguna', 'savePengguna')->name('pengguna.simpan-akun');
+        Route::delete('/manajemen-pengguna/hapus-pengguna', 'deletePengguna')->name('pengguna.hapus-akun');
 
         Route::get('/manajemen-pengguna/pegawai', 'indexPegawai')->name('pengguna.pegawai');
         Route::get('/manajemen-pengguna/pegawai/form/{param}/{id}', 'formPegawai')->name('pengguna.form-pegawai');
+        Route::post('/manajamen-pengguna/simpan-pegawai', 'savePegawai')->name('pengguna.simpan-pegawai');
+        Route::delete('/manajemen-pengguna/hapus-pegawai', 'deletePegawai')->name('pengguna.hapus-pegawai');
     });
 });
 
