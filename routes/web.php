@@ -156,6 +156,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::delete('/manajemen-pengaturan/klasifikasi/hapus-jabatan', 'deleteKlasifikasiJabatan')->name('klasifikasi.hapus-jabatan');
 
         Route::get('/manajemen-pengaturan/set-kode-rapat/', 'indexSetKode')->name('klasifikasi.set-kode');
+        Route::post('/manajemen-pengaturan/simpan-kode-rapat', 'saveKodeRapat')->name('klasifikasi.simpan-kode');
     });
 });
 

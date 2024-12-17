@@ -73,7 +73,7 @@
                             <button type="reset" class="btn btn-sm btn-secondary"><i class="fas fa-recycle"></i>
                                 Batal</button>
                             <a href="{{ route('pejabatPengganti.index') }}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-reply"></i> Kembali
+                                <i class="fas fa-reply-all"></i> Kembali
                             </a>
                         </div>
                     </form>

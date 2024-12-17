@@ -61,8 +61,8 @@ return new class extends Migration {
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onDelete('cascade');
         });
 
-        // create table sw_set_nomor_rapat
-        Schema::create('sw_set_nomor_rapat', function (Blueprint $table) {
+        // create table sw_set_kode_rapat
+        Schema::create('sw_set_kode_rapat', function (Blueprint $table) {
             $table->id();
             $table->string('kode_rapat_dinas');
             $table->string('kode_pengawasan');
@@ -78,6 +78,6 @@ return new class extends Migration {
         Schema::dropIfExists('sw_pengaturan');
         Schema::dropIfExists('sw_versi');
         Schema::dropIfExists('sw_catatan_pengembang');
-        Schema::dropIfExists('sw_set_nomor_rapat');
+        Schema::dropIfExists('sw_set_kode_rapat');
     }
 };

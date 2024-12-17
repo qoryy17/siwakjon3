@@ -37,7 +37,7 @@
                                     <th width="1%">No</th>
                                     <th>Rapat</th>
                                     <th>Kode Klasifikasi</th>
-                                    <th>Keterangan</th>
+                                    <th class="text-start">Keterangan</th>
                                     <th>Aktif</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>

@@ -184,7 +184,7 @@
                                 Jabatan</a>
                         </li>
                         <li class="pc-item">
-                            <a class="pc-link" href="{{ route('klasifikasi.set-kode') }}">Set Kode Surat</a>
+                            <a class="pc-link" href="{{ route('klasifikasi.set-kode') }}">Set Kode Rapat</a>
                         </li>
                     </ul>
                 </li>

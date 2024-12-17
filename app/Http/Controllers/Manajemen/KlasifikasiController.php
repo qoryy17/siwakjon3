@@ -14,6 +14,8 @@ use App\Models\Manajemen\KlasifikasiSuratModel;
 use App\Models\Manajemen\KlasifikasiJabatanModel;
 use App\Http\Requests\Pengaturan\KlasifikasiRapatRequest;
 use App\Http\Requests\Pengaturan\KlasifikasiSuratRequest;
+use App\Http\Requests\Pengaturan\KodeRapatRequest;
+use App\Models\Pengaturan\SetKodeRapatModel;
 
 class KlasifikasiController extends Controller
 {
@@ -252,14 +254,43 @@ class KlasifikasiController extends Controller
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
             ['title' => 'Manajemen Pengaturan', 'link' => 'javascript:void(0);', 'page' => ''],
-            ['title' => 'Set Nomor Rapat', 'link' => route('rapat.index'), 'page' => 'aria-current="page"']
+            ['title' => 'Set Nomor Rapat', 'link' => route('klasifikasi.set-kode'), 'page' => 'aria-current="page"']
         ];
         $data = [
             'title' => 'Manajemen Pengaturan | Set Nomor Rapat',
             'routeHome' => $route,
-            'breadcumbs' => $breadcumb
+            'breadcumbs' => $breadcumb,
+            'kodeRapat' => KlasifikasiSuratModel::orderBy('updated_at', 'desc')->get(),
+            'setKode' => SetKodeRapatModel::orderBy('updated_at', 'desc')->first()
         ];
 
         return view('pengaturan.set-kode-rapat', $data);
+    }
+
+    public function saveKodeRapat(KodeRapatRequest $request): RedirectResponse
+    {
+        // Run validated
+        $request->validated();
+
+        $formData = [
+            'kode_rapat_dinas' => htmlspecialchars($request->input('rapatDinas')),
+            'kode_pengawasan' => htmlspecialchars($request->input('rapatPengawasan')),
+        ];
+
+        $save = null;
+
+        $kodeRapat = SetKodeRapatModel::first();
+        if ($kodeRapat) {
+            $kodeRapat->delete();
+            $kodeRapat->truncate();
+        } else {
+            $save = SetKodeRapatModel::create($formData);
+        }
+
+        if (!$save) {
+            return redirect()->route('klasifikasi.set-kode')->with('error', 'Set Kode Rapat gagal !');
+        }
+
+        return redirect()->route('klasifikasi.set-kode')->with('success', 'Set Kode Rapat berhasil !');
     }
 }

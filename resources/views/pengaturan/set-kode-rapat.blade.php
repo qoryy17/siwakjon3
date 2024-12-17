@@ -27,31 +27,39 @@
                     <small>Set Kode Rapat Untuk Rapat Kedinasan dan Rapat Pengawasan</small>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST">
+                    <form action="{{ route('klasifikasi.simpan-kode') }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="mb-3">
                             <label class="form-label" for="KodeRapatDinas">Set Kode Rapat Dinas</label>
                             <select class="form-select" id="KodeRapatDinas" name="rapatDinas">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
+                                <option value="">Pilih Kode Surat</option>
+                                @foreach ($kodeRapat as $item)
+                                    <option value="{{ $item->kode_surat }}"
+                                        @if ($setKode && $setKode->kode_rapat_dinas == $item->kode_surat) selected @endif>
+                                        {{ $item->kode_surat }} |
+                                        {{ $item->keterangan }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="KodeRapatPengawasan">Set Kode Rapat Pengawasan</label>
                             <select class="form-select" id="KodeRapatPengawasan" name="rapatPengawasan">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
+                                <option value="">Pilih Kode Surat</option>
+                                @foreach ($kodeRapat as $item)
+                                    <option value="{{ $item->kode_surat }}"
+                                        @if ($setKode && $setKode->kode_pengawasan == $item->kode_surat) selected @endif>
+                                        {{ $item->kode_surat }} |
+                                        {{ $item->keterangan }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="mt-1">
-                            <button class="btn btn-sm btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fas fa-save"></i> Simpan
+                            </button>
                         </div>
                     </form>
                 </div>
