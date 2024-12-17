@@ -27,7 +27,7 @@
 @endphp
 @if ($pegawai && $pegawai->foto != null)
     @php
-        $foto = asset('storage/images/' . $pegawai->foto);
+        $foto = asset($pegawai->foto);
     @endphp
 @else
     @php
@@ -234,8 +234,8 @@
                                 aria-expanded="false" data-bs-offset="0,20">
                                 <div class="d-flex align-items-center">
                                     <div class="flex-grow-1 me-2">
-                                        <h6 class="mb-0">{{ Auth::user()->name }}</h6>
-                                        <small>{{ Auth::user()->roles }}</small>
+                                        <h6 class="mb-0">{{ Str::limit(Auth::user()->name, 20) }}</h6>
+                                        <small>Hak Akses : {{ Auth::user()->roles }}</small>
                                     </div>
                                     <div class="flex-shrink-0">
                                         <div class="btn btn-icon btn-link-secondary avtar">

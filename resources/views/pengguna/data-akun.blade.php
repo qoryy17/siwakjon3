@@ -36,8 +36,8 @@
                                     <th width="1%">No</th>
                                     <th>Nama</th>
                                     <th>Email</th>
-                                    <th>Jabatan</th>
-                                    <th>Aktif</th>
+                                    <th class="text-start">Unit Kerja</th>
+                                    <th class="text-start">Aktif</th>
                                     <th>Role</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
@@ -45,21 +45,60 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-start">1</td>
-                                    <td>Qori Chairawan</td>
-                                    <td>qorichairawan17@gmail.com</td>
-                                    <td>Pranata Komputer Ahli Pertama</td>
-                                    <td>Aktif</td>
-                                    <td>Superadmin</td>
-                                    <td>{{ now() }}</td>
-                                    <td>{{ now() }}</td>
-                                    <td>
-                                        <a href="#" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-eye f-20"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($pengguna as $item)
+                                    @if ($item->active == 1)
+                                        @php
+                                            $keterangan = 'Aktif';
+                                        @endphp
+                                    @else
+                                        @php
+                                            $keterangan = 'Non Aktif';
+                                        @endphp
+                                    @endif
+                                    <tr>
+                                        <td class="text-start">{{ $no }}</td>
+                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $item->email }}</td>
+                                        <td class="text-start">{{ $item->unit_kerja }}</td>
+                                        <td class="text-start">{{ $keterangan }}</td>
+                                        <td>{{ $item->roles }}</td>
+                                        <td>{{ $item->created_at }}</td>
+                                        <td>{{ $item->updated_at }}</td>
+                                        <td>
+                                            <a href="{{ route('pengguna.form-akun', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
+                                                class="avtar avtar-xs btn-link-secondary">
+                                                <i class="ti ti-edit f-20"></i>
+                                            </a>
+                                            <a href="#" class="avtar avtar-xs btn-link-secondary"
+                                                onclick=" Swal.fire({
+                                                    icon: 'warning',
+                                                    title: 'Hapus Data ?',
+                                                    text: 'Data yang dihapus tidak dapat dikembalikan !',
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Hapus',
+                                                    cancelButtonText: 'Batal',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('deleteForm{{ $no }}').submit();
+                                                    }
+                                                });">
+                                                <i class="ti ti-trash f-20"></i>
+                                            </a>
+                                            <form id="deleteForm{{ $no }}"
+                                                action="{{ route('pengguna.hapus-akun', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $no++;
+                                    @endphp
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

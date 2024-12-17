@@ -27,6 +27,7 @@ class User extends Authenticatable
         'email',
         'password',
         'pegawai_id',
+        'unit_kerja_id',
         'active',
         'roles'
     ];

@@ -27,29 +27,73 @@
                     <a href="{{ route('pengguna.akun') }}">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST">
+                    <form action="{{ route('pengguna.simpan-akun') }}" method="POST">
                         @csrf
                         @method('POST')
+                        @if (Crypt::decrypt($paramOutgoing) == 'update')
+                            <div class="mb-3" hidden>
+                                <input type="text" class="form-control" readonly name="id"
+                                    value="{{ Crypt::encrypt($pengguna->id) }}">
+                            </div>
+                        @endif
+                        <div class="mb-3" hidden>
+                            <input type="text" class="form-control" name="param" readonly value="{{ $paramOutgoing }}">
+                        </div>
                         <div class="mb-3">
-                            <label class="form-label" for="email">Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" placeholder="Email..." id="email" required>
+                            <label class="form-label" for="email">Email
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="email" class="form-control" placeholder="Email..." id="email" name="email"
+                                required value="{{ $pengguna ? $pengguna->email : old('email') }}">
+                            @error('email')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="password">Password
                                 <span class="text-danger">*</span>
                             </label>
-                            <input type="password" class="form-control" placeholder="Password..." id="password" required>
+                            <input type="password" class="form-control" placeholder="Password..." id="password"
+                                name="password" {{ $pengguna ? $pengguna->password : '' }}>
+                            @error('password')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
+                            @if ($pengguna)
+                                <small class="text-danger mt-1">Kosongkan jika tidak ingin mengganti</small>
+                            @endif
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="pegawai">Pegawai
                                 <span class="text-danger">*</span>
                             </label>
-                            <select class="form-control" data-trigger name="pegawai" id="pegawai">
+                            <select class="form-control" data-trigger name="pegawai" id="pegawai" required>
                                 <option value="">Pilih Pegawai</option>
-                                <option value="Choice 1">Choice 1</option>
-                                <option value="Choice 2">Choice 2</option>
-                                <option value="Choice 3">Choice 3</option>
+                                @foreach ($pegawai as $itemPegawai)
+                                    <option value="{{ $itemPegawai->id }}"
+                                        @if (old('pegawai') == $itemPegawai->id) selected  @elseif ($pengguna && $pengguna->pegawai_id == $itemPegawai->id) selected @endif>
+                                        {{ $itemPegawai->nama }}</option>
+                                @endforeach
                             </select>
+                            @error('pegawai')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="unitKerja">Unit Kerja
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-control" required data-trigger name="unitKerja" id="unitKerja">
+                                <option value="">Pilih Unit Kerja</option>
+                                @foreach ($unitKerja as $itemUnitKerja)
+                                    <option value="{{ $itemUnitKerja->id }}"
+                                        @if (old('unitKerja') == $itemUnitKerja->id) selected @elseif ($pengguna && $pengguna->unit_kerja_id == $itemUnitKerja->id) selected @endif>
+                                        {{ $itemUnitKerja->unit_kerja }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('unitKerja')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="active">Aktif
@@ -57,9 +101,16 @@
                             </label>
                             <select name="active" id="active" class="form-control" required>
                                 <option value="">Pilih</option>
-                                <option value="1">Aktif</option>
-                                <option value="0">Non Aktif</option>
+                                <option value="1"
+                                    @if (old('active') == '1') selected @elseif ($pengguna && $pengguna->active == '1') selected @endif>
+                                    Aktif</option>
+                                <option value="T"
+                                    @if (old('active') == '0') selected @elseif ($pengguna && $pengguna->active == '0') selected @endif>
+                                    Non Aktif</option>
                             </select>
+                            @error('active')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="role">Role
@@ -67,18 +118,32 @@
                             </label>
                             <select name="role" id="role" class="form-control" required>
                                 <option value="">Pilih</option>
-                                <option value="Superadmin">Superadmin</option>
-                                <option value="Administrator">Administrator</option>
-                                <option value="User">User</option>
+                                <option value="Superadmin"
+                                    @if (old('role') == 'Superadmin') selected @elseif ($pengguna && $pengguna->roles == 'Superadmin') selected @endif>
+                                    Superadmin
+                                </option>
+                                <option value="Administrator"
+                                    @if (old('role') == 'Administrator') selected @elseif ($pengguna && $pengguna->roles == 'Administrator') selected @endif>
+                                    Administrator
+                                </option>
+                                <option value="User"
+                                    @if (old('role') == 'User') selected @elseif ($pengguna && $pengguna->roles == 'User') selected @endif>
+                                    User
+                                </option>
                             </select>
+                            @error('role')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mt-1">
                             <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i>
-                                Simpan</button>
+                                Simpan
+                            </button>
                             <button type="reset" class="btn btn-sm btn-secondary"><i class="fas fa-recycle"></i>
-                                Batal</button>
+                                Batal
+                            </button>
                             <a href="{{ route('pengguna.akun') }}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-reply"></i> Kembali
+                                <i class="fas fa-reply-all"></i> Kembali
                             </a>
                         </div>
                     </form>
