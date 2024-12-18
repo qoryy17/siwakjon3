@@ -27,13 +27,13 @@
                     <a href="{{ route('arsip.surat-keputusan') }}">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('jabatan.simpan') }}" method="POST">
+                    <form action="{{ route('arsip.simpan-sk') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
                         @if (Crypt::decrypt($paramOutgoing) == 'update')
                             <div class="mb-3" hidden>
                                 <input type="text" class="form-control" readonly name="id"
-                                    value="{{ Crypt::encrypt($jabatan->id) }}">
+                                    value="{{ Crypt::encrypt($arsipSK->id) }}">
                             </div>
                         @endif
                         <div class="mb-3" hidden>
@@ -80,7 +80,7 @@
                             @error('file')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
-                            <small class="text-danger mt-1">* Maksimal file pdf ukuran 10 MB</small>
+                            <small class="text-danger mt-1">* Maksimal file pdf ukuran 10 MB</small> <br>
                             @if ($arsipSK)
                                 <small class="text-danger mt-1">* Kosongkan jika tidak ingin mengganti</small>
                             @endif

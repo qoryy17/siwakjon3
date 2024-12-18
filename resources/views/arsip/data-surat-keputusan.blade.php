@@ -36,9 +36,9 @@
                             <thead>
                                 <tr>
                                     <th width="1%">No</th>
-                                    <th>Nomor</th>
-                                    <th>Judul</th>
-                                    <th>Tanggal Terbit</th>
+                                    <th class="text-start">Nomor</th>
+                                    <th class="text-start">Judul</th>
+                                    <th class="text-start" style="width: 5%;">Tanggal Terbit</th>
                                     <th>File</th>
                                     <th>Status</th>
                                     <th>Diunggah</th>
@@ -52,21 +52,26 @@
                                     $no = 1;
                                 @endphp
                                 @foreach ($arsipSK as $item)
+                                    @php
+                                        $diunggah = \App\Models\User::find($item->diunggah);
+                                    @endphp
                                     <tr>
-                                        <td class="text-start">{{ $no }}</td>
-                                        <td>{{ $item->nomor }}</td>
-                                        <td>{{ $item->judul }}</td>
-                                        <td>{{ $item->tanggal_terbit }}</td>
-                                        <td>
-                                            <a target="_blank" href="{{ asset('storage/' . $itm->path_file_sk) }}"
+                                        <td class="text-start" style="vertical-align: top;">{{ $no }}</td>
+                                        <td class="text-start" style="vertical-align: top;">{{ $item->nomor }}</td>
+                                        <td class="text-start" style="text-wrap: wrap;">{{ $item->judul }}</td>
+                                        <td style="vertical-align: top;">
+                                            {{ Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal_terbit)->format('d-m-Y') }}
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <a target="_blank" href="{{ asset('storage/' . $item->path_file_sk) }}"
                                                 title="{{ $item->judul }}" class="btn btn-primary btn-sm">
                                                 <i class="fas fa-file-pdf"></i>
                                             </a>
                                         </td>
-                                        <td>{{ $item->status }}</td>
-                                        <td></td>
-                                        <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->updated_at }}</td>
+                                        <td style="vertical-align: top;">{{ $item->status }}</td>
+                                        <td style="vertical-align: top;">{{ $diunggah->name }}</td>
+                                        <td style="vertical-align: top;">{{ $item->created_at }}</td>
+                                        <td style="vertical-align: top;">{{ $item->updated_at }}</td>
                                         <td>
                                             <a href="{{ route('arsip.form-sk', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
                                                 class="avtar avtar-xs btn-link-secondary">
