@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Arsip\MonevController;
 use App\Http\Controllers\Arsip\SuratKeputusanController;
+use App\Http\Controllers\Penggguna\PegawaiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\AuthenticationController;
@@ -85,6 +86,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(HakimPengawasController::class)->group(function () {
         Route::get('/pengawasan-bidang/daftar-hakim-pengawas', 'indexDaftarHakim')->name('pengawasan.daftar-hakim-pengawas');
         Route::get('/manajemen-pengguna/hakim-pengawas', 'indexHakimPengawas')->name('pengguna.hakim-pengawas');
+        Route::post('/manajemen-pengguna/simpan-hakim-pengawas', 'saveHakimPengawas')->name('pengguna.simpan-hakim-pengawas');
+        Route::post('/manajemen-pengguna/hapus-hakim-pengawas', 'deleteHakimPengawas')->name('pengguna.hapus-hakim-pengawas');
     });
 });
 
@@ -107,7 +110,11 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/manajemen-pengguna/akun-pengguna/form/{param}/{id}', 'formAkunPengguna')->name('pengguna.form-akun');
         Route::post('/manajamen-pengguna/simpan-pengguna', 'savePengguna')->name('pengguna.simpan-akun');
         Route::delete('/manajemen-pengguna/hapus-pengguna', 'deletePengguna')->name('pengguna.hapus-akun');
+    });
+});
 
+Route::middleware(AuthMiddleware::class)->group(function () {
+    Route::controller(PegawaiController::class)->group(function () {
         Route::get('/manajemen-pengguna/pegawai', 'indexPegawai')->name('pengguna.pegawai');
         Route::get('/manajemen-pengguna/pegawai/form/{param}/{id}', 'formPegawai')->name('pengguna.form-pegawai');
         Route::post('/manajamen-pengguna/simpan-pegawai', 'savePegawai')->name('pengguna.simpan-pegawai');
