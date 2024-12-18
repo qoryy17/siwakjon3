@@ -24,7 +24,8 @@
             <div class="card">
                 <div class="card-header">
                     <h3>Hakim Pengawas</h3>
-                    <a href="" class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
+                    <a href="{{ route('pengguna.form-hakim-pengawas', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                        class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
                         Tambah</a>
                 </div>
                 <div class="card-body">
@@ -42,19 +43,49 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-start">1</td>
-                                    <td>Dewi Andriyani</td>
-                                    <td>Kepaniteraan Hukum</td>
-                                    <td>Aktif</td>
-                                    <td>{{ now() }}</td>
-                                    <td>{{ now() }}</td>
-                                    <td>
-                                        <a href="#" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-eye f-20"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($hakim as $item)
+                                    <tr>
+                                        <td class="text-start">{{ $no }}</td>
+                                        <td class="text-start">{{ $item->nama }}</td>
+                                        <td>{{ $item->unit_kerja }}</td>
+                                        <td>{{ $item->aktif }}</td>
+                                        <td>{{ $item->created_at }}</td>
+                                        <td>{{ $item->updated_at }}</td>
+                                        <td>
+                                            <a href="{{ route('pengguna.form-hakim-pengawas', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
+                                                class="avtar avtar-xs btn-link-secondary">
+                                                <i class="ti ti-edit f-20"></i>
+                                            </a>
+                                            <a href="#" class="avtar avtar-xs btn-link-secondary"
+                                                onclick=" Swal.fire({
+                                                    icon: 'warning',
+                                                    title: 'Hapus Data ?',
+                                                    text: 'Data yang dihapus tidak dapat dikembalikan !',
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Hapus',
+                                                    cancelButtonText: 'Batal',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('deleteForm{{ $no }}').submit();
+                                                    }
+                                                });">
+                                                <i class="ti ti-trash f-20"></i>
+                                            </a>
+                                            <form id="deleteForm{{ $no }}"
+                                                action="{{ route('pengguna.hapus-hakim-pengawas', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $no++;
+                                    @endphp
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
