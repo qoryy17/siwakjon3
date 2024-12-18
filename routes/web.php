@@ -95,7 +95,11 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(MonevController::class)->group(function () {
         Route::get('/manajemen-monev/laporan-monev', 'indexMonev')->name('monev.index');
+
         Route::get('/manajemen-monev/periode-monev', 'indexPeriodeMonev')->name('monev.periode');
+        Route::get('/manajemen-monev/periode-monev/form/{param}/{id}', 'formPeriodeMonev')->name('monev.formPeriode');
+        Route::post('/manajemen-monev/simpan-periode-monev', 'savePeriodeMonev')->name('monev.simpan-periode');
+        Route::delete('/manajemen-monev/hapus-periode-monev', 'deletePeriodeMonev')->name('monev.hapus-periode');
     });
 });
 

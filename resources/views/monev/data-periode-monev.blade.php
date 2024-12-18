@@ -24,8 +24,10 @@
             <div class="card">
                 <div class="card-header">
                     <h3>Periode Monev</h3>
-                    <a href="" class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
-                        Tambah</a>
+                    <a href="{{ route('monev.formPeriode', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                        class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
+                        Tambah
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
@@ -41,18 +43,48 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-start">1</td>
-                                    <td>Triwulan 3</td>
-                                    <td>Y</td>
-                                    <td>{{ now() }}</td>
-                                    <td>{{ now() }}</td>
-                                    <td>
-                                        <a href="#" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-eye f-20"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($periodeMonev as $item)
+                                    <tr>
+                                        <td class="text-start">{{ $no }}</td>
+                                        <td>{{ $item->periode }}</td>
+                                        <td>{{ $item->aktif }}</td>
+                                        <td>{{ $item->created_at }}</td>
+                                        <td>{{ $item->updated_at }}</td>
+                                        <td>
+                                            <a href="{{ route('monev.formPeriode', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
+                                                class="avtar avtar-xs btn-link-secondary">
+                                                <i class="ti ti-edit f-20"></i>
+                                            </a>
+                                            <a href="#" class="avtar avtar-xs btn-link-secondary"
+                                                onclick=" Swal.fire({
+                                                    icon: 'warning',
+                                                    title: 'Hapus Data ?',
+                                                    text: 'Data yang dihapus tidak dapat dikembalikan !',
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Hapus',
+                                                    cancelButtonText: 'Batal',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('deleteForm{{ $no }}').submit();
+                                                    }
+                                                });">
+                                                <i class="ti ti-trash f-20"></i>
+                                            </a>
+                                            <form id="deleteForm{{ $no }}"
+                                                action="{{ route('monev.hapus-periode', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $no++;
+                                    @endphp
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
