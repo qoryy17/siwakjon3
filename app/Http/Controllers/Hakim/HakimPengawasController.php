@@ -147,10 +147,10 @@ class HakimPengawasController extends Controller
 
     public function delete(Request $request): RedirectResponse
     {
-        // Checking data jabatan on database
-        $jabatan = HakimPengawasModel::findOrFail(Crypt::decrypt($request->id));
-        if ($jabatan) {
-            $jabatan->delete();
+        // Checking data hakim on database
+        $hakim = HakimPengawasModel::findOrFail(Crypt::decrypt($request->id));
+        if ($hakim) {
+            $hakim->delete();
             return redirect()->route('pengguna.hakim-pengawas')->with('success', 'Hakim Pengawas berhasil di hapus !');
         }
         return redirect()->route('pengguna.hakim-pengawas')->with('error', 'Hakim Pengawas gagal di hapus !');
