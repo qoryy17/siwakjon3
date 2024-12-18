@@ -80,6 +80,9 @@
                                     @if (old('aktif') == 'T') selected @elseif ($klasifikasi && $klasifikasi->aktif == 'T') selected @endif>
                                     Non Aktif</option>
                             </select>
+                            @error('aktif')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mt-1">
                             <button type="submit" class="btn btn-sm btn-primary">
