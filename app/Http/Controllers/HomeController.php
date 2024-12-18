@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\RolesEnum;
 use App\Helpers\RouteLink;
 use App\Helpers\TimeSession;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
     public function berandaSuperadmin()
     {
+        if (Auth::user()->roles != "Superadmin") {
+            $route = RouteLink::homeString(Auth::user()->roles);
+            return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
+        }
         $breadcumb = [
             ['title' => 'Home', 'link' => route('home.superadmin'), 'page' => ''],
             ['title' => 'Dashboard', 'link' => route('home.superadmin'), 'page' => 'aria-current="page"']
@@ -28,6 +30,11 @@ class HomeController extends Controller
 
     public function berandaAdmin()
     {
+        if (Auth::user()->roles != "Administrator") {
+            $route = RouteLink::homeString(Auth::user()->roles);
+            return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
+        }
+
         $breadcumb = [
             ['title' => 'Home', 'link' => route('home.administrator'), 'page' => ''],
             ['title' => 'Dashboard', 'link' => route('home.administrator'), 'page' => 'aria-current="page"']
@@ -44,6 +51,11 @@ class HomeController extends Controller
 
     public function berandaUser()
     {
+        if (Auth::user()->roles != "User") {
+            $route = RouteLink::homeString(Auth::user()->roles);
+            return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
+        }
+
         $breadcumb = [
             ['title' => 'Home', 'link' => route('home.user'), 'page' => ''],
             ['title' => 'Dashboard', 'link' => route('home.user'), 'page' => 'aria-current="page"']
