@@ -102,6 +102,9 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(SuratKeputusanController::class)->group(function () {
         Route::get('/manajemen-arsip/surat-keputusan', 'indexArsipSK')->name('arsip.surat-keputusan');
+        Route::get('/manajemen-arsip/surat-keputusan/form/{param}/{id}', 'formArsipSK')->name('arsip.form-sk');
+        Route::post('/manajemen-arsip/simpan-sk', 'save')->name('arsip.simpan-sk');
+        Route::delete('/manajemen-arsip/hapus-sk', 'delete')->name('arsip.hapus-sk');
     });
 });
 

@@ -25,8 +25,10 @@
                 <div class="card-header">
                     <h3>Arsip Surat Keputusan</h3>
                     <small class="d-block mb-2">Arsip Elektronik Seluruh Surat Keputusan</small>
-                    <a href="" class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
-                        Tambah</a>
+                    <a href="{{ route('arsip.form-sk', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                        class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
+                        Tambah
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
@@ -46,26 +48,57 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-start">1</td>
-                                    <td>90/W2.U4/PW1.1/X/2024</td>
-                                    <td>SK Pengangkatan Tenaga Ahli</td>
-                                    <td>{{ date('d-m-Y') }}</td>
-                                    <td>
-                                        <a href="" target="_BLANK" class="btn btn-primary btn-sm" title="Lihat ">
-                                            <i class="fas fa-file-pdf"></i>
-                                        </a>
-                                    </td>
-                                    <td>Berlaku</td>
-                                    <td>Agustina</td>
-                                    <td>{{ now() }}</td>
-                                    <td>{{ now() }}</td>
-                                    <td>
-                                        <a href="#" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-eye f-20"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($arsipSK as $item)
+                                    <tr>
+                                        <td class="text-start">{{ $no }}</td>
+                                        <td>{{ $item->nomor }}</td>
+                                        <td>{{ $item->judul }}</td>
+                                        <td>{{ $item->tanggal_terbit }}</td>
+                                        <td>
+                                            <a target="_blank" href="{{ asset('storage/' . $itm->path_file_sk) }}"
+                                                title="{{ $item->judul }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </a>
+                                        </td>
+                                        <td>{{ $item->status }}</td>
+                                        <td></td>
+                                        <td>{{ $item->created_at }}</td>
+                                        <td>{{ $item->updated_at }}</td>
+                                        <td>
+                                            <a href="{{ route('arsip.form-sk', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
+                                                class="avtar avtar-xs btn-link-secondary">
+                                                <i class="ti ti-edit f-20"></i>
+                                            </a>
+                                            <a href="#" class="avtar avtar-xs btn-link-secondary"
+                                                onclick=" Swal.fire({
+                                                    icon: 'warning',
+                                                    title: 'Hapus Data ?',
+                                                    text: 'Data yang dihapus tidak dapat dikembalikan !',
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Hapus',
+                                                    cancelButtonText: 'Batal',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('deleteForm{{ $no }}').submit();
+                                                    }
+                                                });">
+                                                <i class="ti ti-trash f-20"></i>
+                                            </a>
+                                            <form id="deleteForm{{ $no }}"
+                                                action="{{ route('arsip.hapus-sk', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $no++;
+                                    @endphp
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

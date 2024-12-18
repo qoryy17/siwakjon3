@@ -213,7 +213,7 @@
                 </li>
                 <div class="card nav-action-card bg-brand-color-4">
                     <div class="card-body"
-                        style="background-image: url('{{ asset('assets/images/layout/nav-card-bg.svg') }}')">
+                        style="background-image: url('{{ asset('assets/images/nav-card-bg.svg') }}')">
                         <h5 class="text-dark">Help Center</h5>
                         <p class="text-dark text-opacity-75">Butuh bantuan kendala masalah sistem ?</p>
                         <a href="https://wa.me/6281376472224" class="btn btn-primary" target="_blank">

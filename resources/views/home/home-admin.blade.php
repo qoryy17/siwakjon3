@@ -30,7 +30,7 @@
                 <div class="col-md-4 col-sm-6">
                     <div class="card statistics-card-1 overflow-hidden ">
                         <div class="card-body">
-                            <img src="{{ asset('assets/images/widget/img-status-4.svg') }}" alt="img"
+                            <img src="{{ asset('assets/images/img-status-4.svg') }}" alt="img"
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Rapat Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
@@ -44,7 +44,7 @@
                 <div class="col-md-4 col-sm-6">
                     <div class="card statistics-card-1 overflow-hidden ">
                         <div class="card-body">
-                            <img src="{{ asset('assets/images/widget/img-status-4.svg') }}" alt="img"
+                            <img src="{{ asset('assets/images/img-status-4.svg') }}" alt="img"
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Pengawasan Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
@@ -58,7 +58,7 @@
                 <div class="col-md-4 col-sm-6">
                     <div class="card statistics-card-1 overflow-hidden ">
                         <div class="card-body">
-                            <img src="{{ asset('assets/images/widget/img-status-4.svg') }}" alt="img"
+                            <img src="{{ asset('assets/images/img-status-4.svg') }}" alt="img"
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Monev Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
