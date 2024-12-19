@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Penggguna;
 
-use App\Enum\RolesEnum;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

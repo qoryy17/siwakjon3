@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Pengaturan;
 
 use Carbon\Carbon;
-use App\Enum\RolesEnum;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -30,7 +29,7 @@ class DevelopmentController extends Controller
 
         $data = [
             'title' => 'Pengaturan Aplikasi | Catatan Pengembang',
-            'routeHome' => route('home.superadmin'),
+            'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'catatan' => NoteDeveloperModel::orderBy('created_at', 'desc')->get()
         ];
@@ -133,7 +132,7 @@ class DevelopmentController extends Controller
 
         $data = [
             'title' => 'Pengaturan Aplikasi | Version',
-            'routeHome' => route('home.superadmin'),
+            'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'version' => VersionModel::orderBy('created_at', 'desc')->get()
         ];

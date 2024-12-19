@@ -25,7 +25,7 @@ class AplikasiController extends Controller
 
         $data = [
             'title' => 'Pengaturan Aplikasi | Konfigurasi',
-            'routeHome' => route('home.superadmin'),
+            'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'konfigurasi' => AplikasiModel::first()
         ];

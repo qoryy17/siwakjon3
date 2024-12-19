@@ -28,7 +28,7 @@ class HakimPengawasController extends Controller
         ];
         $data = [
             'title' => 'Pengawasan Bidang | Daftar Hakim Pengawas',
-            'routeHome' => route('home.superadmin'),
+            'routeHome' => $route,
             'breadcumbs' => $breadcumb
         ];
 
