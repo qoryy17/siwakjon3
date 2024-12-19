@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PegawaiModel extends Model
 {
@@ -30,8 +31,8 @@ class PegawaiModel extends Model
         return $this->hasOne(User::class);
     }
 
-    public function jabatan(): HasOne
+    public function jabatan(): BelongsTo
     {
-        return $this->hasOne(JabatanModel::class);
+        return $this->belongsTo(JabatanModel::class);
     }
 }

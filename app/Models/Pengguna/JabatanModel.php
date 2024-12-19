@@ -4,7 +4,7 @@ namespace App\Models\Pengguna;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class JabatanModel extends Model
 {
@@ -21,8 +21,8 @@ class JabatanModel extends Model
 
     public $timestamps = true;
 
-    public function pegawai(): HasOne
+    public function pegawai(): BelongsTo
     {
-        return $this->hasOne(PegawaiModel::class);
+        return $this->belongsTo(PegawaiModel::class);
     }
 }

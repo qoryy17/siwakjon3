@@ -31,13 +31,7 @@ class PegawaiController extends Controller
             'title' => 'Manajemen Pengguna | Pegawai',
             'routeHome' => route('home.superadmin'),
             'breadcumbs' => $breadcumb,
-            'pegawai' => DB::table('sw_pegawai')
-                ->select('sw_pegawai.*', 'sw_jabatan.jabatan')->leftJoin(
-                    'sw_jabatan',
-                    'sw_pegawai.jabatan_id',
-                    '=',
-                    'sw_jabatan.id'
-                )->orderBy('sw_pegawai.nip', 'desc')->get(),
+            'pegawai' => PegawaiModel::with('jabatan')->orderBy('created_at', 'desc')->get(),
         ];
 
         return view('pengguna.data-pegawai', $data);
