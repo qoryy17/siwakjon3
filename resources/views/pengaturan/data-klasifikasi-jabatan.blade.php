@@ -50,14 +50,14 @@
                                 @endphp
                                 @foreach ($klasifikasi as $item)
                                     <tr>
-                                        <td class="text-start">{{ $no }}</td>
-                                        <td>{{ $item->jabatan }}</td>
-                                        <td>{{ $item->kode_jabatan }}</td>
-                                        <td>{{ $item->keterangan }}</td>
-                                        <td>{{ $item->aktif }}</td>
-                                        <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->updated_at }}</td>
-                                        <td>
+                                        <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
+                                        <td style="vertical-align: top;">{{ $item->jabatan }}</td>
+                                        <td style="vertical-align: top;">{{ $item->kode_jabatan }}</td>
+                                        <td style="vertical-align: top;">{{ $item->keterangan }}</td>
+                                        <td style="vertical-align: top;">{{ $item->aktif }}</td>
+                                        <td style="vertical-align: top;">{{ $item->created_at }}</td>
+                                        <td style="vertical-align: top;">{{ $item->updated_at }}</td>
+                                        <td style="vertical-align: top;">
                                             <a href="{{ route('klasifikasi.form', ['klaster' => 'jabatan', 'param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
                                                 class="avtar avtar-xs btn-link-secondary">
                                                 <i class="ti ti-edit f-20"></i>

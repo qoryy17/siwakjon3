@@ -38,7 +38,7 @@
                                     <th>Kode Surat</th>
                                     <th>Kode Klasifikasi</th>
                                     <th>Keterangan</th>
-                                    <th>Aktif</th>
+                                    <th class="text-center">Aktif</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th>Aksi</th>
@@ -50,14 +50,19 @@
                                 @endphp
                                 @foreach ($klasifikasi as $item)
                                     <tr>
-                                        <td class="text-start">{{ $no }}</td>
-                                        <td>{{ $item->kode_surat }}</td>
-                                        <td>{{ $item->kode_klasifikasi }}</td>
-                                        <td>{{ $item->keterangan }}</td>
-                                        <td>{{ $item->aktif }}</td>
-                                        <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->updated_at }}</td>
-                                        <td>
+                                        <td class="text-start" style="vertical-align: top;">{{ $no }}</td>
+                                        <td style="vertical-align: top;">{{ $item->kode_surat }}</td>
+                                        <td style="vertical-align: top;">{{ $item->kode_klasifikasi }}</td>
+                                        <td style="text-wrap: wrap;" style="vertical-align: top;">
+                                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Optio perspiciatis
+                                            ducimus nostrum. Libero numquam nesciunt sed doloribus, minima perspiciatis
+                                            saepe itaque eum facilis rerum, voluptates quasi harum impedit pariatur quia!
+                                            {{-- {{ $item->keterangan }} --}}
+                                        </td>
+                                        <td style="vertical-align: top;" class="text-center">{{ $item->aktif }}</td>
+                                        <td style="vertical-align: top;">{{ $item->created_at }}</td>
+                                        <td style="vertical-align: top;">{{ $item->updated_at }}</td>
+                                        <td style="vertical-align: top;">
                                             <a href="{{ route('klasifikasi.form', ['klaster' => 'surat', 'param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
                                                 class="avtar avtar-xs btn-link-secondary">
                                                 <i class="ti ti-edit f-20"></i>

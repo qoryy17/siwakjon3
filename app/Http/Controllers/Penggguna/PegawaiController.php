@@ -69,7 +69,7 @@ class PegawaiController extends Controller
             'formTitle' => $formTitle . ' Pegawai',
             'paramOutgoing' => Crypt::encrypt($paramOutgoing),
             'pegawai' => $searchPegawai,
-            'jabatan' => JabatanModel::orderBy('created_at', 'desc')->get()
+            'jabatan' => JabatanModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get()
         ];
 
         return view('pengguna.form-pegawai', $data);

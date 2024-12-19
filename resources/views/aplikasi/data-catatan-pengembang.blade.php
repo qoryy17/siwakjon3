@@ -52,13 +52,13 @@
                                         $pengembang = \App\Models\User::find($item->pengembang);
                                     @endphp
                                     <tr>
-                                        <td class="text-start">{{ $no }}</td>
-                                        <td>{{ Str::limit($item->catatan, 50) }}</td>
-                                        <td>{{ $pengembang->name }}</td>
-                                        <td>{{ $item->aktif }}</td>
-                                        <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->updated_at }}</td>
-                                        <td>
+                                        <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
+                                        <td style="vertical-align: top;">{{ Str::limit($item->catatan, 50) }}</td>
+                                        <td style="vertical-align: top;">{{ $pengembang->name }}</td>
+                                        <td style="vertical-align: top;">{{ $item->aktif }}</td>
+                                        <td style="vertical-align: top;">{{ $item->created_at }}</td>
+                                        <td style="vertical-align: top;">{{ $item->updated_at }}</td>
+                                        <td style="vertical-align: top;">
                                             <a href="{{ route('aplikasi.form-pengembang', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
                                                 class="avtar avtar-xs btn-link-secondary">
                                                 <i class="ti ti-edit f-20"></i>

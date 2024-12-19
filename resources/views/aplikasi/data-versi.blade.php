@@ -50,15 +50,16 @@
                                 @endphp
                                 @foreach ($version as $item)
                                     <tr>
-                                        <td class="text-start">{{ $no }}</td>
-                                        <td>{{ Carbon\Carbon::createFromFormat('Y-m-d', $item->release_date)->format('d-m-Y') }}
+                                        <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
+                                        <td style="vertical-align: top;">
+                                            {{ Carbon\Carbon::createFromFormat('Y-m-d', $item->release_date)->format('d-m-Y') }}
                                         </td>
-                                        <td>{{ $item->category }}</td>
-                                        <td>{{ $item->patch_version }}</td>
-                                        <td>{{ $item->note }}</td>
-                                        <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->updated_at }}</td>
-                                        <td>
+                                        <td style="vertical-align: top;">{{ $item->category }}</td>
+                                        <td style="vertical-align: top;">{{ $item->patch_version }}</td>
+                                        <td style="vertical-align: top;">{{ $item->note }}</td>
+                                        <td style="vertical-align: top;">{{ $item->created_at }}</td>
+                                        <td style="vertical-align: top;">{{ $item->updated_at }}</td>
+                                        <td style="vertical-align: top;">
                                             <a href="{{ route('aplikasi.form-version', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
                                                 class="avtar avtar-xs btn-link-secondary">
                                                 <i class="ti ti-edit f-20"></i>

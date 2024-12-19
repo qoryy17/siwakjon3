@@ -260,7 +260,7 @@ class KlasifikasiController extends Controller
             'title' => 'Manajemen Pengaturan | Set Nomor Rapat',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'kodeRapat' => KlasifikasiSuratModel::orderBy('updated_at', 'desc')->get(),
+            'kodeRapat' => KlasifikasiSuratModel::where('aktif', '=', 'Y')->orderBy('updated_at', 'desc')->get(),
             'setKode' => SetKodeRapatModel::orderBy('updated_at', 'desc')->first()
         ];
 
