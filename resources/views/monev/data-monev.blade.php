@@ -27,8 +27,12 @@
                     <small class="d-block mb-2">
                         Pengumpulan Arsip Laporan Monitoring dan Evaluasi Berserta Tindaklanjut
                     </small>
-                    <a href="" class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
-                        Tambah</a>
+                    @if (Auth::user()->roles != App\Enum\RolesEnum::USER->value)
+                        <a href="{{ route('monev.formAgendaMonev', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                            class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
+                            Tambah
+                        </a>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
@@ -36,42 +40,82 @@
                             <thead>
                                 <tr>
                                     <th width="1%">No</th>
-                                    <th>Tanggal Monev</th>
-                                    <th>Judul</th>
-                                    <th>Periode</th>
-                                    <th>File PDF</th>
-                                    <th>File Word</th>
-                                    <th>Diunggah</th>
+                                    <th>Nomor Agenda</th>
+                                    <th>Unit Kerja</th>
+                                    <th>Aktif</th>
+                                    <th>Dibuat</th>
+                                    <th>Tahun</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-start">1</td>
-                                    <td>{{ date('d-m-Y') }}</td>
-                                    <td>SK Pengangkatan Tenaga Ahli</td>
-                                    <td>Triwulan 3</td>
-                                    <td style="text-align: center">
-                                        <a href="" target="_BLANK" class="btn btn-primary btn-sm" title="Lihat ">
-                                            <i class="fas fa-file-pdf"></i>
-                                        </a>
-                                    </td>
-                                    <td style="text-align: center">
-                                        <a href="" target="_BLANK" class="btn btn-primary btn-sm" title="Lihat ">
-                                            <i class="fas fa-file-word"></i>
-                                        </a>
-                                    </td>
-                                    <td>Agustina</td>
-                                    <td>{{ now() }}</td>
-                                    <td>{{ now() }}</td>
-                                    <td>
-                                        <a href="#" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-eye f-20"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($monev as $item)
+                                    @php
+                                        $dibuat = \App\Models\User::find($item->dibuat);
+                                    @endphp
+                                    <tr>
+                                        <td class="text-start">{{ $no }}</td>
+                                        <td>{{ $item->nomor_agenda }}</td>
+                                        <td>{{ $item->unit_kerja }}</td>
+                                        <td>{{ $item->aktif }}</td>
+                                        <td>{{ $dibuat->name }}</td>
+                                        <td>{{ Carbon\Carbon::parse($item->created_at)->format('Y') }}</td>
+                                        <td>{{ $item->created_at }}</td>
+                                        <td>{{ $item->updated_at }}</td>
+                                        <td>
+                                            @if (Auth::user()->unit_kerja_id == $item->unit_kerja_id)
+                                                <a href="{{ route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                    class="avtar avtar-xs btn-link-secondary">
+                                                    <i class="ti ti-eye f-20"></i>
+                                                </a>
+                                            @elseif (Auth::user()->roles === App\Enum\RolesEnum::ADMIN->value ||
+                                                    Auth::user()->roles === App\Enum\RolesEnum::SUPERADMIN->value)
+                                                <a href="{{ route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                    class="avtar avtar-xs btn-link-secondary">
+                                                    <i class="ti ti-eye f-20"></i>
+                                                </a>
+                                            @else
+                                                <span class="text-danger">Tidak Berwenang</span>
+                                            @endif
+                                            @if (Auth::user()->roles != App\Enum\RolesEnum::USER->value)
+                                                <a href="{{ route('monev.formAgendaMonev', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
+                                                    class="avtar avtar-xs btn-link-secondary">
+                                                    <i class="ti ti-edit f-20"></i>
+                                                </a>
+                                                <a href="#" class="avtar avtar-xs btn-link-secondary"
+                                                    onclick=" Swal.fire({
+                                                    icon: 'warning',
+                                                    title: 'Hapus Data ?',
+                                                    text: 'Data yang dihapus tidak dapat dikembalikan !',
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Hapus',
+                                                    cancelButtonText: 'Batal',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('deleteForm{{ $no }}').submit();
+                                                    }
+                                                });">
+                                                    <i class="ti ti-trash f-20"></i>
+                                                </a>
+                                                <form id="deleteForm{{ $no }}"
+                                                    action="{{ route('monev.hapus-agenda', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            @endif
+
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $no++;
+                                    @endphp
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

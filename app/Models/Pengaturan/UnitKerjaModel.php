@@ -37,4 +37,5 @@ class UnitKerjaModel extends Model
     {
         return $this->belongsTo(AgendaMonevModel::class);
     }
+
 }

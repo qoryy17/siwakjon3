@@ -62,7 +62,8 @@
                                         <td class="text-start">{{ $no }}</td>
                                         <td>{{ $item->name }}</td>
                                         <td>{{ $item->email }}</td>
-                                        <td class="text-start">{{ $item->unit_kerja }}</td>
+                                        <td class="text-start">{{ $item->unitKerja ? $item->unitKerja->unit_kerja : '' }}
+                                        </td>
                                         <td class="text-start">{{ $keterangan }}</td>
                                         <td>{{ $item->roles }}</td>
                                         <td>{{ $item->created_at }}</td>

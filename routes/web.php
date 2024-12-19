@@ -95,6 +95,15 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(MonevController::class)->group(function () {
         Route::get('/manajemen-monev/laporan-monev', 'indexMonev')->name('monev.index');
+        Route::get('/manajemen-monev/laporan-monev/agenda/form/{param}/{id}', 'formAgendaMonev')->name('monev.formAgendaMonev');
+        Route::get('/manajemen-monev/laporan-monev/agenda/detail/{id}', 'detailAgendaMonev')->name('monev.detailAgendaMonev');
+        Route::post('/manajemen-monev/simpan-agenda-monev', 'saveAgendaMonev')->name('monev.simpan-agenda');
+        Route::delete('/manajemen-monev/hapus-agenda-monev', 'deleteAgendaMonev')->name('monev.hapus-agenda');
+
+        // Save and delete Monev
+        Route::post('/manajemen-monev/simpan-monev', 'saveMonev')->name('monev.simpan-monev');
+        Route::post('/manajemen-monev/perbarui-monev', 'updateMonev')->name('monev.perbarui-monev');
+        Route::delete('/manajemen-monev/hapus-monev', 'deleteMonev')->name('monev.hapus-monev');
 
         Route::get('/manajemen-monev/periode-monev', 'indexPeriodeMonev')->name('monev.periode');
         Route::get('/manajemen-monev/periode-monev/form/{param}/{id}', 'formPeriodeMonev')->name('monev.formPeriode');

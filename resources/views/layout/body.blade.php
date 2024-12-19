@@ -512,10 +512,7 @@
     <div class="footer-wrapper container-fluid">
         <div class="row">
             <div class="col-sm-6 my-1">
-                <p class="m-0">Made by {{ env('APP_AUTHOR') }}
-                    <a href="https://www.instagram.com/qori_chairawan17/" target="_blank"> | Era DigiSoft
-                        Solution</a>
-                </p>
+                <p class="m-0">Made by {{ env('APP_AUTHOR') }} </p>
             </div>
             <div class="col-sm-6 ms-auto my-1">
                 <ul class="list-inline footer-link mb-0 justify-content-sm-end d-flex">

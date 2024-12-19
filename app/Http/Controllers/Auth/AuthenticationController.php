@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Helpers\RouteLink;
-use App\Helpers\RouteRedirect;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

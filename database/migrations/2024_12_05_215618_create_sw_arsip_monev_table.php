@@ -37,9 +37,9 @@ return new class extends Migration {
             $table->text('judul_monev');
             $table->date('tanggal_monev');
             $table->unsignedBigInteger('periode_monev_id')->nullable();
-            $table->text('path_monev');
-            $table->enum('status', ['Terlambat', 'Tepat Waktu'])->default('Terlambat');
-            $table->unsignedBigInteger('diunggah');
+            $table->text('path_monev')->nullable();
+            $table->enum('status', ['Terlambat', 'Tepat Waktu', 'Menunggu'])->default('Terlambat');
+            $table->unsignedBigInteger('diunggah')->nullable();
             $table->dateTime('waktu_unggah')->nullable();
             $table->timestamps();
 
