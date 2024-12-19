@@ -32,10 +32,7 @@ class PenggunaController extends Controller
             'title' => 'Manajemen Pengguna | Akun Pengguna',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'pengguna' => DB::table('users')->select(
-                'users.*',
-                'sw_unit_kerja.unit_kerja'
-            )->leftJoin('sw_unit_kerja', 'users.unit_kerja_id', '=', 'sw_unit_kerja.id')->get()
+            'pengguna' => User::with('unitKerja')->orderBy('created_at', 'desc')->get(),
         ];
 
         return view('pengguna.data-akun', $data);
