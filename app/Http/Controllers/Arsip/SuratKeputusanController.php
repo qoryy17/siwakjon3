@@ -27,7 +27,7 @@ class SuratKeputusanController extends Controller
         ];
         $data = [
             'title' => 'Manajemen Arsip | Surat Keputusan',
-            'routeHome' => route('home.superadmin'),
+            'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'arsipSK' => ArsipSuratKeputusanModel::orderBy('created_at', 'desc')->get(),
         ];
