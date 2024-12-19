@@ -2,6 +2,7 @@
 
 namespace App\Models\Pengguna;
 
+use App\Models\Hakim\HakimPengawasModel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -34,5 +35,10 @@ class PegawaiModel extends Model
     public function jabatan(): BelongsTo
     {
         return $this->belongsTo(JabatanModel::class);
+    }
+
+    public function hakimPengawas(): BelongsTo
+    {
+        return $this->belongsTo(HakimPengawasModel::class);
     }
 }

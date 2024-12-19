@@ -40,21 +40,7 @@ class HakimPengawasController extends Controller
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
-        $hakim = DB::table('sw_hakim_pengawas')->select(
-            'sw_hakim_pengawas.*',
-            'sw_pegawai.nama',
-            'sw_unit_kerja.unit_kerja'
-        )->leftJoin(
-                'sw_pegawai',
-                'sw_hakim_pengawas.pegawai_id',
-                '=',
-                'sw_pegawai.id'
-            )->leftJoin(
-                'sw_unit_kerja',
-                'sw_hakim_pengawas.unit_kerja_id',
-                '=',
-                'sw_unit_kerja.id'
-            )->orderBy('sw_hakim_pengawas.created_at', 'desc')->get();
+        $hakim = HakimPengawasModel::with('pegawai')->with('unitKerja')->orderBy('sw_hakim_pengawas.created_at', 'desc')->get();
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -64,7 +50,7 @@ class HakimPengawasController extends Controller
 
         $data = [
             'title' => 'Manajemen Pengguna | Hakim Pengawas',
-            'routeHome' => route('home.superadmin'),
+            'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'hakim' => $hakim
         ];

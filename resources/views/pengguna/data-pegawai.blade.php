@@ -52,7 +52,7 @@
                                         <td class="text-start">{{ $no }}</td>
                                         <td class="text-start">{{ $item->nip }}</td>
                                         <td>{{ $item->nama }}</td>
-                                        <td>{{ $item->jabatan }}</td>
+                                        <td>{{ $item->jabatan->jabatan }}</td>
                                         <td>{{ $item->aktif }}</td>
                                         <td>{{ $item->created_at }}</td>
                                         <td>{{ $item->updated_at }}</td>

@@ -49,8 +49,8 @@
                                 @foreach ($hakim as $item)
                                     <tr>
                                         <td class="text-start">{{ $no }}</td>
-                                        <td class="text-start">{{ $item->nama }}</td>
-                                        <td>{{ $item->unit_kerja }}</td>
+                                        <td class="text-start">{{ $item->pegawai->nama }}</td>
+                                        <td>{{ $item->unitKerja->unit_kerja }}</td>
                                         <td>{{ $item->aktif }}</td>
                                         <td>{{ $item->created_at }}</td>
                                         <td>{{ $item->updated_at }}</td>
