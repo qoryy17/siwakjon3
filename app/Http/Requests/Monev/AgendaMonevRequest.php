@@ -23,6 +23,7 @@ class AgendaMonevRequest extends FormRequest
     {
         return [
             'nomorAgenda' => 'required|string',
+            'namaAgenda' => 'required|string',
             'unitKerja' => 'required|string|max:255',
             'aktif' => 'required|string'
         ];
@@ -33,6 +34,8 @@ class AgendaMonevRequest extends FormRequest
         return [
             'nomorAgenda.required' => 'Nomor Agenda harus di isi !',
             'nomorAgenda.string' => 'Nomor Agenda harus berupa karakter valid !',
+            'namaAgenda.required' => 'Agenda harus di isi !',
+            'namaAgenda.string' => 'Agenda harus berupa karakter valid !',
             'unitKerja.required' => 'Unit Kerja harus di isi !',
             'unitKerja.string' => 'Unit Kerja harus berupa karakter valid !',
             'unitKerja.max' => 'Unit Kerja maksimal 255 karakter !',

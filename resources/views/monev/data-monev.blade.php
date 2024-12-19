@@ -41,6 +41,7 @@
                                 <tr>
                                     <th width="1%">No</th>
                                     <th>Nomor Agenda</th>
+                                    <th>Agenda</th>
                                     <th>Unit Kerja</th>
                                     <th>Aktif</th>
                                     <th>Dibuat</th>
@@ -59,15 +60,18 @@
                                         $dibuat = \App\Models\User::find($item->dibuat);
                                     @endphp
                                     <tr>
-                                        <td class="text-start">{{ $no }}</td>
-                                        <td>{{ $item->nomor_agenda }}</td>
-                                        <td>{{ $item->unit_kerja }}</td>
-                                        <td>{{ $item->aktif }}</td>
-                                        <td>{{ $dibuat->name }}</td>
-                                        <td>{{ Carbon\Carbon::parse($item->created_at)->format('Y') }}</td>
-                                        <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->updated_at }}</td>
-                                        <td>
+                                        <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
+                                        <td style="vertical-align: top;">{{ $item->nomor_agenda }}</td>
+                                        <td style="vertical-align: top;">{{ $item->nama_agenda }}</td>
+                                        <td style="vertical-align: top;">{{ $item->unit_kerja }}</td>
+                                        <td style="vertical-align: top;">{{ $item->aktif }}</td>
+                                        <td style="vertical-align: top;">{{ $dibuat->name }}</td>
+                                        <td style="vertical-align: top;" class="text-start">
+                                            {{ Carbon\Carbon::parse($item->created_at)->format('Y') }}
+                                        </td>
+                                        <td style="vertical-align: top;">{{ $item->created_at }}</td>
+                                        <td style="vertical-align: top;">{{ $item->updated_at }}</td>
+                                        <td style="vertical-align: top;">
                                             @if (Auth::user()->unit_kerja_id == $item->unit_kerja_id)
                                                 <a href="{{ route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($item->id)]) }}"
                                                     class="avtar avtar-xs btn-link-secondary">
@@ -91,7 +95,7 @@
                                                     onclick=" Swal.fire({
                                                     icon: 'warning',
                                                     title: 'Hapus Data ?',
-                                                    text: 'Data yang dihapus tidak dapat dikembalikan !',
+                                                    text: 'Data yang dihapus tidak dapat dikembalikan ! \n Seluruh data agenda monev akan dihapus !',
                                                     showCancelButton: true,
                                                     confirmButtonText: 'Hapus',
                                                     cancelButtonText: 'Batal',

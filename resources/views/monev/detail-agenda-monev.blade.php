@@ -73,37 +73,40 @@
                                         $diunggah = \App\Models\User::find($item->diunggah);
                                     @endphp
                                     <tr>
-                                        <td class="text-start">{{ $no }}</td>
-                                        <td class="text-start">{{ $item->judul_monev }}</td>
-                                        <td>
+                                        <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
+                                        <td style="vertical-align: top;" class="text-start">{{ $item->judul_monev }}</td>
+                                        <td style="vertical-align: top;">
                                             {{ Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal_monev)->format('d-m-Y') }}
                                         </td>
-                                        <td>{{ $item->periodeMonev->periode }}</td>
-                                        <td>
+                                        <td style="vertical-align: top;">
+                                            {{ $item->periodeMonev->periode }}
+                                        </td>
+                                        <td style="vertical-align: top;">
                                             @if ($item->path_monev != null)
-                                                <a href="{{ asset('storage/' . $item->path_monev) }}"
+                                                <a target="_blank" href="{{ asset('storage/' . $item->path_monev) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-file-pdf"></i>
                                                 </a>
                                             @endif
                                         </td>
-                                        <td>{{ $item->status }}</td>
-                                        <td>
+                                        <td style="vertical-align: top;">{{ $item->status }}</td>
+                                        <td style="vertical-align: top;">
                                             @if ($item->diunggah != null)
-                                                {{ $diunggah ? $diunggah->name : '' }}
+                                                {{ $diunggah ? $diunggah->name : '' }} <br>
                                                 <small>Timestamp :{{ now() }}</small>
                                             @endif
                                         </td>
-                                        <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->updated_at }}</td>
-                                        <td>
-                                            <a href="javascript:void(0);" data-bs-toggle="modal"
-                                                data-bs-target="#animateModal{{ $no }}"
-                                                class="avtar avtar-xs btn-link-secondary">
-                                                <i class="ti ti-edit f-20"></i>
-                                            </a>
-                                            <a href="#" class="avtar avtar-xs btn-link-secondary"
-                                                onclick=" Swal.fire({
+                                        <td style="vertical-align: top;">{{ $item->created_at }}</td>
+                                        <td style="vertical-align: top;">{{ $item->updated_at }}</td>
+                                        <td style="vertical-align: top;">
+                                            @if (Auth::user()->roles != App\Enum\RolesEnum::USER->value)
+                                                <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                    data-bs-target="#animateModal{{ $no }}"
+                                                    class="avtar avtar-xs btn-link-secondary">
+                                                    <i class="ti ti-edit f-20"></i>
+                                                </a>
+                                                <a href="#" class="avtar avtar-xs btn-link-secondary"
+                                                    onclick=" Swal.fire({
                                                     icon: 'warning',
                                                     title: 'Hapus Data ?',
                                                     text: 'Data yang dihapus tidak dapat dikembalikan !',
@@ -115,30 +118,136 @@
                                                         document.getElementById('deleteForm{{ $no }}').submit();
                                                     }
                                                 });">
-                                                <i class="ti ti-trash f-20"></i>
-                                            </a>
-                                            <form id="deleteForm{{ $no }}"
-                                                action="{{ route('pengguna.hapus-pegawai', ['id' => Crypt::encrypt($item->id)]) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
+                                                    <i class="ti ti-trash f-20"></i>
+                                                </a>
+                                                <form id="deleteForm{{ $no }}"
+                                                    action="{{ route('monev.hapus-monev', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
 
-                                            <form action="{{ route('monev.perbarui-monev') }}" method="POST">
-                                                <div class="modal fade modal-animate" id="animateModal{{ $no }}"
-                                                    tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg">
+                                                <form action="{{ route('monev.perbarui-monev') }}" method="POST">
+                                                    <div class="modal fade modal-animate"
+                                                        id="animateModal{{ $no }}" tabindex="-1"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Edit Agenda Laporan Monev</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal" aria-label="Close">
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    @csrf
+                                                                    @method('POST')
+                                                                    <div class="mb-3" hidden>
+                                                                        <label class="form-label" for="nomorAgenda">Nomor
+                                                                            Agenda
+                                                                            <span class="text-danger">*</span>
+                                                                        </label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="nomorAgenda" id="nomorAgenda"
+                                                                            placeholder="Nomor Agenda..."
+                                                                            value="{{ Crypt::encrypt($agendaMonev->id) }}"
+                                                                            required readonly>
+                                                                    </div>
+                                                                    <div class="mb-3" hidden>
+                                                                        <label class="form-label" for="idAgenda">ID Agenda
+                                                                            <span class="text-danger">*</span>
+                                                                        </label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="idAgenda" id="idAgenda"
+                                                                            placeholder="ID Agenda..."
+                                                                            value="{{ Crypt::encrypt($item->id) }}"
+                                                                            required readonly>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label" for="judulMonev">Judul
+                                                                            Monev
+                                                                            <span class="text-danger">*</span>
+                                                                        </label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="judulMonev" id="judulMonev"
+                                                                            placeholder="Judul Monev..."
+                                                                            value="{{ $item->judul_monev }}">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label"
+                                                                            for="tanggalMonev{{ $no }}">Tanggal
+                                                                            Monev
+                                                                            <span class="text-danger">*</span>
+                                                                        </label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="tanggalMonev"
+                                                                            id="tanggalMonev{{ $no }}"
+                                                                            placeholder="Select date" readonly required
+                                                                            value="{{ Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal_monev)->format('m/d/Y') }}">
+                                                                        @error('tanggalMonev')
+                                                                            <small class="text-danger mt-1">*
+                                                                                {{ $message }}</small>
+                                                                        @enderror
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label" for="periode">Periode
+                                                                            Monev
+                                                                            <span class="text-danger">*</span>
+                                                                        </label>
+                                                                        <select class="form-control" data-trigger
+                                                                            name="periode" id="periode" required>
+                                                                            <option value="">Pilih Periode Monev
+                                                                            </option>
+                                                                            @foreach ($periodeMonev as $itemPeriode)
+                                                                                <option value="{{ $itemPeriode->id }}"
+                                                                                    @if ($itemPeriode->id == $item->periode_monev_id) selected @endif>
+                                                                                    {{ $itemPeriode->periode }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary shadow-2">Simpan</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <script type="text/javascript">
+                                                    (function() {
+                                                        const d_week = new Datepicker(document.querySelector("#tanggalMonev{{ $no }}"), {
+                                                            buttonClass: "btn",
+                                                        });
+                                                    })();
+                                                </script>
+                                            @endif
+                                            <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                data-bs-target="#animateModalUnggah{{ $no }}"
+                                                class="avtar avtar-xs btn-link-secondary">
+                                                <i class="ti ti-file-text f-20"></i>
+                                            </a>
+                                            <form action="{{ route('monev.unggah-monev') }}" method="POST"
+                                                enctype="multipart/form-data">
+                                                <div class="modal fade modal-animate"
+                                                    id="animateModalUnggah{{ $no }}" tabindex="-1"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title">Edit Agenda Laporan Monev</h5>
+                                                                <h5 class="modal-title">Unggah Laporan Monev</h5>
                                                                 <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"> </button>
+                                                                    data-bs-dismiss="modal" aria-label="Close">
+                                                                </button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 @csrf
                                                                 @method('POST')
                                                                 <div class="mb-3" hidden>
-                                                                    <label class="form-label" for="nomorAgenda">Nomor Agenda
+                                                                    <label class="form-label" for="nomorAgenda">
+                                                                        Nomor Agenda
                                                                         <span class="text-danger">*</span>
                                                                     </label>
                                                                     <input type="text" class="form-control"
@@ -148,7 +257,8 @@
                                                                         required readonly>
                                                                 </div>
                                                                 <div class="mb-3" hidden>
-                                                                    <label class="form-label" for="idAgenda">ID Agenda
+                                                                    <label class="form-label" for="idAgenda">
+                                                                        ID Agenda
                                                                         <span class="text-danger">*</span>
                                                                     </label>
                                                                     <input type="text" class="form-control"
@@ -157,45 +267,18 @@
                                                                         value="{{ Crypt::encrypt($item->id) }}" required
                                                                         readonly>
                                                                 </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="judulMonev">Judul Monev
-                                                                        {{ $item->id }}
+                                                                <div class="form-file mb-3">
+                                                                    <label class="form-label" for="fileMonev">
+                                                                        File PDF Laporan Monev & Tindaklanjut
                                                                         <span class="text-danger">*</span>
                                                                     </label>
-                                                                    <input type="text" class="form-control"
-                                                                        name="judulMonev" id="judulMonev"
-                                                                        placeholder="Judul Monev..."
-                                                                        value="{{ $item->judul_monev }}">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label"
-                                                                        for="tanggalMonev{{ $no }}">Tanggal
-                                                                        Monev
-                                                                        <span class="text-danger">*</span>
-                                                                    </label>
-                                                                    <input type="text" class="form-control"
-                                                                        name="tanggalMonev"
-                                                                        id="tanggalMonev{{ $no }}"
-                                                                        placeholder="Select date" readonly required
-                                                                        value="{{ Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal_monev)->format('m/d/Y') }}">
-                                                                    @error('tanggalMonev')
-                                                                        <small class="text-danger mt-1">*
-                                                                            {{ $message }}</small>
-                                                                    @enderror
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="periode">Periode Monev
-                                                                        <span class="text-danger">*</span>
-                                                                    </label>
-                                                                    <select class="form-control" data-trigger
-                                                                        name="periode" id="periode" required>
-                                                                        <option value="">Pilih Periode Monev</option>
-                                                                        @foreach ($periodeMonev as $itemPeriode)
-                                                                            <option value="{{ $itemPeriode->id }}"
-                                                                                @if ($itemPeriode->id == $item->periode_monev_id) selected @endif>
-                                                                                {{ $itemPeriode->periode }}</option>
-                                                                        @endforeach
-                                                                    </select>
+                                                                    <input type="file" class="form-control"
+                                                                        aria-label="fileMonev" id="fileMonev"
+                                                                        name="fileMonev">
+                                                                    <small class="text-danger mt-1">
+                                                                        * File PDF Laporan Monev & Tindaklanjut maksimal
+                                                                        berukuran 10MB
+                                                                    </small>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -208,13 +291,6 @@
                                                     </div>
                                                 </div>
                                             </form>
-                                            <script type="text/javascript">
-                                                (function() {
-                                                    const d_week = new Datepicker(document.querySelector("#tanggalMonev{{ $no }}"), {
-                                                        buttonClass: "btn",
-                                                    });
-                                                })();
-                                            </script>
                                         </td>
                                     </tr>
                                     @php

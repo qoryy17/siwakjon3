@@ -16,6 +16,7 @@ class AgendaMonevModel extends Model
 
     protected $fillable = [
         'nomor_agenda',
+        'nama_agenda',
         'unit_kerja_id',
         'aktif',
         'dibuat',

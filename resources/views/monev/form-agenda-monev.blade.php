@@ -47,6 +47,14 @@
                                 placeholder="Nomor Agenda..." value="{{ $nomorAgenda }}" required readonly>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label" for="namaAgenda">Agenda
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" name="namaAgenda" id="namaAgenda"
+                                placeholder="Nama Agenda..." required
+                                value="{{ $agendaMonev ? $agendaMonev->nama_agenda : old('namaAgenda') }}">
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label" for="unitKerja">Unit Kerja
                                 <span class="text-danger">*</span>
                             </label>

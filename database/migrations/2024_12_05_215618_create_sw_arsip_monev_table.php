@@ -22,6 +22,7 @@ return new class extends Migration {
         Schema::create('sw_agenda_monev', function (Blueprint $table) {
             $table->id();
             $table->uuid('nomor_agenda');
+            $table->text('nama_agenda');
             $table->unsignedBigInteger('unit_kerja_id')->nullable();
             $table->enum('aktif', ['Y', 'T'])->default('T');
             $table->unsignedBigInteger('dibuat')->nullable();

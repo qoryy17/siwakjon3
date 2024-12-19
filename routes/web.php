@@ -104,6 +104,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::post('/manajemen-monev/simpan-monev', 'saveMonev')->name('monev.simpan-monev');
         Route::post('/manajemen-monev/perbarui-monev', 'updateMonev')->name('monev.perbarui-monev');
         Route::delete('/manajemen-monev/hapus-monev', 'deleteMonev')->name('monev.hapus-monev');
+        Route::post('/manajemen-monev/unggah-monev', 'unggahMonev')->name('monev.unggah-monev');
 
         Route::get('/manajemen-monev/periode-monev', 'indexPeriodeMonev')->name('monev.periode');
         Route::get('/manajemen-monev/periode-monev/form/{param}/{id}', 'formPeriodeMonev')->name('monev.formPeriode');
