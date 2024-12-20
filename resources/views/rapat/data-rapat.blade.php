@@ -74,15 +74,17 @@
             <!-- [ Main Content ] end -->
         </div>
     </div>
-    <form action="{{ route('rapat.form-undangan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}" method="GET">
+    <form action="{{ route('rapat.form-undangan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}" method="POST">
         <div class="modal fade modal-animate" id="animateModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Pilih Klasifikasi Rapat</h5>
+                        <h5 class="modal-title">Pilih Klasifikasi</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
                     </div>
                     <div class="modal-body">
+                        @method('POST')
+                        @csrf
                         <div class="mb-3">
                             <label class="form-label" for="klasifikasiRapat">Klasifikasi Rapat
                                 <span class="text-danger">*</span>
@@ -90,9 +92,23 @@
                             <select class="form-control" data-trigger name="klasifikasiRapat" id="klasifikasiRapat"
                                 required>
                                 <option value="">Pilih Klasifikasi Rapat</option>
-                                <option value="Choice 1">Choice 1</option>
-                                <option value="Choice 2">Choice 2</option>
-                                <option value="Choice 3">Choice 3</option>
+                                @foreach ($klasifikasiRapat as $itemRapat)
+                                    <option value="{{ $itemRapat->id }}">Rapat {{ $itemRapat->rapat }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="klasifikasiJabatan">Klasifikasi Jabatan
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-control" data-trigger name="klasifikasiJabatan" id="klasifikasiJabatan"
+                                required>
+                                <option value="">Pilih Klasifikasi Jabatan</option>
+                                @foreach ($klasifikasiJabatan as $itemJabatan)
+                                    <option value="{{ $itemJabatan->id }}">
+                                        Penyelenggara Rapat {{ $itemJabatan->jabatan }} | {{ $itemJabatan->kode_jabatan }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -104,6 +120,8 @@
             </div>
         </div>
     </form>
+
+
     <script>
         var animateModal = document.getElementById('animateModal');
         animateModal.addEventListener('show.bs.modal', function(event) {

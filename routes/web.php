@@ -59,14 +59,11 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(RapatController::class)->group(function () {
         Route::get('/manajemen-rapat/rapat-dinas', 'indexRapat')->name('rapat.index');
-        Route::get('/manajemen-rapat/rapat-dinas/form/{param}/{id}', 'formUndangan')->name('rapat.form-undangan');
+        Route::post('/manajemen-rapat/rapat-dinas/form/{param}/{id}', 'formUndangan')->name('rapat.form-undangan');
         Route::get('/manajemen-rapat/rapat-dinas/notula/{param}/{id}', 'formNotula')->name('rapat.form-notula');
         Route::get('/manajemen-rapat/rapat-dinas/dokumentasi/{id}', 'formDokumentasi')->name('rapat.form-dokumentasi');
 
         Route::get('/manajemen-rapat/rapat-dinas/detail/{id}', 'detailRapat')->name('rapat.detail');
-        Route::post('/manajemen-rapat/rapat-dinas/simpan', 'simpanRapat')->name('rapat.simpan');
-        Route::post('/manajemen-rapat/rapat-dinas/edit', 'editRapat')->name('rapat.edit');
-        Route::delete('/manajemen-rapat/rapat-dinas/hapus', 'hapusRapat')->name('rapat.hapus');
     });
 });
 

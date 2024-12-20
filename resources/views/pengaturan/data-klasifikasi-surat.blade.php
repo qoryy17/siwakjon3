@@ -54,10 +54,7 @@
                                         <td style="vertical-align: top;">{{ $item->kode_surat }}</td>
                                         <td style="vertical-align: top;">{{ $item->kode_klasifikasi }}</td>
                                         <td style="text-wrap: wrap;" style="vertical-align: top;">
-                                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Optio perspiciatis
-                                            ducimus nostrum. Libero numquam nesciunt sed doloribus, minima perspiciatis
-                                            saepe itaque eum facilis rerum, voluptates quasi harum impedit pariatur quia!
-                                            {{-- {{ $item->keterangan }} --}}
+                                            {{ $item->keterangan }}
                                         </td>
                                         <td style="vertical-align: top;" class="text-center">{{ $item->aktif }}</td>
                                         <td style="vertical-align: top;">{{ $item->created_at }}</td>
