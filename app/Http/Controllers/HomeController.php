@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Helpers\RouteLink;
 use App\Helpers\TimeSession;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
 
 class HomeController extends Controller
 {
@@ -204,5 +208,39 @@ class HomeController extends Controller
         ];
 
         return view('aplikasi.notifikasi', $data);
+    }
+
+    public function gantiPassword(Request $request): RedirectResponse
+    {
+        // Run additional validated
+        $request->validate([
+            'password' => [
+                'required',
+                'min:8',
+                'string',
+                'regex:/[A-Z]/', // must contain at least one uppercase letter
+                'regex:/[a-z]/', // must contain at least one lowercase letter
+                'regex:/[0-9]/', // must contain at least one digit
+                'regex:/[@$!%*?&]/', // must contain a special character
+
+            ],
+        ], [
+            'password.required' => 'Password harus harus di isi !',
+            'password.min' => 'Password harus mengandung 8 karakter !',
+            'password.string' => 'Password harus harus berupa karakter valid !',
+            'password.regex' => 'Password harus mengandung huruf kapital, angka dan karakter !',
+        ]);
+
+        $formData = [
+            'password' => Hash::make(htmlspecialchars($request->input('password'))),
+        ];
+
+        $searchAkun = User::findOrFail(Auth::user()->id);
+
+        $save = $searchAkun->update($formData);
+
+        Auth::logout();
+        $request->session()->regenerate();
+        return redirect()->route('signin')->with('success', 'Password berhasil diubah silahkan login ulang !');
     }
 }

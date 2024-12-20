@@ -417,16 +417,6 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item">
-                                        <div class="dropdown-item">
-                                            <span class="d-flex align-items-center">
-                                                <i class="ph-duotone ph-moon"></i>
-                                                <span>Dark Mode</span>
-                                            </span>
-                                            <div class="form-check form-switch form-check-reverse m-0">
-                                                <input class="form-check-input f-18" id="dark-mode" type="checkbox"
-                                                    onclick="dark_mode()" role="switch" />
-                                            </div>
-                                        </div>
                                         <a href="#" class="dropdown-item">
                                             <span class="d-flex align-items-center">
                                                 <i class="ph-duotone ph-user-circle"></i>
@@ -470,7 +460,7 @@
 <!-- [ Main Content ] start -->
 @yield('content')
 <!-- [ Main Content ] end -->
-<form action="" method="POST">
+<form action="{{ route('home.ganti-password') }}" method="POST">
     <div class="modal fade modal-animate" id="animateModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -482,18 +472,14 @@
                     @csrf
                     @method('POST')
                     <div class="mb-3">
-                        <label for="passwordLama">
-                            Password Lama <span class="text-danger">*</span>
-                        </label>
-                        <input type="password" id="passwordLama" name="passwordLama" class="form-control" required
-                            placeholder="Password Lama...">
-                    </div>
-                    <div class="mb-3">
-                        <label for="passwordBaru">
+                        <label for="password">
                             Password Baru <span class="text-danger">*</span>
                         </label>
-                        <input type="password" id="passwordBaru" name="PasswordBaru" class="form-control" required
+                        <input type="password" id="password" name="password" class="form-control" required
                             placeholder="Password Baru...">
+                        @error('password')
+                            <small class="text-danger mt-1">* {{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -21,12 +21,12 @@ class ViewUser
     {
         $pegawai = PegawaiModel::find(Auth::user()->pegawai_id);
         if (!$pegawai) {
-            return 'Developer';
+            return 'Unknown';
         }
 
         $jabatan = JabatanModel::find($pegawai->jabatan_id);
         if (!$jabatan) {
-            return 'Developer';
+            return 'Unknown';
         }
         return $jabatan->jabatan;
     }

@@ -51,6 +51,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/dashboard/laporan-monev', 'pintasanMonev')->name('home.pintasan-monev');
         Route::get('/dashboard/surat-keputusan', 'pintasanSK')->name('home.pintasan-sk');
         Route::get('/dashboard/notifikasi', 'notifikasi')->name('home.notifikasi');
+
+        Route::post('/dashboard/ganti-password', 'gantiPassword')->name('home.ganti-password');
     });
 });
 
