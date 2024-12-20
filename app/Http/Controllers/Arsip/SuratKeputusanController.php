@@ -87,8 +87,8 @@ class SuratKeputusanController extends Controller
         $save = null;
         $month = date('m');
         $year = date('Y');
-        $directory = 'pdf/arsip-sk/' . $month . '/' . $year . '/';
-        // this output directory : /pdf/arsip-sk/1/2024/
+        $directory = 'pdf/arsip-sk/' . $year . '/' . $month . '/';
+        // this output directory : /pdf/arsip-sk/2024/12/
 
         if ($paramIncoming == 'save') {
 

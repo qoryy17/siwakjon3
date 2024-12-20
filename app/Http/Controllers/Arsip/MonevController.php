@@ -260,8 +260,8 @@ class MonevController extends Controller
 
         $month = date('m');
         $year = date('Y');
-        $directory = 'pdf/arsip-monev/' . $month . '/' . $year . '/';
-        // this output directory : /pdf/arsip-monev/1/2024/
+        $directory = 'pdf/arsip-monev/' . $year . '/' . $month . '/';
+        // this output directory : /pdf/arsip-monev/2024/12/
 
         $formData = [
             'agenda_monev_id' => Crypt::decrypt(htmlspecialchars($request->input('nomorAgenda'))),
@@ -307,9 +307,9 @@ class MonevController extends Controller
             }
 
             // Checking status unggah according to the current time
-            if (now() > $search->created_at) {
+            if (Carbon::parse(now())->toDateString() > $search->tanggal_monev) {
                 $statusUnggah = 'Terlambat';
-            } elseif (now() < $search->created_at) {
+            } elseif (Carbon::parse(now())->toDateString() < $search->tanggal_monev) {
                 $statusUnggah = 'Tepat Waktu';
             } else {
                 $statusUnggah = 'Menunggu';
