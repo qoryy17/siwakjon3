@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Manajemen;
 
+use Carbon\Carbon;
 use App\Helpers\RouteLink;
-use App\Helpers\TimeSession;
 use Illuminate\Support\Str;
+use App\Helpers\TimeSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -33,12 +34,14 @@ class RapatController extends Controller
             ['title' => 'Manajemen Rapat', 'link' => 'javascript:void(0);', 'page' => ''],
             ['title' => 'Rapat Dinas', 'link' => route('rapat.index'), 'page' => 'aria-current="page"']
         ];
+
         $data = [
             'title' => 'Manajemen Rapat',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
             'klasifikasiJabatan' => KlasifikasiJabatanModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
+            'rapat' => ManajemenRapatModel::with('detailRapat')->orderBy('created_at', 'desc')->get()
         ];
 
         return view('rapat.data-rapat', $data);
@@ -59,9 +62,9 @@ class RapatController extends Controller
         $data = [
             'title' => 'Manajemen Rapat | Detail Rapat',
             'routeHome' => $route,
-            'breadcumbs' => $breadcumb
+            'breadcumbs' => $breadcumb,
+            'rapat' => ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id))->first()
         ];
-
         return view('rapat.detail-rapat', $data);
     }
 
@@ -72,12 +75,47 @@ class RapatController extends Controller
             $paramOutgoing = 'save';
             $formTitle = 'Tambah';
             $routeBack = route('rapat.index');
-            $rapat = null;
+            $searchRapat = null;
+
+            // Search klasifikasi rapat on database
+            $klasifikasiRapat = KlasifikasiRapatModel::findOrFail($request->input('klasifikasiRapat'));
+
+            // Search klasifikasi jabatan on database
+            $klasifikasiJabatan = KlasifikasiJabatanModel::findOrFail($request->input('klasifikasiJabatan'));
+            if (!$klasifikasiJabatan) {
+                return redirect()->back()->with('error', 'Klasifikasi Jabatan tidak ditemukan !');
+            }
+
+            // Generate index nomor dokumen rapat
+            $indexNumber = ManajemenRapatModel::orderBy('nomor_indeks', 'desc')->lockForUpdate()->first();
+            $indexIncrement = intval($indexNumber->nomor_indeks) + 1;
+
+            // Get Set Kode Surat on database
+            $searchKodeSurat = SetKodeRapatModel::first();
+            if (!$searchKodeSurat) {
+                return redirect()->back()->with('error', 'Kode Surat belum di set !');
+            }
+
+            // Generate nomor dokumen rapat
+            $nomorDokumen = $indexIncrement . '/' . $klasifikasiJabatan->kode_jabatan . '.' . 'W2-U4/' . $searchKodeSurat->kode_rapat_dinas . '/' . TimeSession::convertMonthToRoman() . '/' . date('Y');
+
+            // Set value klasifikasi for form
+            $klasifikasi = ['rapat' => Crypt::encrypt($klasifikasiRapat->id), 'jabatan' => $klasifikasiJabatan->jabatan];
+
         } elseif (Crypt::decrypt($request->param) == 'edit') {
             $paramOutgoing = 'update';
             $formTitle = 'Edit';
             $routeBack = route('rapat.index');
-            $rapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
+            $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
+
+            // Search klasifikasi rapat on database
+            $klasifikasiRapat = KlasifikasiRapatModel::findOrFail($searchRapat->klasifikasi_rapat_id);
+
+            // Set default nomor dokumen from database
+            $nomorDokumen = $searchRapat->nomor_dokumen;
+
+            // Set value klasifikasi for form
+            $klasifikasi = ['rapat' => Crypt::encrypt($klasifikasiRapat->id)];
         } else {
             return redirect()->back()->with('error', 'Parameter tidak ditemukan !');
         }
@@ -85,7 +123,7 @@ class RapatController extends Controller
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
-        $klasifikasiRapat = KlasifikasiRapatModel::findOrFail($request->input('klasifikasiRapat'));
+        // Checking klasifikasi rapat on database
         if (!$klasifikasiRapat) {
             return redirect()->back()->with('error', 'Klasifikasi Rapat tidak ditemukan !');
         }
@@ -106,46 +144,62 @@ class RapatController extends Controller
             'paramOutgoing' => Crypt::encrypt($paramOutgoing),
             'pejabatPengganti' => PejabatPenggantiModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
             'pegawai' => PegawaiModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
-            'rapat' => $rapat
+            'rapat' => $searchRapat,
+            'nomorDokumen' => $nomorDokumen,
+            'klasifikasi' => $klasifikasi
         ];
 
         return view('rapat.form-undangan', $data);
+
     }
 
-    public function save(FormManajemenRapat $request, FormUndanganRapatRequest $requestRapat): RedirectResponse
+    public function saveRapat(FormManajemenRapat $request, FormUndanganRapatRequest $requestRapat)//: RedirectResponse
     {
         // Run validated
         $request->validated();
         $requestRapat->validated();
 
-        // Generate index nomor dokumen rapat
-        $indexNumber = ManajemenRapatModel::orderBy('nomor_indeks', 'desc')->first();
-        $indexIncrement = intval($indexNumber) + 1;
-
-        $searchKodeSurat = SetKodeRapatModel::first();
-        if (!$searchKodeSurat) {
-            return redirect()->back()->with('error', 'Kode Surat belum di set !');
-        }
-
-        $nomorDokumen = $indexIncrement . '' . 'W2-U4' . $searchKodeSurat->kode_rapat_dinas . '/' . TimeSession::convertMonthToRoman() . '/' . date('Y');
-
         $paramIncoming = Crypt::decrypt($request->input('param'));
         $save = null;
         $saveDetailRapat = null;
 
-        if ($paramIncoming == 'save') {
+        $uniqueKodeRapat = Str::uuid();
 
-            $formData = [
-                'kode_rapat' => Str::uuid(),
-                'nomor_indeks' => $indexIncrement,
-                'nomor_dokumen' => $nomorDokumen,
-                'pegawai_id' => htmlspecialchars($request->input('pegawai')),
-                'unit_kerja_id' => htmlspecialchars($request->input('unitKerja')),
-                'aktif' => htmlspecialchars($request->input('aktif')),
-            ];
+        if ($paramIncoming == 'save') {
+            // Get index number from nomor dokumen
+            $indexNumber = explode('/', htmlspecialchars($request->input('nomorDokumen')));
             try {
                 DB::beginTransaction();
+                $formData = [
+                    'kode_rapat' => $uniqueKodeRapat,
+                    'nomor_indeks' => $indexNumber[0],
+                    'nomor_dokumen' => htmlspecialchars($request->input('nomorDokumen')),
+                    'klasifikasi_rapat_id' => Crypt::decrypt(htmlspecialchars($request->input('klasifikasiRapat'))),
+                    'dibuat' => Auth::user()->id,
+                    'pejabat_penandatangan' => htmlspecialchars($request->input('pejabatPenandatangan')),
+                ];
+                if (htmlspecialchars($request->input('pejabatPengganti'))) {
+                    $formData['pejabat_pengganti_id'] = htmlspecialchars($request->input('pejabatPengganti'));
+                }
+
                 $save = ManajemenRapatModel::create($formData);
+
+                // On save finished call result manajemen rapat on dabatase
+                $manajemenRapat = ManajemenRapatModel::where('kode_rapat', '=', $uniqueKodeRapat)->first();
+                $formDetailRapat = [
+                    'manajemen_rapat_id' => $manajemenRapat->id,
+                    'tanggal_rapat' => Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->format('Y-m-d'),
+                    'sifat' => htmlspecialchars($requestRapat->input('sifat')),
+                    'lampiran' => htmlspecialchars($requestRapat->input('lampiran')),
+                    'perihal' => htmlspecialchars($requestRapat->input('perihal')),
+                    'acara' => nl2br(htmlspecialchars($requestRapat->input('acara'))),
+                    'agenda' => nl2br(htmlspecialchars($requestRapat->input('agenda'))),
+                    'jam_mulai' => htmlspecialchars($requestRapat->input('jamRapat')),
+                    'tempat' => htmlspecialchars($requestRapat->input('tempat')),
+                    'peserta' => htmlspecialchars($requestRapat->input('peserta')),
+                    'keterangan' => $requestRapat->input('keterangan'),
+                ];
+                DetailRapatModel::create($formDetailRapat);
                 DB::commit();
             } catch (\Throwable $th) {
                 DB::rollBack();
@@ -154,8 +208,43 @@ class RapatController extends Controller
             $success = 'Dokumen Rapat berhasil di simpan !';
             $error = 'Dokumen Rapat gagal di simpan !';
         } elseif ($paramIncoming == 'update') {
-            $search = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->input('id')));
-            $save = $search->update($formData);
+            try {
+                DB::beginTransaction();
+                $formData = [
+                    'pejabat_penandatangan' => htmlspecialchars($request->input('pejabatPenandatangan')),
+                ];
+
+                if (htmlspecialchars($request->input('pejabatPengganti')) && htmlspecialchars($request->input('pejabatPengganti')) != 'null') {
+                    $formData['pejabat_pengganti_id'] = htmlspecialchars($request->input('pejabatPengganti'));
+                }
+
+                $search = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->input('id')));
+                $save = $search->update($formData);
+
+                // After manajemen rapat saving on database update detail rapat
+                $manajemenRapat = ManajemenRapatModel::where('kode_rapat', '=', $uniqueKodeRapat)->first();
+                $formDetailRapat = [
+                    'tanggal_rapat' => Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->format('Y-m-d'),
+                    'sifat' => htmlspecialchars($requestRapat->input('sifat')),
+                    'lampiran' => htmlspecialchars($requestRapat->input('lampiran')),
+                    'perihal' => htmlspecialchars($requestRapat->input('perihal')),
+                    'acara' => nl2br(htmlspecialchars($requestRapat->input('acara'))),
+                    'agenda' => nl2br(htmlspecialchars($requestRapat->input('agenda'))),
+                    'jam_mulai' => htmlspecialchars($requestRapat->input('jamRapat')),
+                    'tempat' => htmlspecialchars($requestRapat->input('tempat')),
+                    'peserta' => htmlspecialchars($requestRapat->input('peserta')),
+                    'keterangan' => $requestRapat->input('keterangan'),
+                ];
+
+                $searchDetailRapat = DetailRapatModel::where('manajemen_rapat_id', '=', $search->id)->first();
+                $saveDetailRapat = $searchDetailRapat->update($formDetailRapat);
+
+                DB::commit();
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return redirect()->back()->with('error', $th);
+            }
+
             $success = 'Dokumen Rapat berhasil di perbarui !';
             $error = 'Dokumen Rapat gagal di perbarui !';
         } else {
@@ -166,10 +255,14 @@ class RapatController extends Controller
             return redirect()->back()->with('error', $error);
         }
 
+        if (!$saveDetailRapat) {
+            return redirect()->back()->with('error', $error);
+        }
+
         return redirect()->route('rapat.index')->with('success', $success);
     }
 
-    public function delete(Request $request): RedirectResponse
+    public function deleteRapat(Request $request): RedirectResponse
     {
         // Checking data manajemen rapat on database
         $rapat = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->id));

@@ -45,7 +45,7 @@ return new class extends Migration {
             $table->id();
             $table->uuid('kode_rapat')->unique();
             $table->string('nomor_indeks');
-            $table->string('nomor_dokumen');
+            $table->string('nomor_dokumen')->unique();
             $table->unsignedBigInteger('klasifikasi_rapat_id')->nullable();
             $table->unsignedBigInteger('dibuat');
             $table->unsignedBigInteger('pejabat_penandatangan')->nullable();

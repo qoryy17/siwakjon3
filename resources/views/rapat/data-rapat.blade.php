@@ -43,7 +43,7 @@
                                     <th width="1%">No</th>
                                     <th>Nomor Rapat</th>
                                     <th>Perihal</th>
-                                    <th>Tanggal Rapat</th>
+                                    <th class="text-start">Tanggal Rapat</th>
                                     <th>Dibuat Oleh</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
@@ -51,21 +51,57 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-start">1</td>
-                                    <td>90/W2.U4/PW1.1/X/2024</td>
-                                    <td>Rapat Evaluasi Kinerja Periode Desember</td>
-                                    <td>{{ date('d-m-Y') }}</td>
-                                    <td>Agustina</td>
-                                    <td>{{ now() }}</td>
-                                    <td>{{ now() }}</td>
-                                    <td>
-                                        <a href="{{ route('rapat.detail', ['id' => 'null']) }}"
-                                            class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-eye f-20"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($rapat as $item)
+                                    @php
+                                        $dibuat = \App\Models\User::find($item->dibuat);
+                                    @endphp
+                                    <tr>
+                                        <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
+                                        <td style="vertical-align: top;" class="text-start">{{ $item->nomor_dokumen }}</td>
+                                        <td style="vertical-align: top;">{{ $item->detailRapat->perihal }}</td>
+                                        <td style="vertical-align: top;" class="text-start">
+                                            {{ $item->detailRapat->tanggal_rapat }}
+                                        </td>
+                                        <td style="vertical-align: top;">{{ $dibuat->name }}</td>
+                                        <td style="vertical-align: top;">{{ $item->created_at }}</td>
+                                        <td style="vertical-align: top;">{{ $item->updated_at }}</td>
+                                        <td style="vertical-align: top;">
+                                            <a href="{{ route('rapat.detail', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                class="avtar avtar-xs btn-link-secondary">
+                                                <i class="ti ti-eye f-20"></i>
+                                            </a>
+                                            @if (Auth::user()->roles != 'User')
+                                                <a href="#" class="avtar avtar-xs btn-link-secondary"
+                                                    onclick=" Swal.fire({
+                                                    icon: 'warning',
+                                                    title: 'Hapus Data ?',
+                                                    text: 'Data yang dihapus tidak dapat dikembalikan ! \n Seluruh data dokumen rapat ini akan dihapus',
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Hapus',
+                                                    cancelButtonText: 'Batal',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('deleteForm{{ $no }}').submit();
+                                                    }
+                                                });">
+                                                    <i class="ti ti-trash f-20"></i>
+                                                </a>
+                                                <form id="deleteForm{{ $no }}"
+                                                    action="{{ route('rapat.hapus-rapat', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $no++;
+                                    @endphp
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -74,7 +110,7 @@
             <!-- [ Main Content ] end -->
         </div>
     </div>
-    <form action="{{ route('rapat.form-undangan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}" method="POST">
+    <form action="{{ route('rapat.form-undangan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}" method="GET">
         <div class="modal fade modal-animate" id="animateModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -83,7 +119,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
                     </div>
                     <div class="modal-body">
-                        @method('POST')
+                        @method('GET')
                         @csrf
                         <div class="mb-3">
                             <label class="form-label" for="klasifikasiRapat">Klasifikasi Rapat

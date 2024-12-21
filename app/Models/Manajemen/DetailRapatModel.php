@@ -10,12 +10,11 @@ class DetailRapatModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'sw_manajemen_rapat';
+    protected $table = 'sw_detail_rapat';
     protected $primaryKey = 'id';
 
     protected $fillable = [
         'manajemen_rapat_id',
-        'tanggal_rapat',
         'tanggal_rapat',
         'sifat',
         'lampiran',
@@ -38,11 +37,13 @@ class DetailRapatModel extends Model
 
     public $timestamps = true;
 
-    public function manajemenRapat(): BelongsTo{
-        return $this->belongsTo(ManajemenRapatModel::class);
+    public function manajemenRapat(): BelongsTo
+    {
+        return $this->belongsTo(ManajemenRapatModel::class, 'manajemen_rapat_id', 'id');
     }
 
-    public function dokumentasiRapat(): BelongsTo{
+    public function dokumentasiRapat(): BelongsTo
+    {
         return $this->belongsTo(DokumentasiRapatModel::class);
     }
 }

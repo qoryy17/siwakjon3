@@ -197,5 +197,6 @@ class PenggunaController extends Controller
             return redirect()->route('pengguna.akun')->with('success', 'Akun Pengguna berhasil di hapus !');
         }
         return redirect()->route('pengguna.akun')->with('error', 'Akun Pengguna gagal di hapus !');
+
     }
 }

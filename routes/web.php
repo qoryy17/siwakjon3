@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\SigninController;
 use App\Http\Controllers\Hakim\HakimPengawasController;
 use App\Http\Controllers\Manajemen\KlasifikasiController;
 use App\Http\Controllers\Manajemen\PengawasanController;
+use App\Http\Controllers\Manajemen\PrintRapatController;
 use App\Http\Controllers\Manajemen\RapatController;
 use App\Http\Controllers\Pengaturan\AplikasiController;
 use App\Http\Controllers\Pengaturan\DevelopmentController;
@@ -59,11 +60,25 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(RapatController::class)->group(function () {
         Route::get('/manajemen-rapat/rapat-dinas', 'indexRapat')->name('rapat.index');
-        Route::post('/manajemen-rapat/rapat-dinas/form/{param}/{id}', 'formUndangan')->name('rapat.form-undangan');
+        Route::get('/manajemen-rapat/rapat-dinas/form/{param}/{id}', 'formUndangan')->name('rapat.form-undangan');
         Route::get('/manajemen-rapat/rapat-dinas/notula/{param}/{id}', 'formNotula')->name('rapat.form-notula');
         Route::get('/manajemen-rapat/rapat-dinas/dokumentasi/{id}', 'formDokumentasi')->name('rapat.form-dokumentasi');
 
+        Route::post('/manajemen-rapat/rapat-dinas/simpan', 'saveRapat')->name('rapat.simpan-rapat');
+        Route::delete('/manajemen-rapat/rapat-dinas/hapus', 'deleteRapat')->name('rapat.hapus-rapat');
+
         Route::get('/manajemen-rapat/rapat-dinas/detail/{id}', 'detailRapat')->name('rapat.detail');
+    });
+});
+
+Route::middleware(AuthMiddleware::class)->group(function () {
+    Route::controller(PrintRapatController::class)->group(function () {
+        Route::get('/manajemen-rapat/print/undangan/{id}', 'printUndanganRapat')->name('rapat.print-undangan');
+        Route::get('/manajemen-rapat/print/daftar-hadir/{id}', 'printDaftarHadirRapat')->name('rapat.print-daftar-hadir');
+        Route::get('/manajemen-rapat/print/notula/{id}', 'printNotulaRapat')->name('rapat.print-notula');
+        Route::get('/manajemen-rapat/print/dokumentasi/{id}', 'printDokumentasiRapat')->name('rapat.print-dokumentasi');
+
+        Route::get('/manajemen-rapat/print/test', 'generatePdfAndConvertToImage')->name('rapat.print-test');
     });
 });
 

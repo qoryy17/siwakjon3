@@ -31,7 +31,19 @@
                         * Hanya diperbolehkan membuat untuk rapat
                         kedinasan. Rapat diluar kedinasan tidak boleh menggunakan {{ env('APP_NAME') }} !
                     </div>
-                    <form action="" method="POST">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <h4 class="alert-heading">Peringatan!</h4>
+                            <div class="alert-body">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
+                    <form action="{{ route('rapat.simpan-rapat') }}" method="POST">
                         @csrf
                         @method('POST')
                         @if (Crypt::decrypt($paramOutgoing) == 'update')
@@ -44,13 +56,41 @@
                             <input type="text" class="form-control" name="param" readonly value="{{ $paramOutgoing }}">
                         </div>
                         <div class="row">
+                            <div class="col-md-6 col-sm-12" hidden>
+                                <div class="mb-3">
+                                    <label class="form-label" for="klasifikasiRapat">Klasifikasi Rapat
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" name="klasifikasiRapat" id="klasifikasiRapat"
+                                        placeholder="Klasifikasi Rapat..." required required readonly
+                                        value="{{ $klasifikasi['rapat'] }}">
+                                    @error('klasifikasiRapat')
+                                        <small class="text-danger mt-1">* {{ $message }}</small>
+                                    @enderror
+                                </div>
+                            </div>
+                            @if (Crypt::decrypt($paramOutgoing) == 'save')
+                                <div class="col-md-6 col-sm-12" hidden>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="klasifikasiJabatan">Klasifikasi Jabatan
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" name="klasifikasiJabatan"
+                                            id="klasifikasiJabatan" placeholder="Klasifikasi Jabatan..." required required
+                                            readonly value="{{ $klasifikasi['jabatan'] }}">
+                                        @error('klasifikasiJabatan')
+                                            <small class="text-danger mt-1">* {{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @endif
                             <div class="col-md-12 col-sm-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="nomorDokumen">Nomor Dokumen Rapat
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" name="nomorDokumen" id="nomorDokumen"
-                                        placeholder="Nomor Dokumen Rapat..." required>
+                                        placeholder="Nomor Dokumen Rapat..." required value="{{ $nomorDokumen }}" readonly>
                                     @error('nomorDokumen')
                                         <small class="text-danger mt-1">* {{ $message }}</small>
                                     @enderror
@@ -62,7 +102,8 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" name="tanggalRapat" id="tanggalRapat"
-                                        placeholder="Pilih Tanggal..." readonly required>
+                                        placeholder="Pilih Tanggal..." readonly required
+                                        value="{{ $rapat ? Carbon\Carbon::createFromFormat('Y-m-d', $rapat->detailRapat->tanggal_rapat)->format('m/d/Y') : old('tanggalRapat') }}">
                                     @error('tanggalRapat')
                                         <small class="text-danger mt-1">* {{ $message }}</small>
                                     @enderror
@@ -74,7 +115,8 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" name="jamRapat" id="jamRapat"
-                                        placeholder="Jam Rapat..." required>
+                                        placeholder="Jam Rapat..." required
+                                        value="{{ $rapat ? $rapat->detailRapat->jam_mulai : old('jamRapat') }}">
                                     @error('jamRapat')
                                         <small class="text-danger mt-1">* {{ $message }}</small>
                                     @enderror
@@ -86,7 +128,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="sifat" name="sifat" class="form-control" required
-                                placeholder="Sifat...">
+                                placeholder="Sifat..." value="{{ $rapat ? $rapat->detailRapat->sifat : old('sifat') }}">
                             @error('sifat')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -96,7 +138,8 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="lampiran" name="lampiran" class="form-control" required
-                                placeholder="Lampiran...">
+                                placeholder="Lampiran..."
+                                value="{{ $rapat ? $rapat->detailRapat->lampiran : old('lampiran') }}">
                             @error('lampiran')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -105,7 +148,7 @@
                             <label class="form-label" for="perihal">Perihal
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="perihal" id="perihal" class="form-control" required placeholder="Perihal..."></textarea>
+                            <textarea name="perihal" id="perihal" class="form-control" required placeholder="Perihal...">{{ $rapat ? $rapat->detailRapat->perihal : old('perihal') }}</textarea>
                             @error('perihal')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -114,7 +157,7 @@
                             <label class="form-label" for="acara">Acara
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="acara" id="acara" class="form-control" required placeholder="Acara..."></textarea>
+                            <textarea name="acara" id="acara" class="form-control" required placeholder="Acara...">{{ $rapat ? $rapat->detailRapat->acara : old('acara') }}</textarea>
                             @error('acara')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -123,7 +166,7 @@
                             <label class="form-label" for="agenda">Agenda
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="agenda" id="agenda" class="form-control" required placeholder="Agenda..."></textarea>
+                            <textarea name="agenda" id="agenda" class="form-control" required placeholder="Agenda...">{{ $rapat ? $rapat->detailRapat->agenda : old('agenda') }}</textarea>
                             @error('agenda')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -133,7 +176,8 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="peserta" name="peserta" class="form-control" required
-                                placeholder="Peserta...">
+                                placeholder="Peserta..."
+                                value="{{ $rapat ? $rapat->detailRapat->peserta : old('peserta') }}">
                             @error('peserta')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -143,7 +187,8 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="tempat" name="tempat" class="form-control" required
-                                placeholder="Tempat...">
+                                placeholder="Tempat..."
+                                value="{{ $rapat ? $rapat->detailRapat->tempat : old('tempat') }}">
                             @error('tempat')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -151,7 +196,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="pc_demo1">Keterangan <span
                                     class="text-danger">*</span></label>
-                            <textarea name="keterangan" id="pc_demo1" class="form-control">Mengingat pentingnya rapat tersebut, dimohon agar Bapak/Ibu dapat menyiapkan agenda yang menjadi tanggung jawabnya dan dapat hadir tepat pada waktunya.</textarea>
+                            <textarea name="keterangan" id="pc_demo1" class="form-control">{{ $rapat ? $rapat->detailRapat->keterangan : 'Mengingat pentingnya rapat tersebut, dimohon agar Bapak/Ibu dapat menyiapkan agenda yang menjadi tanggung jawabnya dan dapat hadir tepat pada waktunya.' }}</textarea>
                             @error('keterangan')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -160,8 +205,10 @@
                             <label class="form-label" for="pejabatPengganti">Pejabat Pengganti</label>
                             <select class="form-control" data-trigger name="pejabatPengganti" id="pejabatPengganti">
                                 <option value="">Pilih Pejabat/Pegawai</option>
+                                <option value="null">Tanpa Pejabat/Pegawai</option>
                                 @foreach ($pejabatPengganti as $itemPejabat)
-                                    <option value="{{ $itemPejabat->id }}">
+                                    <option value="{{ $itemPejabat->id }}"
+                                        @if (old('pejabatPengganti') == $itemPejabat->id) selected @elseif($rapat && $rapat->pejabat_pengganti_id == $itemPejabat->id) selected @endif>
                                         {{ $itemPejabat->pejabat }}
                                     </option>
                                 @endforeach
@@ -179,7 +226,10 @@
                                 id="pejabatPenandatangan" required>
                                 <option value="">Pilih Pejabat/Pegawai</option>
                                 @foreach ($pegawai as $itemPegawai)
-                                    <option value="{{ $itemPegawai->id }}">{{ $itemPegawai->nama }}</option>
+                                    <option value="{{ $itemPegawai->id }}"
+                                        @if (old('pejabatPenandatangan') == $itemPegawai->id) selected @elseif($rapat && $rapat->pejabat_penandatangan == $itemPegawai->id) selected @endif>
+                                        {{ $itemPegawai->nama }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('pejabatPenandatangan')

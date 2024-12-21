@@ -33,14 +33,14 @@
                                 <div class="col-md-6">
                                     <p class="mb-1 text-muted">Nomor Rapat</p>
                                     <p class="mb-0 fw-bold">
-                                        979/W2-U4.KPN/HM/X/2024
+                                        {{ $rapat->nomor_dokumen }}
                                     </p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="mb-1 text-muted">TimeStamp</p>
                                     <p class="mb-0 fw-bold">
-                                        Created At : {{ now() }}
-                                        Last Updated : {{ now() }}
+                                        Created At : {{ $rapat->created_at }}
+                                        Last Updated : {{ $rapat->updated_at }}
                                     </p>
                                 </div>
                             </div>
@@ -50,13 +50,13 @@
                                 <div class="col-md-6">
                                     <p class="mb-1 text-muted">Perihal Rapat</p>
                                     <p class="mb-0 fw-bold">
-                                        Rapat Evaluasi Kinerja Pegawai Tahun 2024
+                                        {{ $rapat->detailRapat->perihal }}
                                     </p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="mb-1 text-muted">Klasifikasi Rapat</p>
                                     <p class="mb-0 fw-bold">
-                                        Rapat Berjenjang
+                                        {{ $rapat->klasifikasiRapat->rapat }}
                                     </p>
                                 </div>
                             </div>
@@ -66,13 +66,15 @@
                                 <div class="col-md-6">
                                     <p class="mb-1 text-muted">Tanggal Rapat</p>
                                     <p class="mb-0 fw-bold">
-                                        {{ now() }}
+                                        {{ Carbon\Carbon::createFromFormat('Y-m-d', $rapat->detailRapat->tanggal_rapat)->format('d-m-Y') }}
                                     </p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="mb-1 text-muted">Waktu Rapat</p>
                                     <p class="mb-0 fw-bold">
-                                        {{ now() }} selesai {{ now() }}
+                                        {{ $rapat->detailRapat->jam_mulai }} @if ($rapat->detailRapat->jam_selesai != null)
+                                            selesai {{ $rapat->detailRapat->jam_selesai }}
+                                        @endif
                                     </p>
                                 </div>
                             </div>
@@ -80,64 +82,61 @@
                         <li class="list-group-item px-0">
                             <p class="mb-1 text-muted">Acara</p>
                             <p class="mb-0" style="text-align: justify;">
-                                Sistem Informasi Pengawasan Dan Kendali Jadwal Pelaporan Dokumen (SIWAKJON)
-                                Merupakan Inovasi Dari Pengadilan Negeri Lubuk Pakam. Yang Bertujuan Untuk
-                                Memudahkan Penataan Dokumen Rapat Dan Pengawasan Pada Lingkungan Pengadilan Negeri
-                                Lubuk Pakam.
+                                {!! $rapat->detailRapat->acara !!}
                             </p>
                         </li>
                         <li class="list-group-item px-0">
                             <p class="mb-1 text-muted">Agenda</p>
                             <p class="mb-0" style="text-align: justify;">
-                                Sistem Informasi Pengawasan Dan Kendali Jadwal Pelaporan Dokumen (SIWAKJON)
-                                Merupakan Inovasi Dari Pengadilan Negeri Lubuk Pakam. Yang Bertujuan Untuk
-                                Memudahkan Penataan Dokumen Rapat Dan Pengawasan Pada Lingkungan Pengadilan Negeri
-                                Lubuk Pakam.
+                                {!! $rapat->detailRapat->agenda !!}
                             </p>
                         </li>
                         <li class="list-group-item px-0">
                             <p class="mb-1 text-muted">Tempat</p>
                             <p class="mb-0" style="text-align: justify;">
-                                Ruang Media Center
+                                {{ $rapat->detailRapat->tempat }}
                             </p>
                         </li>
                         <li class="list-group-item px-0">
                             <p class="mb-1 text-muted">Peserta</p>
                             <p class="mb-0" style="text-align: justify;">
-                                Panitera, Panitera Muda, Seluruh Panitera Pengganti
+                                {{ $rapat->detailRapat->peserta }}
                             </p>
                         </li>
-                        <li class="list-group-item px-0">
-                            <p class="mb-1 text-muted">Kelola Dokumen</p>
-                            <a class="btn btn-sm btn-primary"
-                                href="{{ route('rapat.form-undangan', ['param' => Crypt::encrypt('edit'), 'id' => 'null']) }}">
-                                <i class="fas fa-pencil-alt"></i> Edit Undangan
-                            </a>
-                            <a class="btn btn-sm btn-primary"
-                                href="{{ route('rapat.form-notula', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}">
-                                <i class="fas fa-file-word"></i> Tambah Notula
-                            </a>
-                            <a class="btn btn-sm btn-primary"
-                                href="{{ route('rapat.form-dokumentasi', ['id' => 'null']) }}">
-                                <i class="fas fa-camera"></i> Tambah Dokumentasi
-                            </a>
-                        </li>
+                        @if (Auth::user()->roles != 'User' || Auth::user()->id == $rapat->dibuat)
+                            <li class="list-group-item px-0">
+                                <p class="mb-1 text-muted">Kelola Dokumen</p>
+                                <a class="btn btn-sm btn-primary"
+                                    href="{{ route('rapat.form-undangan', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($rapat->id)]) }}">
+                                    <i class="fas fa-pencil-alt"></i> Edit Undangan
+                                </a>
+                                <a class="btn btn-sm btn-primary"
+                                    href="{{ route('rapat.form-notula', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}">
+                                    <i class="fas fa-file-word"></i> Tambah Notula
+                                </a>
+                                <a class="btn btn-sm btn-primary"
+                                    href="{{ route('rapat.form-dokumentasi', ['id' => 'null']) }}">
+                                    <i class="fas fa-camera"></i> Tambah Dokumentasi
+                                </a>
+                            </li>
+                        @endif
+
                         <li class="list-group-item px-0">
                             <p class="mb-1 text-muted">Cetak Dokumen</p>
-                            <a class="btn btn-sm btn-warning"
-                                href="{{ route('rapat.form-undangan', ['param' => Crypt::encrypt('edit'), 'id' => 'null']) }}">
+                            <a target="_blank" class="btn btn-sm btn-warning"
+                                href="{{ route('rapat.print-undangan', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                 <i class="fas fa-file-pdf"></i> Undangan
                             </a>
-                            <a class="btn btn-sm btn-warning"
-                                href="{{ route('rapat.form-undangan', ['param' => Crypt::encrypt('edit'), 'id' => 'null']) }}">
+                            <a target="_blank" class="btn btn-sm btn-warning"
+                                href="{{ route('rapat.print-daftar-hadir', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                 <i class="fas fa-file-pdf"></i> Daftar Hadir
                             </a>
-                            <a class="btn btn-sm btn-warning"
-                                href="{{ route('rapat.form-notula', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}">
+                            <a target="_blank" class="btn btn-sm btn-warning"
+                                href="{{ route('rapat.print-notula', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                 <i class="fas fa-file-pdf"></i> Notula
                             </a>
-                            <a class="btn btn-sm btn-warning"
-                                href="{{ route('rapat.form-notula', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}">
+                            <a target="_blank" class="btn btn-sm btn-warning"
+                                href="{{ route('rapat.print-dokumentasi', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                 <i class="fas fa-file-pdf"></i> Dokumentasi
                             </a>
                         </li>

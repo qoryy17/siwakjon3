@@ -26,15 +26,20 @@ class ManajemenRapatModel extends Model
 
     public $timestamps = true;
 
-    public function klasifikasiRapat(): BelongsTo{
+    public function detailRapat(): BelongsTo
+    {
+        return $this->belongsTo(DetailRapatModel::class, 'id', 'manajemen_rapat_id');
+    }
+
+    public function klasifikasiRapat(): BelongsTo
+    {
         return $this->belongsTo(KlasifikasiRapatModel::class);
     }
 
-    public function pejabatPengganti(): BelongsTo{
+    public function pejabatPengganti(): BelongsTo
+    {
         return $this->belongsTo(PejabatPenggantiModel::class);
     }
 
-    public function detailRapat(): BelongsTo{
-        return $this->belongsTo(DetailRapatModel::class);
-    }
+
 }

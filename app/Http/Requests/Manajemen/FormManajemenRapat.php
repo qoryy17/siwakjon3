@@ -24,7 +24,6 @@ class FormManajemenRapat extends FormRequest
         return [
             'nomorDokumen' => 'required|string|max:255',
             'klasifikasiRapat' => 'required|string',
-            'pejabatPengganti' => 'string',
             'pejabatPenandatangan' => 'required|string',
         ];
     }
@@ -37,7 +36,6 @@ class FormManajemenRapat extends FormRequest
             'nomorDokumen.max' => 'Nomor Dokumen maksimal 255 karakter !',
             'klasifikasiRapat.required' => 'Klasifikasi Rapat harus di isi !',
             'klasifikasiRapat.string' => 'Klasifikasi Rapat harus berupa karakter valid !',
-            'pejabatPengganti.string' => 'Pejabat Pengganti harus berupa karakter valid !',
             'pejabatPenandatangan.required' => 'Penandatangan harus wajib di pilih !',
             'pejabatPenandatangan.string' => 'Penandatangan harus berupa karakter valid !',
         ];
