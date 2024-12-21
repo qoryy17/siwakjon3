@@ -157,7 +157,6 @@
         </div>
     </form>
 
-
     <script>
         var animateModal = document.getElementById('animateModal');
         animateModal.addEventListener('show.bs.modal', function(event) {

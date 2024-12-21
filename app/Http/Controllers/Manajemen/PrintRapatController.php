@@ -29,11 +29,23 @@ class PrintRapatController extends Controller
         $pdf = PDF::loadView('template.pdf-undangan-rapat', $data);
         $pdf->setPaper('Folio', 'potrait');
         return $pdf->stream('Undangan Rapat' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
-        // return view('template.pdf-undangan-rapat', $data);
     }
-    public function printAbsensiRapat(Request $request)
+    public function printDaftarHadirRapat(Request $request)
     {
-
+        $peserta = $request->jumlahPeserta;
+        // Generate QR code
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id))->first();
+        $url = url('/verification') . '/' . $rapat->kode_rapat;
+        $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
+        $data = [
+            'aplikasi' => AplikasiModel::first(),
+            'rapat' => $rapat,
+            'qrCode' => $qrCode,
+            'peserta' => $peserta
+        ];
+        $pdf = PDF::loadView('template.pdf-daftar-hadir-rapat', $data);
+        $pdf->setPaper('Folio', 'potrait');
+        return $pdf->stream('Daftar Hadir Rapat' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
     }
 
     public function printNotulaRapat(Request $request)

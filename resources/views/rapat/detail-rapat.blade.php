@@ -127,10 +127,10 @@
                                 href="{{ route('rapat.print-undangan', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                 <i class="fas fa-file-pdf"></i> Undangan
                             </a>
-                            <a target="_blank" class="btn btn-sm btn-warning"
-                                href="{{ route('rapat.print-daftar-hadir', ['id' => Crypt::encrypt($rapat->id)]) }}">
-                                <i class="fas fa-file-pdf"></i> Daftar Hadir
-                            </a>
+                            <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModal"
+                                class="btn btn-warning btn-sm"><i class="fas fa-file-pdf"></i>
+                                Daftar Hadir
+                            </button>
                             <a target="_blank" class="btn btn-sm btn-warning"
                                 href="{{ route('rapat.print-notula', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                 <i class="fas fa-file-pdf"></i> Notula
@@ -146,4 +146,58 @@
             <!-- [ Main Content ] end -->
         </div>
     </div>
+    <form target="_blank" action="{{ route('rapat.print-daftar-hadir', ['id' => Crypt::encrypt($rapat->id)]) }}"
+        method="GET">
+        <div class="modal fade modal-animate" id="animateModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cetak Daftar Hadir</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+                    </div>
+                    <div class="modal-body">
+                        @method('GET')
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label" for="jumlahPeserta">Jumlah Peserta Rapat
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" class="form-control" id="jumlahPeserta" name="jumlahPeserta" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary shadow-2">Lanjut</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        var animateModal = document.getElementById('animateModal');
+        animateModal.addEventListener('show.bs.modal', function(event) {
+            var button = event.relatedTarget;
+            var recipient = button.getAttribute('data-pc-animate');
+            var modalTitle = animateModal.querySelector('.modal-title');
+            // modalTitle.textContent = 'Animate Modal : ' + recipient;
+            animateModal.classList.add('anim-' + recipient);
+            if (recipient == 'let-me-in' || recipient == 'make-way' || recipient == 'slip-from-top') {
+                document.body.classList.add('anim-' + recipient);
+            }
+        });
+        animateModal.addEventListener('hidden.bs.modal', function(event) {
+            removeClassByPrefix(animateModal, 'anim-');
+            removeClassByPrefix(document.body, 'anim-');
+        });
+
+        function removeClassByPrefix(node, prefix) {
+            for (let i = 0; i < node.classList.length; i++) {
+                let value = node.classList[i];
+                if (value.startsWith(prefix)) {
+                    node.classList.remove(value);
+                }
+            }
+        }
+    </script>
 @endsection

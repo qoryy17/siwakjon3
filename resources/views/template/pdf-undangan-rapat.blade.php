@@ -191,12 +191,11 @@
                 </td>
             </tr>
         </table>
-
-        <div class="qrcode">
-            <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code {{ $qrCode }}">
-            <span style="display: block; font-size:10px; margin-top: 5px;">Generate By SIWAKJON
-                , Timestamp : {{ now() }}</span>
-        </div>
+    </div>
+    <div class="qrcode">
+        <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code {{ $qrCode }}">
+        <span style="display: block; font-size:10px; margin-top: 5px;">Generate By SIWAKJON
+            , Timestamp : {{ now() }}</span>
     </div>
 </body>
 
