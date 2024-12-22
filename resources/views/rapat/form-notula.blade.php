@@ -27,60 +27,90 @@
                     <a href="{{ $routeBack }}">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST">
+                    <form action="{{ route('rapat.simpan-notula') }}" method="POST">
                         @csrf
                         @method('POST')
+                        <div class="mb-3" hidden>
+                            <input type="text" class="form-control" readonly name="id"
+                                value="{{ Crypt::encrypt($rapat->id) }}">
+                        </div>
                         <div class="mb-3">
                             <label class="form-label" for="perihal">Perihal
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea readonly name="perihal" id="perihal" class="form-control" required placeholder="Perihal..."></textarea>
+                            <input type="text" class="form-control" name="perihal" id="perihal"
+                                placeholder="Perihal..." required readonly
+                                value="{{ $rapat ? $rapat->detailRapat->perihal : old('perihal') }}">
+                            @error('perihal')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="jamSelesai">Jam Selesai
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" name="jamSelesai" id="jamSelesai"
-                                placeholder="Jam Selesai..." required>
+                                placeholder="Jam Selesai..." required
+                                value="{{ $rapat ? $rapat->detailRapat->jam_selesai : old('jamSelesai') }}">
+                            @error('jamSelesai')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="pembahasan">Pembahasan
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="pembahasan" id="pembahasan" class="form-control" required placeholder="Pembahasan..."></textarea>
+                            <textarea name="pembahasan" id="pembahasan" class="form-control" required placeholder="Pembahasan...">{{ $rapat ? $rapat->detailRapat->pembahasan : old('pembahasan') }}</textarea>
+                            @error('pembahasan')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="pimpinanRapat">Pimpinan Rapat
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="pimpinanRapat" id="pimpinanRapat" class="form-control" required placeholder="Pimpinan Rapat..."></textarea>
+                            <textarea name="pimpinanRapat" id="pimpinanRapat" class="form-control" required placeholder="Pimpinan Rapat...">{{ $rapat ? $rapat->detailRapat->pimpinan_rapat : old('pimpinanRapat') }}</textarea>
+                            @error('pimpinanRapat')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="moderator">Moderator</label>
-                            <select class="form-control" data-trigger name="moderator" id="moderator">
-                                <option value="">Pilih Moderator</option>
-                                <option value="Choice 1">Choice 1</option>
-                                <option value="Choice 2">Choice 2</option>
-                                <option value="Choice 3">Choice 3</option>
-                            </select>
+                            <input type="text" class="form-control" name="moderator" id="moderator"
+                                placeholder="Moderator..."
+                                value="{{ $rapat ? $rapat->detailRapat->moderator : old('moderator') }}">
                             <small class="text-danger">* Kosongkan jika tidak ada</small>
+                            @error('moderator')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="notulen">Notulen</label>
                             <select class="form-control" data-trigger name="notulen" id="notulen" required>
                                 <option value="">Pilih Notulen</option>
-                                <option value="Choice 1">Choice 1</option>
-                                <option value="Choice 2">Choice 2</option>
-                                <option value="Choice 3">Choice 3</option>
+                                @foreach ($pegawai as $notulen)
+                                    <option value="{{ $notulen->id }}"
+                                        @if (old('notulan') == $notulen->id) selected @elseif ($rapat && $rapat->detailRapat->notulen == $notulen->id) selected @endif>
+                                        {{ $notulen->nama }}</option>
+                                @endforeach
                             </select>
+                            @error('notulen')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="catatan">Catatan <span class="text-danger">*</span></label>
-                            <textarea name="catatan" id="catatan" class="form-control"></textarea>
+                            <textarea name="catatan" id="catatan" class="form-control" placeholder="Catatan...">{{ $rapat ? $rapat->detailRapat->catatan : old('catatan') }}</textarea>
+                            @error('catatan')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="kesimpulan">Kesimpulan <span class="text-danger">*</span></label>
-                            <textarea name="kesimpulan" id="kesimpulan" class="form-control"></textarea>
+                            <textarea name="kesimpulan" id="kesimpulan" class="form-control" placeholder="Kesimpulan...">{{ $rapat ? $rapat->detailRapat->kesimpulan : old('kesimpulan') }}</textarea>
+                            @error('kesimpulan')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="disahkan">Disahkan Oleh
@@ -88,9 +118,11 @@
                             </label>
                             <select class="form-control" data-trigger name="disahkan" id="disahkan">
                                 <option value="">Pilih Pejabat/Pegawai</option>
-                                <option value="Choice 1">Choice 1</option>
-                                <option value="Choice 2">Choice 2</option>
-                                <option value="Choice 3">Choice 3</option>
+                                @foreach ($pegawai as $disahkan)
+                                    <option value="{{ $disahkan->id }}"
+                                        @if (old('notulan') == $disahkan->id) selected @elseif ($rapat && $rapat->detailRapat->disahkan == $disahkan->id) selected @endif>
+                                        {{ $disahkan->nama }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="mt-1">

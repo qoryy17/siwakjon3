@@ -76,7 +76,7 @@
                     </h4>
                     <p style="margin: 0;font-size:13px;">
                         {{ $aplikasi->alamat }} <br>
-                        Kabupaten {{ $aplikasi->kota }} {{ $aplikasi->kode_pos }}, {{ $aplikasi->website }},
+                        {{ $aplikasi->kota }} {{ $aplikasi->kode_pos }}, {{ $aplikasi->website }},
                         {{ $aplikasi->email }}
                     </p>
                 </td>

@@ -111,8 +111,9 @@
                                     <i class="fas fa-pencil-alt"></i> Edit Undangan
                                 </a>
                                 <a class="btn btn-sm btn-primary"
-                                    href="{{ route('rapat.form-notula', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}">
-                                    <i class="fas fa-file-word"></i> Tambah Notula
+                                    href="{{ route('rapat.form-notula', ['param' => Crypt::encrypt('add'), 'id' => Crypt::encrypt($rapat->id)]) }}">
+                                    <i class="fas fa-file-word"></i> {{ $rapat->detailRapat->notulen ? 'Edit' : 'Tambah' }}
+                                    Notula
                                 </a>
                                 <a class="btn btn-sm btn-primary"
                                     href="{{ route('rapat.form-dokumentasi', ['id' => 'null']) }}">

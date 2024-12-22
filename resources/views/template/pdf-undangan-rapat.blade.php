@@ -38,7 +38,7 @@
         }
 
         .body-content {
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .table-content {
@@ -74,7 +74,7 @@
                     </h4>
                     <p style="margin: 0;font-size:13px;">
                         {{ $aplikasi->alamat }} <br>
-                        Kabupaten {{ $aplikasi->kota }} {{ $aplikasi->kode_pos }}, {{ $aplikasi->website }},
+                        {{ $aplikasi->kota }} {{ $aplikasi->kode_pos }}, {{ $aplikasi->website }},
                         {{ $aplikasi->email }}
                     </p>
                 </td>
@@ -88,7 +88,7 @@
             Tanggal, {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->tanggal_rapat) }}
         </p>
 
-        <table class="table-content" cellpadding="2px;">
+        <table class="table-content" cellpadding="2">
             <tr>
                 <td style="width: 10%;vertical-align:top;">Nomor</td>
                 <td style="width: 1%;vertical-align:top;">:</td>
@@ -121,23 +121,23 @@
             Mengharapkan kehadiran Bapak/Ibu {{ $rapat->detailRapat->peserta }} {{ $aplikasi->satuan_kerja }} untuk
             mengikuti <strong>"{{ $rapat->detailRapat->perihal }}"</strong> yang akan diselenggarakan pada :
         </p>
-        <table class="table-agenda" cellpadding="2px;">
+        <table class="table-agenda" cellpadding="2">
             <tr>
-                <td style="width: 5%;vertical-align: top;">Hari</td>
+                <td style="width: 10%;vertical-align: top;">Hari</td>
                 <td style="" style="width: 1%;vertical-align: top;">:</td>
                 <td style="vertical-align: top;">
                     {{ \App\Helpers\TimeSession::convertDayIndonesian($rapat->detailRapat->tanggal_rapat) }}
                 </td>
             </tr>
             <tr>
-                <td style="width: 5%;vertical-align: top;">Tanggal</td>
+                <td style="width: 10%;vertical-align: top;">Tanggal</td>
                 <td style="width: 1%;vertical-align: top;">:</td>
                 <td style="vertical-align: top;">
                     {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->tanggal_rapat) }}
                 </td>
             </tr>
             <tr>
-                <td style="width: 5%;vertical-align: top;">Pukul</td>
+                <td style="width: 10%;vertical-align: top;">Pukul</td>
                 <td style="width: 1%;vertical-align: top;">:</td>
                 <td style="vertical-align: top;">
                     {{ $rapat->detailRapat->jam_mulai }}

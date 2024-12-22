@@ -20,6 +20,7 @@ use App\Models\Pengguna\PejabatPenggantiModel;
 use App\Models\Manajemen\KlasifikasiRapatModel;
 use App\Models\Manajemen\KlasifikasiJabatanModel;
 use App\Http\Requests\Manajemen\FormManajemenRapat;
+use App\Http\Requests\Manajemen\FormNotulaRequest;
 use App\Http\Requests\Manajemen\FormUndanganRapatRequest;
 
 class RapatController extends Controller
@@ -292,6 +293,8 @@ class RapatController extends Controller
             return redirect()->back()->with('error', 'Parameter tidak ditemukan !');
         }
 
+        $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
+
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
@@ -307,10 +310,47 @@ class RapatController extends Controller
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'formTitle' => $formTitle . ' Notula ',
-            'routeBack' => $routeBack
+            'routeBack' => $routeBack,
+            'paramOutgoing' => Crypt::encrypt($paramOutgoing),
+            'pegawai' => PegawaiModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
+            'rapat' => $searchRapat
         ];
 
         return view('rapat.form-notula', $data);
+    }
+
+    public function saveNotula(FormNotulaRequest $request)
+    {
+        // Run validated
+        $request->validated();
+
+        $formData = [
+            'jam_selesai' => htmlspecialchars($request->input('jamSelesai')),
+            'pembahasan' => nl2br(htmlspecialchars($request->input('pembahasan'))),
+            'pimpinan_rapat' => nl2br(htmlspecialchars($request->input('pimpinanRapat'))),
+            'moderator' => htmlspecialchars($request->input('moderator')),
+            'notulen' => htmlspecialchars($request->input('notulen')),
+            'catatan' => nl2br(htmlspecialchars($request->input('catatan'))),
+            'kesimpulan' => nl2br(htmlspecialchars($request->input('kesimpulan'))),
+            'disahkan' => htmlspecialchars($request->input('disahkan')),
+        ];
+        try {
+            DB::beginTransaction();
+            $search = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->input('id')));
+            $notula = DetailRapatModel::where('manajemen_rapat_id', '=', $search->id)->first();
+            $save = $notula->update($formData);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $th);
+        }
+
+        if (!$save) {
+            return redirect()->back()->with('error', 'Notula gagal di simpan !');
+        }
+
+        return redirect()->route('rapat.detail', ['id' => $request->input('id')])->with('success', 'Notula berhasil di simpan !');
     }
 
     public function formDokumentasi(Request $request)

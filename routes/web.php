@@ -65,6 +65,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/manajemen-rapat/rapat-dinas/dokumentasi/{id}', 'formDokumentasi')->name('rapat.form-dokumentasi');
 
         Route::post('/manajemen-rapat/rapat-dinas/simpan', 'saveRapat')->name('rapat.simpan-rapat');
+        Route::post('/manajemen-rapat/rapat-dinas/notula/simpan', 'saveNotula')->name('rapat.simpan-notula');
         Route::delete('/manajemen-rapat/rapat-dinas/hapus', 'deleteRapat')->name('rapat.hapus-rapat');
 
         Route::get('/manajemen-rapat/rapat-dinas/detail/{id}', 'detailRapat')->name('rapat.detail');
