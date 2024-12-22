@@ -111,13 +111,13 @@
                                     <i class="fas fa-pencil-alt"></i> Edit Undangan
                                 </a>
                                 <a class="btn btn-sm btn-primary"
-                                    href="{{ route('rapat.form-notula', ['param' => Crypt::encrypt('add'), 'id' => Crypt::encrypt($rapat->id)]) }}">
+                                    href="{{ route('rapat.form-notula', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                     <i class="fas fa-file-word"></i> {{ $rapat->detailRapat->notulen ? 'Edit' : 'Tambah' }}
                                     Notula
                                 </a>
                                 <a class="btn btn-sm btn-primary"
-                                    href="{{ route('rapat.form-dokumentasi', ['id' => 'null']) }}">
-                                    <i class="fas fa-camera"></i> Tambah Dokumentasi
+                                    href="{{ route('rapat.form-dokumentasi', ['id' => Crypt::encrypt($rapat->id)]) }}">
+                                    <i class="fas fa-camera"></i> {{ $dokumentasi ? 'Edit' : 'Tambah' }} Dokumentasi
                                 </a>
                             </li>
                         @endif
@@ -132,16 +132,110 @@
                                 class="btn btn-warning btn-sm"><i class="fas fa-file-pdf"></i>
                                 Daftar Hadir
                             </button>
-                            <a target="_blank" class="btn btn-sm btn-warning"
-                                href="{{ route('rapat.print-notula', ['id' => Crypt::encrypt($rapat->id)]) }}">
-                                <i class="fas fa-file-pdf"></i> Notula
-                            </a>
-                            <a target="_blank" class="btn btn-sm btn-warning"
-                                href="{{ route('rapat.print-dokumentasi', ['id' => Crypt::encrypt($rapat->id)]) }}">
-                                <i class="fas fa-file-pdf"></i> Dokumentasi
-                            </a>
+                            @if ($rapat->detailRapat->notulen != null)
+                                <a target="_blank" class="btn btn-sm btn-warning"
+                                    href="{{ route('rapat.print-notula', ['id' => Crypt::encrypt($rapat->id)]) }}">
+                                    <i class="fas fa-file-pdf"></i> Notula
+                                </a>
+                            @endif
+                            @if ($dokumentasi)
+                                <a target="_blank" class="btn btn-sm btn-warning"
+                                    href="{{ route('rapat.print-dokumentasi', ['id' => Crypt::encrypt($rapat->id)]) }}">
+                                    <i class="fas fa-file-pdf"></i> Dokumentasi
+                                </a>
+                            @endif
                         </li>
+                        @if (Auth::user()->roles != 'User' || Auth::user()->id == $rapat->dibuat)
+                            @if ($dokumentasi)
+                                <li class="list-group-item px-0">
+                                    <p class="mb-1 text-muted">Unggah Dokumen</p>
+                                    <button data-pc-animate="fade-in-scale" data-bs-toggle="modal"
+                                        data-bs-target="#animateModal" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-file-pdf"></i> Unggah File Edoc
+                                    </button>
+                                    <a target="_blank" class="btn btn-sm btn-secondary"
+                                        href="{{ asset('storage/' . $edoc->path_file_edoc) }}">
+                                        <i class="fas fa-file-pdf"></i> Dokumentasi
+                                    </a>
+                                    Last Update Uploaded : {{ $edoc->updated_at }}
+                                    <form action="{{ route('rapat.simpan-edoc') }}" method="POST"
+                                        enctype="multipart/form-data">
+                                        <div class="modal fade modal-animate" id="animateModal" tabindex="-1"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Unggah File Edoc Rapat</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"> </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        @method('POST')
+                                                        @csrf
+                                                        <div class="mb-3" hidden>
+                                                            <input type="text" class="form-control" readonly
+                                                                name="id" value="{{ Crypt::encrypt($rapat->id) }}">
+                                                        </div>
+                                                        <div class="form-file mb-3">
+                                                            <label class="form-label" for="file">File Edoc
+                                                                <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input type="file" class="form-control" aria-label="file"
+                                                                id="file" name="file" required>
+                                                            <small class="text-danger mt-1">
+                                                                Dokumen rapat yang diunggah harus berformat PDF, maksimal
+                                                                ukuran file 10MB dan harus sudah ditandatangani.
+                                                            </small>
+                                                            @error('file')
+                                                                <small class="text-danger mt-1">* {{ $message }}</small>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit"
+                                                            class="btn btn-primary shadow-2">Unggah</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <script>
+                                        var animateModal = document.getElementById('animateModal');
+                                        animateModal.addEventListener('show.bs.modal', function(event) {
+                                            var button = event.relatedTarget;
+                                            var recipient = button.getAttribute('data-pc-animate');
+                                            var modalTitle = animateModal.querySelector('.modal-title');
+                                            // modalTitle.textContent = 'Animate Modal : ' + recipient;
+                                            animateModal.classList.add('anim-' + recipient);
+                                            if (recipient == 'let-me-in' || recipient == 'make-way' || recipient == 'slip-from-top') {
+                                                document.body.classList.add('anim-' + recipient);
+                                            }
+                                        });
+                                        animateModal.addEventListener('hidden.bs.modal', function(event) {
+                                            removeClassByPrefix(animateModal, 'anim-');
+                                            removeClassByPrefix(document.body, 'anim-');
+                                        });
+
+                                        function removeClassByPrefix(node, prefix) {
+                                            for (let i = 0; i < node.classList.length; i++) {
+                                                let value = node.classList[i];
+                                                if (value.startsWith(prefix)) {
+                                                    node.classList.remove(value);
+                                                }
+                                            }
+                                        }
+                                    </script>
+                                </li>
+                            @endif
+                        @endif
                     </ul>
+                    <hr>
+                    <a href="{{ route('rapat.index') }}" class="btn btn-primary btn-sm mt-2">
+                        <i class="fas fa-reply-all"></i> Kembali
+                    </a>
                 </div>
             </div>
             <!-- [ Main Content ] end -->

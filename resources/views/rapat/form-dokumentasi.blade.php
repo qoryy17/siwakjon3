@@ -27,14 +27,22 @@
                     <a href="{{ $routeBack }}">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('rapat.simpan-dokumentasi') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
+                        <div class="mb-3" hidden>
+                            <input type="text" class="form-control" readonly name="id"
+                                value="{{ Crypt::encrypt($rapat->id) }}">
+                        </div>
                         <div class="form-file mb-3">
-                            <label class="form-label" for="foto">Foto
+                            <label class="form-label" for="file">Foto
                                 <span class="text-danger">*</span>
                             </label>
-                            <input type="file" class="form-control" aria-label="foto" id="foto" required>
+                            <input type="file" class="form-control" aria-label="file" id="file" name="file"
+                                required>
+                            @error('file')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <img src="" alt="Pratinjau Gambar" class="img img-thumbnail" id="imgPreview"
@@ -55,24 +63,56 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Filename</th>
+                                    <th>File</th>
                                     <th>Created At</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Mark</td>
-                                    <td>
-                                        {{ now() }}
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-light-danger">
-                                            <i class="ti ti-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($dokumentasi as $item)
+                                    <tr>
+                                        <td>{{ $no }}</td>
+                                        <td>
+                                            <a target="_blank"
+                                                href="{{ asset('storage/' . $item->path_file_dokumentasi) }}"
+                                                class="btn btn-primary btn-sm">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {{ $item->created_at }}
+                                        </td>
+                                        <td>
+                                            <a href="#" class="avtar avtar-xs btn-link-danger"
+                                                onclick=" Swal.fire({
+                                                    icon: 'warning',
+                                                    title: 'Hapus Data ?',
+                                                    text: 'Data yang dihapus tidak dapat dikembalikan !',
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Hapus',
+                                                    cancelButtonText: 'Batal',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('deleteForm{{ $no }}').submit();
+                                                    }
+                                                });">
+                                                <i class="ti ti-trash f-20"></i>
+                                            </a>
+                                            <form id="deleteForm{{ $no }}"
+                                                action="{{ route('rapat.hapus-dokumentasi', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $no++;
+                                    @endphp
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

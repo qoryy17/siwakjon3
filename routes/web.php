@@ -60,15 +60,18 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(RapatController::class)->group(function () {
         Route::get('/manajemen-rapat/rapat-dinas', 'indexRapat')->name('rapat.index');
+        Route::get('/manajemen-rapat/rapat-dinas/detail/{id}', 'detailRapat')->name('rapat.detail');
         Route::get('/manajemen-rapat/rapat-dinas/form/{param}/{id}', 'formUndangan')->name('rapat.form-undangan');
-        Route::get('/manajemen-rapat/rapat-dinas/notula/{param}/{id}', 'formNotula')->name('rapat.form-notula');
+        Route::get('/manajemen-rapat/rapat-dinas/notula/{id}', 'formNotula')->name('rapat.form-notula');
         Route::get('/manajemen-rapat/rapat-dinas/dokumentasi/{id}', 'formDokumentasi')->name('rapat.form-dokumentasi');
 
         Route::post('/manajemen-rapat/rapat-dinas/simpan', 'saveRapat')->name('rapat.simpan-rapat');
-        Route::post('/manajemen-rapat/rapat-dinas/notula/simpan', 'saveNotula')->name('rapat.simpan-notula');
         Route::delete('/manajemen-rapat/rapat-dinas/hapus', 'deleteRapat')->name('rapat.hapus-rapat');
+        Route::post('/manajemen-rapat/rapat-dinas/notula/simpan', 'saveNotula')->name('rapat.simpan-notula');
+        Route::post('/manajemen-rapat/rapat-dinas/dokumentasi/simpan', 'saveDokumentasi')->name('rapat.simpan-dokumentasi');
+        Route::delete('/manajemen-rapat/rapat-dinas/dokumentasi/hapus', 'deleteDokumentasi')->name('rapat.hapus-dokumentasi');
 
-        Route::get('/manajemen-rapat/rapat-dinas/detail/{id}', 'detailRapat')->name('rapat.detail');
+        Route::post('/manajemen-rapat/rapat-dinas/edoc/simpan', 'saveEdoc')->name('rapat.simpan-edoc');
     });
 });
 

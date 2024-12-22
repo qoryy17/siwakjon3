@@ -13,15 +13,18 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Manajemen\DetailRapatModel;
 use App\Models\Pengaturan\SetKodeRapatModel;
 use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Pengguna\PejabatPenggantiModel;
+use App\Models\Manajemen\DokumentasiRapatModel;
 use App\Models\Manajemen\KlasifikasiRapatModel;
 use App\Models\Manajemen\KlasifikasiJabatanModel;
-use App\Http\Requests\Manajemen\FormManajemenRapat;
 use App\Http\Requests\Manajemen\FormNotulaRequest;
+use App\Http\Requests\Manajemen\FormManajemenRapat;
 use App\Http\Requests\Manajemen\FormUndanganRapatRequest;
+use App\Models\Manajemen\EdocRapatModel;
 
 class RapatController extends Controller
 {
@@ -42,7 +45,7 @@ class RapatController extends Controller
             'breadcumbs' => $breadcumb,
             'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
             'klasifikasiJabatan' => KlasifikasiJabatanModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
-            'rapat' => ManajemenRapatModel::with('detailRapat')->orderBy('created_at', 'desc')->get()
+            'rapat' => ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->orderBy('created_at', 'desc')->get()
         ];
 
         return view('rapat.data-rapat', $data);
@@ -60,11 +63,17 @@ class RapatController extends Controller
             ['title' => 'Detail', 'link' => 'javascript:void(0);', 'page' => 'aria-current="page"']
         ];
 
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id))->first();
+        $dokumentasi = DokumentasiRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->first();
+        $edoc = EdocRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->first();
+
         $data = [
             'title' => 'Manajemen Rapat | Detail Rapat',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'rapat' => ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id))->first()
+            'rapat' => $rapat,
+            'dokumentasi' => $dokumentasi,
+            'edoc' => $edoc
         ];
         return view('rapat.detail-rapat', $data);
     }
@@ -154,7 +163,7 @@ class RapatController extends Controller
 
     }
 
-    public function saveRapat(FormManajemenRapat $request, FormUndanganRapatRequest $requestRapat)//: RedirectResponse
+    public function saveRapat(FormManajemenRapat $request, FormUndanganRapatRequest $requestRapat): RedirectResponse
     {
         // Run validated
         $request->validated();
@@ -280,20 +289,14 @@ class RapatController extends Controller
 
     public function formNotula(Request $request)
     {
-        // Checking received from request
-        if (Crypt::decrypt($request->param) == 'add') {
-            $paramOutgoing = 'save';
-            $formTitle = 'Tambah';
-            $routeBack = route('rapat.detail', ['id' => 'null']);
-        } elseif (Crypt::decrypt($request->param) == 'edit') {
-            $paramOutgoing = 'update';
-            $formTitle = 'Edit';
-            $routeBack = route('rapat.detail', ['id' => 'null']);
-        } else {
-            return redirect()->back()->with('error', 'Parameter tidak ditemukan !');
-        }
-
+        // Get data rapat
         $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
+
+        if ($searchRapat->detailRapat->notulen != null) {
+            $formTitle = 'Edit';
+        } else {
+            $formTitle = 'Tambah';
+        }
 
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
@@ -310,8 +313,7 @@ class RapatController extends Controller
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'formTitle' => $formTitle . ' Notula ',
-            'routeBack' => $routeBack,
-            'paramOutgoing' => Crypt::encrypt($paramOutgoing),
+            'routeBack' => route('rapat.detail', ['id' => $request->id]),
             'pegawai' => PegawaiModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
             'rapat' => $searchRapat
         ];
@@ -319,7 +321,7 @@ class RapatController extends Controller
         return view('rapat.form-notula', $data);
     }
 
-    public function saveNotula(FormNotulaRequest $request)
+    public function saveNotula(FormNotulaRequest $request): RedirectResponse
     {
         // Run validated
         $request->validated();
@@ -355,6 +357,9 @@ class RapatController extends Controller
 
     public function formDokumentasi(Request $request)
     {
+        // Get data rapat
+        $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
+        $dokumentasi = DokumentasiRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $searchRapat->detailRapat->id)->get();
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
@@ -369,10 +374,128 @@ class RapatController extends Controller
             'title' => 'Manajemen Rapat | ' . 'Dokumentasi',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'formTitle' => 'Dokumentasi ',
-            'routeBack' => route('rapat.index')
+            'formTitle' => 'Dokumentasi',
+            'routeBack' => route('rapat.detail', ['id' => $request->id]),
+            'rapat' => $searchRapat,
+            'dokumentasi' => $dokumentasi
         ];
 
         return view('rapat.form-dokumentasi', $data);
+    }
+
+    public function saveDokumentasi(Request $request): RedirectResponse
+    {
+        $year = date('Y');
+        $month = date('m');
+        $directory = 'images/rapat/' . $year . '/' . $month . '/';
+        // this output directory : /images/rapat/2024/12/
+
+        // Run validate file
+        $request->validate(
+            ['file' => 'required|file|mimes:png,jpg|max:10240'],
+            [
+                'file.required' => 'File wajib di isi !',
+                'file.file' => 'File harus berupa file valid !',
+                'file.mimes' => 'File hanya boleh bertipe png/jpg',
+                'file.max' => 'File maksimal berukuran 10MB',
+            ]
+        );
+
+        // File foto upload process
+        $fileFoto = $request->file('file');
+        $fileHashname = $fileFoto->hashName();
+        $uploadPath = $directory . $fileHashname;
+        $fileUpload = $fileFoto->storeAs($directory, $fileHashname, 'public');
+
+        // If file foto has failed to upload
+        if (!$fileUpload) {
+            return redirect()->back()->with('error', 'Unggah file gagal !')->withInput();
+        }
+
+        $dokumentasi = DetailRapatModel::where('manajemen_rapat_id', '=', Crypt::decrypt($request->input('id')))->first();
+
+        $formData = [
+            'detail_rapat_id' => $dokumentasi->id,
+            'path_file_dokumentasi' => $uploadPath,
+        ];
+
+        $save = DokumentasiRapatModel::create($formData);
+
+        if (!$save) {
+            return redirect()->back()->with('error', 'Dokumentasi gagal di simpan !');
+        }
+
+        return redirect()->route('rapat.form-dokumentasi', ['id' => $request->input('id')])->with('success', 'Dokumentasi berhasil di simpan !');
+    }
+
+    public function deleteDokumentasi(Request $request): RedirectResponse
+    {
+        $dokumentasi = DokumentasiRapatModel::findOrFail(Crypt::decrypt($request->id));
+        $detailRapat = DetailRapatModel::findOrFail($dokumentasi->detail_rapat_id);
+        if ($dokumentasi) {
+            // Delete old file pdf
+            if (Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
+                Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
+            }
+            $dokumentasi->delete();
+            return redirect()->back()->with('success', 'Dokumentasi berhasil di hapus !');
+        }
+
+        return redirect()->route('rapat.form-dokumentasi', ['id' => Crypt::encrypt($detailRapat->manajemen_rapat_id)])->with('error', 'Dokumentasi gagal di hapus !');
+    }
+
+    public function saveEdoc(Request $request): RedirectResponse
+    {
+        $year = date('Y');
+        $month = date('m');
+        $directory = 'pdf/rapat/' . $year . '/' . $month . '/';
+        // this output directory : /pdf/rapat/2024/12/
+        $save = null;
+
+        // Run validate file
+        $request->validate(
+            ['file' => 'required|file|mimes:pdf|max:10240'],
+            [
+                'file.required' => 'File wajib di isi !',
+                'file.file' => 'File harus berupa file valid !',
+                'file.mimes' => 'File hanya boleh bertipe pdf',
+                'file.max' => 'File maksimal berukuran 10MB',
+            ]
+        );
+
+        // File pdf upload process
+        $filePDF = $request->file('file');
+        $fileHashname = $filePDF->hashName();
+        $uploadPath = $directory . $fileHashname;
+        $fileUpload = $filePDF->storeAs($directory, $fileHashname, 'public');
+
+        // If file pdf has failed to upload
+        if (!$fileUpload) {
+            return redirect()->back()->with('error', 'Unggah file gagal !')->withInput();
+        }
+
+        $edocRapat = DetailRapatModel::where('manajemen_rapat_id', '=', Crypt::decrypt($request->input('id')))->first();
+
+        $formData = [
+            'detail_rapat_id' => $edocRapat->id,
+            'path_file_edoc' => $uploadPath,
+        ];
+
+        $existEdoc = EdocRapatModel::where('detail_rapat_id', '=', $edocRapat->id)->first();
+        if ($existEdoc) {
+            // Delete old file pdf
+            if (Storage::disk('public')->exists($existEdoc->path_file_edoc)) {
+                Storage::disk('public')->delete($existEdoc->path_file_edoc);
+            }
+            $save = $existEdoc->update($formData);
+        } else {
+            $save = EdocRapatModel::create($formData);
+        }
+
+        if (!$save) {
+            return redirect()->back()->with('error', 'File Edoc gagal di simpan !');
+        }
+
+        return redirect()->route('rapat.detail', ['id' => $request->input('id')])->with('success', 'File Edoc berhasil di simpan !');
     }
 }

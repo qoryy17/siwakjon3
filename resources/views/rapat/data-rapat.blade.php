@@ -44,6 +44,8 @@
                                     <th>Nomor Rapat</th>
                                     <th>Perihal</th>
                                     <th class="text-start">Tanggal Rapat</th>
+                                    <th>Klasifikasi</th>
+                                    <th>Edoc</th>
                                     <th>Dibuat Oleh</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
@@ -57,13 +59,32 @@
                                 @foreach ($rapat as $item)
                                     @php
                                         $dibuat = \App\Models\User::find($item->dibuat);
+                                        $edoc = App\Models\Manajemen\EdocRapatModel::where(
+                                            'detail_rapat_id',
+                                            $item->detailRapat->id,
+                                        )->first();
                                     @endphp
                                     <tr>
                                         <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
                                         <td style="vertical-align: top;" class="text-start">{{ $item->nomor_dokumen }}</td>
-                                        <td style="vertical-align: top;">{{ $item->detailRapat->perihal }}</td>
+                                        <td style="vertical-align: top;">{{ $item->detailRapat->perihal }}
+                                        </td>
                                         <td style="vertical-align: top;" class="text-start">
-                                            {{ $item->detailRapat->tanggal_rapat }}
+                                            {{ \App\Helpers\TimeSession::convertDateToIndonesian($item->detailRapat->tanggal_rapat) }}
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            {{ $item->klasifikasiRapat->rapat }}
+                                        </td>
+                                        <td>
+                                            @if ($edoc)
+                                                <a href="{{ asset('storage/' . $edoc->path_file_edoc) }}"
+                                                    class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </a>
+                                            @else{
+                                                <span class="text-danger">Belum diunggah</span>
+                                                }
+                                            @endif
                                         </td>
                                         <td style="vertical-align: top;">{{ $dibuat->name }}</td>
                                         <td style="vertical-align: top;">{{ $item->created_at }}</td>
