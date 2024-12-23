@@ -43,7 +43,7 @@ class RapatController extends Controller
             'title' => 'Manajemen Rapat',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
+            'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->where('rapat', '!=', 'Pengawasan')->orderBy('created_at', 'desc')->get(),
             'klasifikasiJabatan' => KlasifikasiJabatanModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
             'rapat' => ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->orderBy('created_at', 'desc')->get()
         ];
@@ -98,7 +98,12 @@ class RapatController extends Controller
 
             // Generate index nomor dokumen rapat
             $indexNumber = ManajemenRapatModel::orderBy('nomor_indeks', 'desc')->lockForUpdate()->first();
-            $indexIncrement = intval($indexNumber->nomor_indeks) + 1;
+            if (!$indexNumber) {
+                $counter = 0;
+            } else {
+                $counter = $indexNumber->nomor_indeks;
+            }
+            $indexIncrement = intval($counter) + 1;
 
             // Get Set Kode Surat on database
             $searchKodeSurat = SetKodeRapatModel::first();
@@ -209,7 +214,7 @@ class RapatController extends Controller
                     'peserta' => htmlspecialchars($requestRapat->input('peserta')),
                     'keterangan' => $requestRapat->input('keterangan'),
                 ];
-                DetailRapatModel::create($formDetailRapat);
+                $saveDetailRapat = DetailRapatModel::create($formDetailRapat);
                 DB::commit();
             } catch (\Throwable $th) {
                 DB::rollBack();

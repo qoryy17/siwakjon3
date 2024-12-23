@@ -59,13 +59,6 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'rapat' => 'Lainnya',
-                'kode_klasifikasi' => 'LN',
-                'aktif' => 'Y',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
                 'rapat' => 'Pengawasan',
                 'kode_klasifikasi' => 'PW',
                 'aktif' => 'Y',

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Crypt;
 use App\Models\Pengaturan\AplikasiModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Manajemen\ManajemenRapatModel;
+use App\Models\Pengguna\PejabatPenggantiModel;
 
 class PrintRapatController extends Controller
 {
@@ -17,6 +18,13 @@ class PrintRapatController extends Controller
     {
         // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id))->first();
+
+        if ($rapat->pejabat_pengganti_id) {
+            $pengganti = PejabatPenggantiModel::findOrFail($rapat->pejabat_pengganti_id);
+            $pejabatPengganti = $pengganti->pejabat;
+        } else {
+            $pejabatPengganti = null;
+        }
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
         $pegawai = PegawaiModel::with('jabatan')->findOrFail($rapat->pejabat_penandatangan);
@@ -24,7 +32,8 @@ class PrintRapatController extends Controller
             'aplikasi' => AplikasiModel::first(),
             'rapat' => $rapat,
             'qrCode' => $qrCode,
-            'pegawai' => $pegawai
+            'pegawai' => $pegawai,
+            'pejabatPengganti' => $pejabatPengganti
         ];
         $pdf = PDF::loadView('template.pdf-undangan-rapat', $data);
         $pdf->setPaper('Folio', 'potrait');

@@ -180,11 +180,18 @@
                 </td>
                 <td>
                     <p style="text-align: center;">
-                        <strong>{{ $pegawai->jabatan->jabatan }}</strong> <br>
-                        {{ $aplikasi->satuan_kerja }}
+                        @if ($pejabatPengganti != null)
+                            <strong>{{ $pejabatPengganti }}</strong> <br>
+                            {{ $aplikasi->satuan_kerja }} <br>
+                            {{ $pegawai->jabatan->jabatan }}
+                        @else{
+                            <strong>{{ $pegawai->jabatan->jabatan }}</strong> <br>
+                            {{ $aplikasi->satuan_kerja }}
+                            }
+                        @endif
 
 
-                        <span style="margin-top: 50px; display: block; font-weight: 700;">
+                        <span style="margin-top: 60px; display: block; font-weight: 700;">
                             {{ $pegawai->nama }} <br>
                         </span>
                     </p>
