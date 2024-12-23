@@ -184,10 +184,9 @@
                             <strong>{{ $pejabatPengganti }}</strong> <br>
                             {{ $aplikasi->satuan_kerja }} <br>
                             {{ $pegawai->jabatan->jabatan }}
-                        @else{
+                        @else
                             <strong>{{ $pegawai->jabatan->jabatan }}</strong> <br>
                             {{ $aplikasi->satuan_kerja }}
-                            }
                         @endif
 
 

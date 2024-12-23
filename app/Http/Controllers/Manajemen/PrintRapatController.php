@@ -17,7 +17,7 @@ class PrintRapatController extends Controller
     public function printUndanganRapat(Request $request)
     {
         // Generate QR code
-        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id))->first();
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
 
         if ($rapat->pejabat_pengganti_id) {
             $pengganti = PejabatPenggantiModel::findOrFail($rapat->pejabat_pengganti_id);
@@ -43,7 +43,7 @@ class PrintRapatController extends Controller
     {
         $peserta = $request->jumlahPeserta;
         // Generate QR code
-        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id))->first();
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
         $data = [
@@ -60,7 +60,7 @@ class PrintRapatController extends Controller
     public function printNotulaRapat(Request $request)
     {
         // Generate QR code
-        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id))->first();
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
 

@@ -63,7 +63,7 @@ class RapatController extends Controller
             ['title' => 'Detail', 'link' => 'javascript:void(0);', 'page' => 'aria-current="page"']
         ];
 
-        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id))->first();
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
         $dokumentasi = DokumentasiRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->first();
         $edoc = EdocRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->first();
 
@@ -75,6 +75,7 @@ class RapatController extends Controller
             'dokumentasi' => $dokumentasi,
             'edoc' => $edoc
         ];
+
         return view('rapat.detail-rapat', $data);
     }
 
