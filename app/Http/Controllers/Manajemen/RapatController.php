@@ -43,7 +43,7 @@ class RapatController extends Controller
             'title' => 'Manajemen Rapat',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
+            'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->where('rapat', '!=', 'Pengawasan')->orderBy('created_at', 'desc')->get(),
             'klasifikasiJabatan' => KlasifikasiJabatanModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
             'rapat' => ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->orderBy('created_at', 'desc')->get()
         ];
@@ -63,7 +63,7 @@ class RapatController extends Controller
             ['title' => 'Detail', 'link' => 'javascript:void(0);', 'page' => 'aria-current="page"']
         ];
 
-        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id))->first();
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
         $dokumentasi = DokumentasiRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->first();
         $edoc = EdocRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->first();
 
@@ -75,6 +75,7 @@ class RapatController extends Controller
             'dokumentasi' => $dokumentasi,
             'edoc' => $edoc
         ];
+
         return view('rapat.detail-rapat', $data);
     }
 
@@ -98,7 +99,12 @@ class RapatController extends Controller
 
             // Generate index nomor dokumen rapat
             $indexNumber = ManajemenRapatModel::orderBy('nomor_indeks', 'desc')->lockForUpdate()->first();
-            $indexIncrement = intval($indexNumber->nomor_indeks) + 1;
+            if (!$indexNumber) {
+                $counter = 0;
+            } else {
+                $counter = $indexNumber->nomor_indeks;
+            }
+            $indexIncrement = intval($counter) + 1;
 
             // Get Set Kode Surat on database
             $searchKodeSurat = SetKodeRapatModel::first();
@@ -115,7 +121,7 @@ class RapatController extends Controller
         } elseif (Crypt::decrypt($request->param) == 'edit') {
             $paramOutgoing = 'update';
             $formTitle = 'Edit';
-            $routeBack = route('rapat.index');
+            $routeBack = route('rapat.detail', ['id' => $request->id]);
             $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
 
             // Search klasifikasi rapat on database
@@ -209,7 +215,7 @@ class RapatController extends Controller
                     'peserta' => htmlspecialchars($requestRapat->input('peserta')),
                     'keterangan' => $requestRapat->input('keterangan'),
                 ];
-                DetailRapatModel::create($formDetailRapat);
+                $saveDetailRapat = DetailRapatModel::create($formDetailRapat);
                 DB::commit();
             } catch (\Throwable $th) {
                 DB::rollBack();
@@ -277,16 +283,35 @@ class RapatController extends Controller
         // Checking data manajemen rapat on database
         $rapat = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->id));
         if ($rapat) {
-            $detailRapat = DetailRapatModel::where('manajemen_rapat_id', '=', $rapat->id);
+            $detailRapat = DetailRapatModel::where('manajemen_rapat_id', '=', $rapat->id)->first();
             if ($detailRapat) {
                 $detailRapat->delete();
             }
+
+            $dokumentasi = DokumentasiRapatModel::where('detail_rapat_id', '=', $detailRapat->id)->first();
+            if ($dokumentasi) {
+                // Delete file dokumentasi
+                if (Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
+                    Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
+                }
+                $dokumentasi->delete();
+            }
+
+            $edoc = EdocRapatModel::where('detail_rapat_id', '=', $detailRapat->id)->first();
+            if ($edoc) {
+                // Delete file edoc pdf
+                if (Storage::disk('public')->exists($edoc->path_file_edoc)) {
+                    Storage::disk('public')->delete($edoc->path_file_edoc);
+                }
+                $dokumentasi->delete();
+            }
+
+            // After all data delete, remove data rapat on manajemen rapat
             $rapat->delete();
             return redirect()->route('rapat.index')->with('success', 'Rapat berhasil di hapus !');
         }
         return redirect()->route('rapat.index')->with('error', 'Rapat gagal di hapus !');
     }
-
     public function formNotula(Request $request)
     {
         // Get data rapat

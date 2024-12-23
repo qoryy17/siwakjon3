@@ -13,9 +13,9 @@ use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Pengguna\PejabatPenggantiModel;
 use App\Models\Manajemen\DokumentasiRapatModel;
 
-class PrintRapatController extends Controller
+class PrintPengawasanController extends Controller
 {
-    public function printUndanganRapat(Request $request)
+    public function printUndanganPengawasan(Request $request)
     {
         // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
@@ -40,7 +40,7 @@ class PrintRapatController extends Controller
         $pdf->setPaper('Folio', 'potrait');
         return $pdf->stream('Undangan Rapat ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
     }
-    public function printDaftarHadirRapat(Request $request)
+    public function printDaftarHadirPengawasan(Request $request)
     {
         $peserta = $request->jumlahPeserta;
         // Generate QR code
@@ -58,7 +58,7 @@ class PrintRapatController extends Controller
         return $pdf->stream('Daftar Hadir Rapat ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
     }
 
-    public function printNotulaRapat(Request $request)
+    public function printNotulaPengawasan(Request $request)
     {
         // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
@@ -79,7 +79,7 @@ class PrintRapatController extends Controller
         return $pdf->stream('Notula ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
     }
 
-    public function printDokumentasiRapat(Request $request)
+    public function printDokumentasiPengawasan(Request $request)
     {
         // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
@@ -98,6 +98,4 @@ class PrintRapatController extends Controller
         return $pdf->stream('Dokumentasi ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
 
     }
-
-
 }

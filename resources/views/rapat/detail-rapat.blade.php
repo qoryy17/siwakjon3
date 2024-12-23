@@ -153,11 +153,13 @@
                                         data-bs-target="#animateModal" class="btn btn-secondary btn-sm">
                                         <i class="fas fa-file-pdf"></i> Unggah File Edoc
                                     </button>
-                                    <a target="_blank" class="btn btn-sm btn-secondary"
-                                        href="{{ asset('storage/' . $edoc->path_file_edoc) }}">
-                                        <i class="fas fa-file-pdf"></i> Dokumentasi
-                                    </a>
-                                    Last Update Uploaded : {{ $edoc->updated_at }}
+                                    @if ($edoc)
+                                        <a target="_blank" class="btn btn-sm btn-secondary"
+                                            href="{{ asset('storage/' . $edoc->path_file_edoc) }}">
+                                            <i class="fas fa-file-pdf"></i> Dokumentasi
+                                        </a>
+                                        Last Update Uploaded : {{ $edoc->updated_at }}
+                                    @endif
                                     <form action="{{ route('rapat.simpan-edoc') }}" method="POST"
                                         enctype="multipart/form-data">
                                         <div class="modal fade modal-animate" id="animateModal" tabindex="-1"

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Helpers\RouteLink;
 use App\Helpers\TimeSession;
+use App\Helpers\ViewUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,11 +23,17 @@ class HomeController extends Controller
             ['title' => 'Home', 'link' => route('home.superadmin'), 'page' => ''],
             ['title' => 'Dashboard', 'link' => route('home.superadmin'), 'page' => 'aria-current="page"']
         ];
+
         $data = [
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
             'routeHome' => route('home.superadmin'),
             'breadcumbs' => $breadcumb,
-            'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name
+            'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name,
+            'countPengguna' => ViewUser::countPengguna(),
+            'countRapatBulan' => ViewUser::countRapatBulan(),
+            'countRapatWasbid' => ViewUser::countRapatWasbid(),
+            'countMonev' => ViewUser::countMonev(),
+            'countRapat' => ViewUser::countRapat()
         ];
 
         return view('home.home-superadmin', $data);

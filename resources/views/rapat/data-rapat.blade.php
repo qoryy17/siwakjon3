@@ -67,23 +67,21 @@
                                     <tr>
                                         <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
                                         <td style="vertical-align: top;" class="text-start">{{ $item->nomor_dokumen }}</td>
-                                        <td style="vertical-align: top;">{{ $item->detailRapat->perihal }}
-                                        </td>
+                                        <td style="vertical-align: top;">{{ $item->detailRapat->perihal }}</td>
                                         <td style="vertical-align: top;" class="text-start">
                                             {{ \App\Helpers\TimeSession::convertDateToIndonesian($item->detailRapat->tanggal_rapat) }}
                                         </td>
                                         <td style="vertical-align: top;">
                                             {{ $item->klasifikasiRapat->rapat }}
                                         </td>
-                                        <td>
+                                        <td style="vertical-align: top;">
                                             @if ($edoc)
                                                 <a href="{{ asset('storage/' . $edoc->path_file_edoc) }}"
                                                     class="btn btn-sm btn-primary">
                                                     <i class="fas fa-file-pdf"></i>
                                                 </a>
-                                            @else{
+                                            @else
                                                 <span class="text-danger">Belum diunggah</span>
-                                                }
                                             @endif
                                         </td>
                                         <td style="vertical-align: top;">{{ $dibuat->name }}</td>

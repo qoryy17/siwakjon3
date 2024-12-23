@@ -36,24 +36,35 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now()
         ]);
 
-        KlasifikasiRapatModel::insert([[
-            'rapat' => 'Bulanan',
-            'kode_klasifikasi' => 'BLN',
-            'aktif' => 'Y',
-            'created_at' => now(),
-            'updated_at' => now()
-        ],[
-            'rapat' => 'Berjenjang',
-            'kode_klasifikasi' => 'BNJ',
-            'aktif' => 'Y',
-            'created_at' => now(),
-            'updated_at' => now()
-        ],[
-            'rapat' => 'Lainnya',
-            'kode_klasifikasi' => 'LN',
-            'aktif' => 'Y',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]]);
+        KlasifikasiRapatModel::insert([
+            [
+                'rapat' => 'Bulanan',
+                'kode_klasifikasi' => 'BLN',
+                'aktif' => 'Y',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'rapat' => 'Berjenjang',
+                'kode_klasifikasi' => 'BNJ',
+                'aktif' => 'Y',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'rapat' => 'Lainnya',
+                'kode_klasifikasi' => 'LN',
+                'aktif' => 'Y',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'rapat' => 'Pengawasan',
+                'kode_klasifikasi' => 'PW',
+                'aktif' => 'Y',
+                'created_at' => now(),
+                'updated_at' => now()
+            ]
+        ]);
     }
 }

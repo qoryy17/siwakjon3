@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class EdocTlhpMOdel extends Model
+class EdocWasbidModel extends Model
 {
     use HasFactory;
 
@@ -20,8 +20,8 @@ class EdocTlhpMOdel extends Model
 
     public $timestamps = true;
 
-    public function pengawasanBidang(): BelongsTo{
+    public function pengawasanBidang(): BelongsTo
+    {
         return $this->belongsTo(PengawasanBidangModel::class);
     }
-
 }

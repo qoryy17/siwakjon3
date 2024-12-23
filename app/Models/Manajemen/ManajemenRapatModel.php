@@ -21,7 +21,7 @@ class ManajemenRapatModel extends Model
         'klasifikasi_rapat_id',
         'dibuat',
         'pejabat_penandatangan',
-        'pejabat_pengganti_id',
+        '',
     ];
 
     public $timestamps = true;

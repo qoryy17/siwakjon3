@@ -42,8 +42,14 @@ class DetailRapatModel extends Model
         return $this->belongsTo(ManajemenRapatModel::class, 'manajemen_rapat_id', 'id');
     }
 
+    public function pengawasanBidang(): BelongsTo
+    {
+        return $this->belongsTo(PengawasanBidangModel::class);
+    }
+
     public function dokumentasiRapat(): BelongsTo
     {
         return $this->belongsTo(DokumentasiRapatModel::class);
     }
+
 }
