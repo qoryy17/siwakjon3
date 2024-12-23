@@ -283,16 +283,35 @@ class RapatController extends Controller
         // Checking data manajemen rapat on database
         $rapat = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->id));
         if ($rapat) {
-            $detailRapat = DetailRapatModel::where('manajemen_rapat_id', '=', $rapat->id);
+            $detailRapat = DetailRapatModel::where('manajemen_rapat_id', '=', $rapat->id)->first();
             if ($detailRapat) {
                 $detailRapat->delete();
             }
+
+            $dokumentasi = DokumentasiRapatModel::where('detail_rapat_id', '=', $detailRapat->id)->first();
+            if ($dokumentasi) {
+                // Delete file dokumentasi
+                if (Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
+                    Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
+                }
+                $dokumentasi->delete();
+            }
+
+            $edoc = EdocRapatModel::where('detail_rapat_id', '=', $detailRapat->id)->first();
+            if ($edoc) {
+                // Delete file edoc pdf
+                if (Storage::disk('public')->exists($edoc->path_file_edoc)) {
+                    Storage::disk('public')->delete($edoc->path_file_edoc);
+                }
+                $dokumentasi->delete();
+            }
+
+            // After all data delete, remove data rapat on manajemen rapat
             $rapat->delete();
             return redirect()->route('rapat.index')->with('success', 'Rapat berhasil di hapus !');
         }
         return redirect()->route('rapat.index')->with('error', 'Rapat gagal di hapus !');
     }
-
     public function formNotula(Request $request)
     {
         // Get data rapat
