@@ -17,6 +17,7 @@ class PengawasanBidangModel extends Model
         'kode_pengawasan',
         'detail_rapat_id',
         'objek_pengawasan',
+        'dasar_hukum',
         'deskripsi_pengawasan',
         'kesimpulan',
         'rekomendasi',
@@ -27,11 +28,13 @@ class PengawasanBidangModel extends Model
 
     public $timestamps = true;
 
-    public function detailRapat(): BelongsTo{
+    public function detailRapat(): BelongsTo
+    {
         return $this->belongsTo(DetailRapatModel::class);
     }
 
-    public function temuanWasbid(): BelongsTo{
+    public function temuanWasbid(): BelongsTo
+    {
         return $this->belongsTo(TemuanWasbidModel::class);
     }
 }

@@ -119,10 +119,12 @@
                                     href="{{ route('pengawasan.form-dokumentasi', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                     <i class="fas fa-camera"></i> {{ $dokumentasi ? 'Edit' : 'Tambah' }} Dokumentasi
                                 </a>
-                                <a class="btn btn-sm btn-primary"
-                                    href="{{ route('pengawasan.laporan', ['id' => Crypt::encrypt($rapat->id)]) }}">
-                                    <i class="fas fa-file-word"></i> {{ $edoc ? 'Edit' : 'Tambah' }} Laporan
-                                </a>
+                                @if ($dokumentasi)
+                                    <a class="btn btn-sm btn-primary"
+                                        href="{{ route('pengawasan.laporan', ['id' => Crypt::encrypt($rapat->id)]) }}">
+                                        <i class="fas fa-file-word"></i> {{ $pengawasan ? 'Edit' : 'Tambah' }} Laporan
+                                    </a>
+                                @endif
                             </li>
                         @endif
 
@@ -148,13 +150,19 @@
                                     <i class="fas fa-file-pdf"></i> Dokumentasi
                                 </a>
                             @endif
+                            @if ($pengawasan)
+                                <a target="_blank" class="btn btn-sm btn-warning"
+                                    href="{{ route('pengawasan.print-laporan', ['id' => Crypt::encrypt($rapat->id)]) }}">
+                                    <i class="fas fa-file-pdf"></i> Laporan
+                                </a>
+                            @endif
                         </li>
                         @if (Auth::user()->roles != 'User' || Auth::user()->id == $rapat->dibuat)
-                            @if ($dokumentasi)
+                            @if ($pengawasan)
                                 <li class="list-group-item px-0">
                                     <p class="mb-1 text-muted">Unggah Dokumen</p>
                                     <button data-pc-animate="fade-in-scale" data-bs-toggle="modal"
-                                        data-bs-target="#animateModal" class="btn btn-secondary btn-sm">
+                                        data-bs-target="#animateModal1" class="btn btn-secondary btn-sm">
                                         <i class="fas fa-file-pdf"></i> Unggah File Edoc
                                     </button>
                                     @if ($edoc)
@@ -166,7 +174,7 @@
                                     @endif
                                     <form action="{{ route('pengawasan.simpan-edoc') }}" method="POST"
                                         enctype="multipart/form-data">
-                                        <div class="modal fade modal-animate" id="animateModal" tabindex="-1"
+                                        <div class="modal fade modal-animate" id="animateModal1" tabindex="-1"
                                             aria-hidden="true">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
@@ -209,19 +217,19 @@
                                     </form>
 
                                     <script>
-                                        var animateModal = document.getElementById('animateModal');
-                                        animateModal.addEventListener('show.bs.modal', function(event) {
+                                        var animateModal1 = document.getElementById('animateModal1');
+                                        animateModal1.addEventListener('show.bs.modal', function(event) {
                                             var button = event.relatedTarget;
                                             var recipient = button.getAttribute('data-pc-animate');
-                                            var modalTitle = animateModal.querySelector('.modal-title');
+                                            var modalTitle = animateModal1.querySelector('.modal-title');
                                             // modalTitle.textContent = 'Animate Modal : ' + recipient;
-                                            animateModal.classList.add('anim-' + recipient);
+                                            animateModal1.classList.add('anim-' + recipient);
                                             if (recipient == 'let-me-in' || recipient == 'make-way' || recipient == 'slip-from-top') {
                                                 document.body.classList.add('anim-' + recipient);
                                             }
                                         });
-                                        animateModal.addEventListener('hidden.bs.modal', function(event) {
-                                            removeClassByPrefix(animateModal, 'anim-');
+                                        animateModal1.addEventListener('hidden.bs.modal', function(event) {
+                                            removeClassByPrefix(animateModal1, 'anim-');
                                             removeClassByPrefix(document.body, 'anim-');
                                         });
 
@@ -239,7 +247,7 @@
                         @endif
                     </ul>
                     <hr>
-                    <a href="{{ route('pengawasan.index') }}" class="btn btn-primary btn-sm mt-2">
+                    <a href="{{ route('pengawasan.index') }}" class="btn btn-warning btn-sm mt-2">
                         <i class="fas fa-reply-all"></i> Kembali
                     </a>
                 </div>

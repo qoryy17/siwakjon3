@@ -55,9 +55,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function pegawai(): HasOne
+    public function pegawai(): belongsTo
     {
-        return $this->hasOne(related: PegawaiModel::class);
+        return $this->belongsTo(related: PegawaiModel::class);
     }
 
     public function unitKerja(): BelongsTo

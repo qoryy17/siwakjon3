@@ -27,9 +27,9 @@ class PegawaiModel extends Model
 
     public $timestamps = true;
 
-    public function user(): HasOne
+    public function user(): belongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function jabatan(): BelongsTo

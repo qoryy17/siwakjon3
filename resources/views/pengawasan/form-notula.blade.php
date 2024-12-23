@@ -27,7 +27,7 @@
                     <a href="{{ $routeBack }}">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('rapat.simpan-notula') }}" method="POST">
+                    <form action="{{ route('pengawasan.simpan-notula') }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="mb-3" hidden>

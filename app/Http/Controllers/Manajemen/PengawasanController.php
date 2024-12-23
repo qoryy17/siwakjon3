@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Manajemen;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Helpers\RouteLink;
 use Illuminate\Support\Str;
 use App\Helpers\TimeSession;
@@ -15,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Manajemen\EdocWasbidModel;
+use App\Models\Pengaturan\UnitKerjaModel;
 use App\Models\Manajemen\DetailRapatModel;
 use App\Models\Manajemen\TemuanWasbidModel;
 use App\Models\Pengaturan\SetKodeRapatModel;
@@ -23,7 +25,9 @@ use App\Models\Manajemen\DokumentasiRapatModel;
 use App\Models\Manajemen\KlasifikasiRapatModel;
 use App\Models\Manajemen\PengawasanBidangModel;
 use App\Http\Requests\Manajemen\FormNotulaRequest;
+use App\Http\Requests\Manajemen\FormLaporanRequest;
 use App\Http\Requests\Manajemen\FormManajemenRapat;
+use App\Http\Requests\Manajemen\FormKesimpulanRequest;
 use App\Http\Requests\Manajemen\FormUndanganRapatRequest;
 
 class PengawasanController extends Controller
@@ -67,11 +71,13 @@ class PengawasanController extends Controller
 
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
         $dokumentasi = DokumentasiRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->first();
-        $pengawasan = PengawasanBidangModel::where('detail_rapat_id', '=', $rapat->detailRapat->id)->first();
+        $pengawasan = PengawasanBidangModel::with('temuanWasbid')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->first();
         if ($pengawasan) {
             $edoc = EdocWasbidModel::with('pengawasanBidang')->where('pengawasan_bidang_id', '=', $pengawasan->id)->first();
+            $kodePengawasan = $pengawasan->kode_pengawasan;
         } else {
             $edoc = null;
+            $kodePengawasan = Str::uuid();
         }
 
         $data = [
@@ -81,8 +87,10 @@ class PengawasanController extends Controller
             'rapat' => $rapat,
             'pengawasan' => $pengawasan,
             'dokumentasi' => $dokumentasi,
-            'edoc' => $edoc
+            'edoc' => $edoc,
+            'kodePengawasan' => $kodePengawasan
         ];
+
         return view('pengawasan.detail-pengawasan', $data);
     }
 
@@ -480,6 +488,137 @@ class PengawasanController extends Controller
         }
 
         return redirect()->route('pengawasan.form-dokumentasi', ['id' => Crypt::encrypt($detailRapat->manajemen_rapat_id)])->with('error', 'Dokumentasi gagal di hapus !');
+    }
+
+    public function laporanPengawasan(Request $request)
+    {
+        // Get data rapat
+        $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
+        $pengawasan = PengawasanBidangModel::with('temuanWasbid')->where('detail_rapat_id', '=', $searchRapat->detailRapat->id)->first();
+        if ($pengawasan) {
+            $kodePengawasan = $pengawasan->kode_pengawasan;
+            $temuan = TemuanWasbidModel::where('pengawasan_bidang_id', '=', $pengawasan->id);
+        } else {
+            $kodePengawasan = Str::uuid();
+            $temuan = null;
+        }
+
+        // Redirect home page for role
+        $route = RouteLink::homePage(Auth::user()->roles);
+
+        $breadcumb = [
+            ['title' => 'Home', 'link' => $route, 'page' => ''],
+            ['title' => 'Pengawasan Bidang', 'link' => 'javascript:void(0);', 'page' => ''],
+            ['title' => 'Rapat Pengawasan', 'link' => route('pengawasan.index'), 'page' => ''],
+            ['title' => 'Laporan Pengawasan', 'link' => 'javascript:void(0);', 'page' => 'aria-current="page"']
+        ];
+
+        $data = [
+            'title' => 'Pengawasan Bidang | ' . 'Laporan Pengawasan',
+            'routeHome' => $route,
+            'breadcumbs' => $breadcumb,
+            'formTitle' => 'Laporan Pengawasan',
+            'routeBack' => route('pengawasan.detail', ['id' => $request->id]),
+            'kodePengawasan' => $kodePengawasan,
+            'rapat' => $searchRapat,
+            'pengawasan' => $pengawasan,
+            'temuan' => $temuan,
+            'unitKerja' => UnitKerjaModel::where('aktif', 'Y')->orderBy('unit_kerja', 'asc')->get(),
+        ];
+
+        return view('pengawasan.laporan-pengawasan', $data);
+    }
+
+    public function saveLaporan(Request $request)//: RedirectResponse
+    {
+        // Search hakim pengawas
+        $hakimWasbid = [];
+        $hakim = User::with('pegawai')->where('unit_kerja_id', '=', htmlspecialchars($request->input('unitKerja')))->get();
+        foreach ($hakim as $kimwas) {
+            $hakimWasbid[] = $kimwas->pegawai_id;
+        }
+
+        // Search dokumen rapat
+        $rapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->input('id')));
+        $objek = UnitKerjaModel::findOrFail(htmlspecialchars($request->input('unitKerja')));
+        $save = null;
+
+        if (Crypt::decrypt($request->input('param')) == 'save') {
+
+            // Run validated
+            $request->validate(
+                [
+                    'unitKerja' => 'required|string',
+                    'dasarHukum' => 'required|string',
+                    'deskripsiPengawasan' => 'required|string'
+                ],
+                [
+                    'unitKerja.required' => 'Objek/Unit Pengawasan harus di pilih !',
+                    'unitKerja.string' => 'Objek/Unit Pengawasan harus berupa karakter valid !',
+                    'dasarHukum.required' => 'Dasar Hukum Pengawasan harus di isi !',
+                    'dasarHukum.string' => 'Dasar Hukum Pengawasan harus berupa karakter valid !',
+                    'deskripsiPengawasan.required' => 'Deskripsi Pengawasan harus di isi !',
+                    'deskripsiPengawasan.string' => 'Deskripsi Pengawasan harus berupa karakter valid !',
+                ]
+            );
+
+            $formData = [
+                'kode_pengawasan' => htmlspecialchars($request->input('kodePengawasan')),
+                'detail_rapat_id' => $rapat->detailRapat->id,
+                'objek_pengawasan' => $objek->unit_kerja,
+                'dasar_hukum' => $request->input('dasarHukum'),
+                'deskripsi_pengawasan' => $request->input('deskripsiPengawasan'),
+                'hakim_pengawas' => json_encode($hakimWasbid),
+                'status' => 'Waiting',
+            ];
+
+            // Checking exist pengawasan
+            $pengawasan = PengawasanBidangModel::where('kode_pengawasan', '=', htmlspecialchars($request->input('kodePengawasan')))->first();
+            if ($pengawasan) {
+                $save = $pengawasan->update($formData);
+                $success = 'Laporan berhasil di perbarui !';
+                $error = 'Laporan gagal di perbarui !';
+            } else {
+                $save = PengawasanBidangModel::create($formData);
+                $success = 'Laporan berhasil di simpan !';
+                $error = 'Laporan gagal di simpan !';
+            }
+
+        } elseif (Crypt::decrypt($request->input('param')) == 'update') {
+
+            // Run validated
+            $request->validate(
+                [
+                    'kesimpulan' => 'required|string',
+                    'rekomendasi' => 'required|string'
+                ],
+                [
+                    'kesimpulan.required' => 'Kesimpulan harus di isi !',
+                    'kesimpulan.string' => 'Kesimpulan harus berupa karakter valid !',
+                    'rekomendasi.required' => 'Rekomendasi harus di isi !',
+                    'rekomendasi.string' => 'Rekomendasi harus berupa karakter valid !',
+                ]
+            );
+
+            $formData = [
+                'kesimpulan' => htmlspecialchars($request->input('kesimpulan')),
+                'rekomendasi' => htmlspecialchars($request->input('rekomendasi')),
+            ];
+
+            $pengawasan = PengawasanBidangModel::where('kode_pengawasan', '=', htmlspecialchars($request->input('kodePengawasan')))->first();
+            $save = $pengawasan->update($formData);
+            $success = 'Kesimpulan & Rekomendasi berhasil di simpan !';
+            $error = 'Kesimpulan & Rekomendasi gagal di simpan !';
+
+        } else {
+            return redirect()->back()->with('error', 'Parameter tidak valid !');
+        }
+
+        if (!$save) {
+            return redirect()->back()->with('error', $error);
+        }
+
+        return redirect()->route('pengawasan.laporan', ['id' => $request->input('id')])->with('success', $success);
     }
 
     public function saveEdoc(Request $request): RedirectResponse

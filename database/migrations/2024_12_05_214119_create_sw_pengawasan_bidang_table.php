@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,6 +16,7 @@ return new class extends Migration
             $table->uuid('kode_pengawasan')->unique();
             $table->unsignedBigInteger('detail_rapat_id')->unique();
             $table->text('objek_pengawasan');
+            $table->longText('dasar_hukum');
             $table->text('deskripsi_pengawasan');
             $table->longText('kesimpulan')->nullable();
             $table->longText('rekomendasi')->nullable();

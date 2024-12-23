@@ -235,7 +235,7 @@
                         @endif
                     </ul>
                     <hr>
-                    <a href="{{ route('rapat.index') }}" class="btn btn-primary btn-sm mt-2">
+                    <a href="{{ route('rapat.index') }}" class="btn btn-warning btn-sm mt-2">
                         <i class="fas fa-reply-all"></i> Kembali
                     </a>
                 </div>
