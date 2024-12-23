@@ -89,12 +89,6 @@ class AplikasiController extends Controller
             $success = 'Pengaturan berhasil di simpan !';
             $error = 'Pengaturan gagal di simpan !';
         } else {
-            if ($request->file('logo')) {
-                // Delete old logo
-                if (Storage::disk('public')->exists($directory . $setting->logo)) {
-                    Storage::disk('public')->delete($directory . $setting->logo);
-                }
-            }
             // Run validated if logo has found
             $request->validate(
                 ['logo' => 'file|image|mimes:png,jpg|max:5012'],
@@ -106,17 +100,24 @@ class AplikasiController extends Controller
                 ]
             );
 
-            // Logo upload process
-            $fileLogo = $request->file('logo');
-            $fileHashname = $fileLogo->hashName();
-            $uploadPath = $directory . $fileHashname;
-            $fileUpload = $fileLogo->storeAs($directory, $fileHashname, 'public');
+            if ($request->file('logo')) {
+                // Delete old logo
+                if (Storage::disk('public')->exists($directory . $setting->logo)) {
+                    Storage::disk('public')->delete($directory . $setting->logo);
+                }
 
-            // If logo has failed to upload
-            if (!$fileUpload) {
-                return redirect()->back()->with('error', 'Unggah logo gagal !')->withInput();
+                // Logo upload process
+                $fileLogo = $request->file('logo');
+                $fileHashname = $fileLogo->hashName();
+                $uploadPath = $directory . $fileHashname;
+                $fileUpload = $fileLogo->storeAs($directory, $fileHashname, 'public');
+
+                // If logo has failed to upload
+                if (!$fileUpload) {
+                    return redirect()->back()->with('error', 'Unggah logo gagal !')->withInput();
+                }
+                $formData['logo'] = $uploadPath;
             }
-            $formData['logo'] = $uploadPath;
 
             // Update data
             $save = $setting->update($formData);
