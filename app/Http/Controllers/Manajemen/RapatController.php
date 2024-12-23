@@ -121,7 +121,7 @@ class RapatController extends Controller
         } elseif (Crypt::decrypt($request->param) == 'edit') {
             $paramOutgoing = 'update';
             $formTitle = 'Edit';
-            $routeBack = route('rapat.index');
+            $routeBack = route('rapat.detail', ['id' => $request->id]);
             $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
 
             // Search klasifikasi rapat on database
