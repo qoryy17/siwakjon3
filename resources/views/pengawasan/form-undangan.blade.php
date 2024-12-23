@@ -31,17 +31,67 @@
                         * Hanya diperbolehkan membuat untuk rapat
                         kedinasan. Rapat diluar kedinasan tidak boleh menggunakan {{ env('APP_NAME') }} !
                     </div>
-                    <form action="" method="POST">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <h4 class="alert-heading">Peringatan!</h4>
+                            <div class="alert-body">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
+                    <form action="{{ route('pengawasan.simpan-rapat') }}" method="POST">
                         @csrf
                         @method('POST')
+                        @if (Crypt::decrypt($paramOutgoing) == 'update')
+                            <div class="mb-3" hidden>
+                                <input type="text" class="form-control" readonly name="id"
+                                    value="{{ Crypt::encrypt($rapat->id) }}">
+                            </div>
+                        @endif
+                        <div class="mb-3" hidden>
+                            <input type="text" class="form-control" name="param" readonly value="{{ $paramOutgoing }}">
+                        </div>
                         <div class="row">
+                            <div class="col-md-6 col-sm-12" hidden>
+                                <div class="mb-3">
+                                    <label class="form-label" for="klasifikasiRapat">Klasifikasi Rapat
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" name="klasifikasiRapat" id="klasifikasiRapat"
+                                        placeholder="Klasifikasi Rapat..." required required readonly
+                                        value="{{ $klasifikasi['rapat'] }}">
+                                    @error('klasifikasiRapat')
+                                        <small class="text-danger mt-1">* {{ $message }}</small>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12">
+                                <div class="mb-3">
+                                    <label class="form-label" for="nomorDokumen">Nomor Dokumen Rapat
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" name="nomorDokumen" id="nomorDokumen"
+                                        placeholder="Nomor Dokumen Rapat..." required value="{{ $nomorDokumen }}" readonly>
+                                    @error('nomorDokumen')
+                                        <small class="text-danger mt-1">* {{ $message }}</small>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="tanggalRapat">Tanggal Rapat
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" name="tanggalRapat" id="tanggalRapat"
-                                        placeholder="Pilih Tanggal..." readonly>
+                                        placeholder="Pilih Tanggal..." readonly required
+                                        value="{{ $rapat ? Carbon\Carbon::createFromFormat('Y-m-d', $rapat->detailRapat->tanggal_rapat)->format('m/d/Y') : old('tanggalRapat') }}">
+                                    @error('tanggalRapat')
+                                        <small class="text-danger mt-1">* {{ $message }}</small>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-12">
@@ -50,7 +100,11 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" name="jamRapat" id="jamRapat"
-                                        placeholder="Jam Rapat..." required>
+                                        placeholder="Jam Rapat..." required
+                                        value="{{ $rapat ? $rapat->detailRapat->jam_mulai : old('jamRapat') }}">
+                                    @error('jamRapat')
+                                        <small class="text-danger mt-1">* {{ $message }}</small>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -59,79 +113,104 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="sifat" name="sifat" class="form-control" required
-                                placeholder="Sifat...">
+                                placeholder="Sifat..." value="{{ $rapat ? $rapat->detailRapat->sifat : old('sifat') }}">
+                            @error('sifat')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="lampiran">Lampiran
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="lampiran" name="lampiran" class="form-control" required
-                                placeholder="Lampiran...">
+                                placeholder="Lampiran..."
+                                value="{{ $rapat ? $rapat->detailRapat->lampiran : old('lampiran') }}">
+                            @error('lampiran')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="perihal">Perihal
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="perihal" id="perihal" class="form-control" required placeholder="Perihal..."></textarea>
+                            <textarea name="perihal" id="perihal" class="form-control" required placeholder="Perihal...">{{ $rapat ? $rapat->detailRapat->perihal : old('perihal') }}</textarea>
+                            @error('perihal')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="acara">Acara
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="acara" id="acara" class="form-control" required placeholder="Acara..."></textarea>
+                            <textarea name="acara" id="acara" class="form-control" required placeholder="Acara...">{{ $rapat ? $rapat->detailRapat->acara : old('acara') }}</textarea>
+                            @error('acara')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="agenda">Agenda
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="agenda" id="agenda" class="form-control" required placeholder="Agenda..."></textarea>
+                            <textarea name="agenda" id="agenda" class="form-control" required placeholder="Agenda...">{{ $rapat ? $rapat->detailRapat->agenda : old('agenda') }}</textarea>
+                            @error('agenda')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="peserta">Peserta
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="peserta" name="peserta" class="form-control" required
-                                placeholder="Peserta...">
+                                placeholder="Peserta..."
+                                value="{{ $rapat ? $rapat->detailRapat->peserta : old('peserta') }}">
+                            @error('peserta')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="tempat">Tempat
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="tempat" name="tempat" class="form-control" required
-                                placeholder="Tempat...">
+                                placeholder="Tempat..."
+                                value="{{ $rapat ? $rapat->detailRapat->tempat : old('tempat') }}">
+                            @error('tempat')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="pc_demo1">Keterangan <span
                                     class="text-danger">*</span></label>
-                            <textarea name="keterangan" id="pc_demo1" class="form-control">Mengingat pentingnya rapat tersebut, dimohon agar Bapak/Ibu dapat menyiapkan agenda yang menjadi tanggung jawabnya dan dapat hadir tepat pada waktunya.</textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="pejabatPengganti">Pejabat Pengganti</label>
-                            <select class="form-control" data-trigger name="pejabatPengganti" id="pejabatPengganti">
-                                <option value="">Pilih Pejabat/Pegawai</option>
-                                <option value="Choice 1">Choice 1</option>
-                                <option value="Choice 2">Choice 2</option>
-                                <option value="Choice 3">Choice 3</option>
-                            </select>
-                            <small class="text-danger">* Kosongkan jika tidak ada</small>
+                            <textarea name="keterangan" id="pc_demo1" class="form-control">{{ $rapat ? $rapat->detailRapat->keterangan : 'Mengingat pentingnya rapat tersebut, dimohon agar Bapak/Ibu dapat menyiapkan agenda yang menjadi tanggung jawabnya dan dapat hadir tepat pada waktunya.' }}</textarea>
+                            @error('keterangan')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="pejabatPenandatangan">Ditandatangin Oleh
                                 <span class="text-danger">*</span>
                             </label>
                             <select class="form-control" data-trigger name="pejabatPenandatangan"
-                                id="pejabatPenandatangan">
-                                <option value="">Pilih Pejabat/Pegawai</option>
-                                <option value="Choice 1">Choice 1</option>
-                                <option value="Choice 2">Choice 2</option>
-                                <option value="Choice 3">Choice 3</option>
+                                id="pejabatPenandatangan" required>
+                                <option value="">Pilih Hakim</option>
+                                @foreach ($hakim as $itemHakim)
+                                    <option value="{{ $itemHakim->id }}"
+                                        @if (old('pejabatPenandatangan') == $itemHakim->id) selected @elseif($rapat && $rapat->pejabat_penandatangan == $itemHakim->id) selected @endif>
+                                        {{ $itemHakim->nama }}
+                                    </option>
+                                @endforeach
                             </select>
+                            @error('pejabatPenandatangan')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="mt-1">
-                            <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i>
-                                Simpan</button>
-                            <button type="reset" class="btn btn-sm btn-secondary"><i class="fas fa-recycle"></i>
-                                Batal</button>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fas fa-save"></i> Simpan
+                            </button>
+                            <button type="reset" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-recycle"></i> Batal
+                            </button>
                             <a href="{{ $routeBack }}" class="btn btn-sm btn-warning">
                                 <i class="fas fa-reply-all"></i> Kembali
                             </a>

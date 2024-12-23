@@ -67,9 +67,7 @@
                                     <tr>
                                         <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
                                         <td style="vertical-align: top;" class="text-start">{{ $item->nomor_dokumen }}</td>
-                                        <td style="vertical-align: top;">{{ $item->detailRapat->perihal }}
-                                            {{ $item->id }}
-                                        </td>
+                                        <td style="vertical-align: top;">{{ $item->detailRapat->perihal }}</td>
                                         <td style="vertical-align: top;" class="text-start">
                                             {{ \App\Helpers\TimeSession::convertDateToIndonesian($item->detailRapat->tanggal_rapat) }}
                                         </td>

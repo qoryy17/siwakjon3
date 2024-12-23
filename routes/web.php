@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\SigninController;
 use App\Http\Controllers\Hakim\HakimPengawasController;
 use App\Http\Controllers\Manajemen\KlasifikasiController;
 use App\Http\Controllers\Manajemen\PengawasanController;
+use App\Http\Controllers\Manajemen\PrintPengawasanController;
 use App\Http\Controllers\Manajemen\PrintRapatController;
 use App\Http\Controllers\Manajemen\RapatController;
 use App\Http\Controllers\Pengaturan\AplikasiController;
@@ -81,22 +82,39 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/manajemen-rapat/print/daftar-hadir/{id}', 'printDaftarHadirRapat')->name('rapat.print-daftar-hadir');
         Route::get('/manajemen-rapat/print/notula/{id}', 'printNotulaRapat')->name('rapat.print-notula');
         Route::get('/manajemen-rapat/print/dokumentasi/{id}', 'printDokumentasiRapat')->name('rapat.print-dokumentasi');
-
-        Route::get('/manajemen-rapat/print/test', 'generatePdfAndConvertToImage')->name('rapat.print-test');
     });
 });
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(PengawasanController::class)->group(function () {
         Route::get('/pengawasan-bidang/rapat-pengawasan', 'indexPengawasan')->name('pengawasan.index');
-        Route::get('/manajemen-rapat/rapat-pengawasan/form/{param}/{id}', 'formUndangan')->name('pengawasan.form-undangan');
-        Route::get('/manajemen-rapat/rapat-pengawasan/notula/{param}/{id}', 'formNotula')->name('pengawasan.form-notula');
-        Route::get('/manajemen-rapat/rapat-pengawasan/dokumentasi/{id}', 'formDokumentasi')->name('pengawasan.form-dokumentasi');
-
         Route::get('/pengawasan-bidang/rapat-pengawasan/detail/{id}', 'detailPengawasan')->name('pengawasan.detail');
-        Route::post('/pengawasan-bidang/rapat-pengawasan/simpan', 'simpanPengawasan')->name('pengawasan.simpan');
-        Route::post('/pengawasan-bidang/rapat-pengawasan/edit', 'editPengawasan')->name('pengawasan.edit');
-        Route::delete('/pengawasan-bidang/rapat-pengawasan/hapus', 'hapusPengawasan')->name('pengawasan.hapus');
+        Route::get('/pengawasan-bidang/rapat-pengawasan/form/{param}/{id}', 'formUndangan')->name('pengawasan.form-undangan');
+        Route::get('/pengawasan-bidang/rapat-pengawasan/notula/{id}', 'formNotula')->name('pengawasan.form-notula');
+        Route::get('/pengawasan-bidang/rapat-pengawasan/dokumentasi/{id}', 'formDokumentasi')->name('pengawasan.form-dokumentasi');
+
+        Route::post('/pengawasan-bidang/rapat-pengawasan/simpan', 'savePengawasan')->name('pengawasan.simpan-rapat');
+        Route::delete('/pengawasan-bidang/rapat-pengawasan/hapus', 'deletePengawasan')->name('pengawasan.hapus-rapat');
+        Route::post('/pengawasan-bidang/rapat-pengawasan/notula/simpan', 'saveNotula')->name('pengawasan.simpan-notula');
+        Route::post('/pengawasan-bidang/rapat-pengawasan/dokumentasi/simpan', 'saveDokumentasi')->name('pengawasan.simpan-dokumentasi');
+        Route::delete('/pengawasan-bidang/rapat-pengawasan/dokumentasi/hapus', 'deleteDokumentasi')->name('pengawasan.hapus-dokumentasi');
+
+        // Handle for laporan dan temuan
+        Route::get('/pengawasan-bidang/laporan/{id}', 'laporanPengawasan')->name('pengawasan.laporan');
+        Route::post('/pengawasan-bidang/rapat-pengawasan/temuan/simpan', 'saveTemuan')->name('pengawasan.temuan-simpan');
+        Route::delete('/pengawasan-bidang/rapat-pengawasan/temuan/hapus', 'deleteTemuan')->name('pengawasan.temuan-hapus');
+
+        Route::post('/pengawasan-bidang/rapat-pengawasan/edoc/simpan', 'saveEdoc')->name('pengawasan.simpan-edoc');
+    });
+});
+
+Route::middleware(AuthMiddleware::class)->group(function () {
+    Route::controller(PrintPengawasanController::class)->group(function () {
+        Route::get('/pengawasan-bidang/print/undangan/{id}', 'printUndanganPengawasan')->name('pengawasan.print-undangan');
+        Route::get('/pengawasan-bidang/print/daftar-hadir/{id}', 'printDaftarHadirPengawasan')->name('pengawasan.print-daftar-hadir');
+        Route::get('/pengawasan-bidang/print/notula/{id}', 'printNotulaPengawasan')->name('pengawasan.print-notula');
+        Route::get('/pengawasan-bidang/print/dokumentasi/{id}', 'printDokumentasiPengawasan')->name('pengawasan.print-dokumentasi');
+        Route::get('/pengawasan-bidang/print/laporan/{id}', 'printLaporanPengawasan')->name('pengawasan.print-laporan');
     });
 });
 

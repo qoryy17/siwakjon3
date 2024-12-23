@@ -385,6 +385,7 @@ class RapatController extends Controller
         // Get data rapat
         $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
         $dokumentasi = DokumentasiRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $searchRapat->detailRapat->id)->get();
+
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
