@@ -34,10 +34,12 @@
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Rapat Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
-                                <h3 class="f-w-300 d-flex align-items-center m-b-0">30</h3>
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $countRapatBulan }}</h3>
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
-                            <p class="text-muted text-sm mt-3">Periode Desember</p>
+                            <p class="text-muted text-sm mt-3">Periode
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -48,10 +50,12 @@
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Pengawasan Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
-                                <h3 class="f-w-300 d-flex align-items-center m-b-0">30</h3>
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $countRapatWasbid }}</h3>
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
-                            <p class="text-muted text-sm mt-3">Periode Desember</p>
+                            <p class="text-muted text-sm mt-3">Periode
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -62,10 +66,12 @@
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Monev Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
-                                <h3 class="f-w-300 d-flex align-items-center m-b-0">37</h3>
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $countMonev }}</h3>
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
-                            <p class="text-muted text-sm mt-3">Periode Desember</p>
+                            <p class="text-muted text-sm mt-3">Periode
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -153,7 +159,7 @@
                         </div>
                         <div class="card-body">
                             <div class="d-flex align-items-end mb-3">
-                                <h4 class="mb-0">1205</h4>
+                                <h4 class="mb-0">{{ $countPengguna }}</h4>
                                 <span class="badge bg-light-success ms-2">Telah Terdaftar</span>
                             </div>
                             <p class="text-muted mb-0">Total Seluruh Pengguna {{ env('APP_NAME') }}</p>
@@ -174,7 +180,7 @@
                         </div>
                         <div class="card-body">
                             <div class="d-flex align-items-end mb-3">
-                                <h4 class="mb-0">1205</h4>
+                                <h4 class="mb-0">{{ $countRapat }}</h4>
                                 <span class="badge bg-light-danger ms-2">Dokumen Tidak Lengkap</span>
                             </div>
                             <p class="text-muted mb-0">Total Seluruh Tunggakan Kelengkapan</p>
