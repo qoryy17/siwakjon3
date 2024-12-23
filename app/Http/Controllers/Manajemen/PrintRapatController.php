@@ -11,6 +11,7 @@ use App\Models\Pengaturan\AplikasiModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Pengguna\PejabatPenggantiModel;
+use App\Models\Manajemen\DokumentasiRapatModel;
 
 class PrintRapatController extends Controller
 {
@@ -80,6 +81,21 @@ class PrintRapatController extends Controller
 
     public function printDokumentasiRapat(Request $request)
     {
+        // Generate QR code
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
+        $dokumentasi = DokumentasiRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->get();
+
+        $url = url('/verification') . '/' . $rapat->kode_rapat;
+        $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
+        $data = [
+            'aplikasi' => AplikasiModel::first(),
+            'rapat' => $rapat,
+            'qrCode' => $qrCode,
+            'dokumentasi' => $dokumentasi
+        ];
+        $pdf = PDF::loadView('template.pdf-dokumentasi-rapat', $data);
+        $pdf->setPaper('Folio', 'potrait');
+        return $pdf->stream('Dokumentasi ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
 
     }
 
