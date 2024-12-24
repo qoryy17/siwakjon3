@@ -102,8 +102,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         // Handle for laporan dan temuan
         Route::get('/pengawasan-bidang/laporan/{id}', 'laporanPengawasan')->name('pengawasan.laporan');
         Route::post('/pengawasan-bidang/laporan/simpan', 'saveLaporan')->name('pengawasan.simpan-laporan');
-        Route::post('/pengawasan-bidang/rapat-pengawasan/temuan/simpan', 'saveTemuan')->name('pengawasan.temuan-simpan');
-        Route::delete('/pengawasan-bidang/rapat-pengawasan/temuan/hapus', 'deleteTemuan')->name('pengawasan.temuan-hapus');
+        Route::post('/pengawasan-bidang/rapat-pengawasan/temuan/simpan', 'saveTemuan')->name('pengawasan.simpan-temuan');
+        Route::delete('/pengawasan-bidang/rapat-pengawasan/temuan/hapus', 'deleteTemuan')->name('pengawasan.hapus-temuan');
 
         Route::post('/pengawasan-bidang/rapat-pengawasan/edoc/simpan', 'saveEdoc')->name('pengawasan.simpan-edoc');
     });

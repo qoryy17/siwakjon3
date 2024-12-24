@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Manajemen;
 
+use App\Http\Requests\Manajemen\TemuanWasbidRequest;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Helpers\RouteLink;
@@ -529,13 +530,21 @@ class PengawasanController extends Controller
         return view('pengawasan.laporan-pengawasan', $data);
     }
 
-    public function saveLaporan(Request $request)//: RedirectResponse
+    public function saveLaporan(Request $request): RedirectResponse
     {
         // Search hakim pengawas
         $hakimWasbid = [];
-        $hakim = User::with('pegawai')->where('unit_kerja_id', '=', htmlspecialchars($request->input('unitKerja')))->get();
-        foreach ($hakim as $kimwas) {
-            $hakimWasbid[] = $kimwas->pegawai_id;
+        $hakim = User::with('pegawai')->where('unit_kerja_id', '=', htmlspecialchars($request->input('unitKerja')));
+        if ($hakim->exists()) {
+            foreach ($hakim->get() as $kimwas) {
+                $hakimWasbid[] = [
+                    'pegawai_id' => $kimwas->pegawai_id,
+                    'nama' => $kimwas->name
+                ];
+            }
+
+        } else {
+            return redirect()->back()->with('error', 'Hakim pengawas tidak tersedia ! Silahkan hubungi Superadmin atau Administrator');
         }
 
         // Search dokumen rapat
@@ -619,6 +628,54 @@ class PengawasanController extends Controller
         }
 
         return redirect()->route('pengawasan.laporan', ['id' => $request->input('id')])->with('success', $success);
+    }
+
+    public function saveTemuan(TemuanWasbidRequest $request)
+    {
+        // Run validate
+        $request->validated();
+        $save = null;
+
+        $formData = [
+            'kode_pengawasan' => Crypt::decrypt(htmlspecialchars($request->input('idWasbid'))),
+            'judul' => $request->input('judul'),
+            'kondisi' => $request->input('kondisi'),
+            'kriteria' => $request->input('kriteria'),
+            'sebab' => $request->input('sebab'),
+            'akibat' => $request->input('akibat'),
+            'rekomendasi' => $request->input('rekomendasi'),
+            'waktu_penyelesaian' => $request->input('waktuPenyelesaian'),
+        ];
+        // Search pengawasan on database, if not exist redirect back with error message
+        $pengawasan = PengawasanBidangModel::findOrFail(Crypt::decrypt($request->input('idWasbid')));
+        if (!$pengawasan) {
+            return redirect()->back()->with('error', 'Data pengawasan tidak ditemukan !');
+        }
+
+        $paramIncoming = Crypt::decrypt($request->input('id'));
+
+        if ($paramIncoming == 'save') {
+            $formData = [
+                'judul' => $request->input('judul'),
+                'kondisi' => $request->input('kondisi'),
+                'kriteria' => $request->input('kriteria'),
+                'sebab' => $request->input('sebab'),
+                'akibat' => $request->input('akibat'),
+                'rekomendasi' => $request->input('rekomendasi'),
+                'waktu_penyelesaian' => $request->input('waktuPenyelesaian'),
+            ];
+
+        } elseif ($paramIncoming == 'update') {
+
+        } else {
+            return redirect()->back()->with('error', 'Parameter tidak valid !');
+        }
+
+        if (!$save) {
+            return redirect()->back()->with('error', '');
+        }
+
+        return redirect()->route('pengawasan.detail', ['id' => htmlspecialchars($request->input('id'))])->with('success', $success);
     }
 
     public function saveEdoc(Request $request): RedirectResponse

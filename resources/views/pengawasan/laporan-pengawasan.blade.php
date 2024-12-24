@@ -87,9 +87,21 @@
                                                 </p>
                                             </div>
                                             <div class="col-md-6">
-                                                <p class="mb-1 text-muted">Deskripsi Pengawasan</p>
+                                                <p class="mb-1 text-muted">Hakim Pengawas</p>
                                                 <p class="mb-0 fw-bold">
-                                                    {!! $pengawasan ? $pengawasan->deskripsi_pengawasan : '' !!}
+                                                    @if ($pengawasan)
+                                                        @php
+                                                            $hakim = json_decode($pengawasan->hakim_pengawas);
+                                                        @endphp
+                                                        <ul>
+
+                                                            @foreach ($hakim as $pengawas)
+                                                                <li style="font-weight: 800;">
+                                                                    {{ $pengawas->nama }}
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
                                                 </p>
                                             </div>
                                         </div>
@@ -97,6 +109,10 @@
                                 </ul>
                             </div>
                             <div class="tab-pane fade" id="pills-temuan" role="tabpanel" aria-labelledby="pills-temuan-tab">
+                                <button data-pc-animate="fade-in-scale" data-bs-toggle="modal"
+                                    data-bs-target="#animateModalTemuanAdd" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-file-pdf"></i> Tambah Temuan
+                                </button>
                                 <div class="table-responsive mt-3">
                                     <table class="table">
                                         <thead>
@@ -140,11 +156,13 @@
                             class="btn btn-primary btn-sm">
                             <i class="fas fa-file-pdf"></i> {{ $pengawasan ? 'Edit' : 'Tambah' }} Laporan
                         </button>
-                        <button data-pc-animate="fade-in-scale" data-bs-toggle="modal"
-                            data-bs-target="#animateModalKesimpulan" class="btn btn-primary btn-sm">
-                            <i class="fas fa-file-pdf"></i> Kesimpulan &
-                            Rekomendasi
-                        </button>
+                        @if ($pengawasan)
+                            <button data-pc-animate="fade-in-scale" data-bs-toggle="modal"
+                                data-bs-target="#animateModalKesimpulan" class="btn btn-primary btn-sm">
+                                <i class="fas fa-file-pdf"></i> Kesimpulan &
+                                Rekomendasi
+                            </button>
+                        @endif
                         <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModalTips"
                             class="btn btn-secondary btn-sm">
                             <i class="fas fa-info-circle"></i> Tutorial
@@ -240,7 +258,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <textarea name="deskripsiPengawasan" id="deskripsiPengawasan" class="form-control"
-                                        placeholder="Deskripsi Pengawasan... Cth: Disiplin Pegawai, Tata Kelola BMN">{{ $pengawasan ? $pengawasan->dasar_hukum : old('deskripsiPengawasan') }}</textarea>
+                                        placeholder="Deskripsi Pengawasan... Cth: Disiplin Pegawai, Tata Kelola BMN">{{ $pengawasan ? $pengawasan->deskripsi_pengawasan : old('deskripsiPengawasan') }}</textarea>
                                     @error('deskripsiPengawasan')
                                         <small class="text-danger mt-1">* {{ $message }}</small>
                                     @enderror
@@ -258,83 +276,257 @@
         </div>
     </form>
 
-    <!-- This form for make a report -->
-    <form action="{{ route('pengawasan.simpan-laporan') }}" method="POST">
-        <div class="modal fade modal-animate" id="animateModalKesimpulan" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{{ $pengawasan ? 'Edit' : 'Tambah' }} Kesimpulan & Rekomendasi</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
-                    </div>
-                    <div class="modal-body">
-                        @csrf
-                        @method('POST')
-                        <div class="mb-3" hidden>
-                            <label for="id">
-                                ID
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" class="form-control" required value="{{ Crypt::encrypt($rapat->id) }}"
-                                readonly id="id" name="id">
+    @if ($pengawasan)
+        <!-- This form for make a summary and recommendation -->
+        <form action="{{ route('pengawasan.simpan-laporan') }}" method="POST">
+            <div class="modal fade modal-animate" id="animateModalKesimpulan" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Kesimpulan & Rekomendasi</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            </button>
                         </div>
-                        <div class="mb-3" hidden>
-                            <label for="kodePengawasan">
-                                Kode Pengawasan
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" class="form-control" required value="{{ $kodePengawasan }}" readonly
-                                id="kodePengawasan" name="kodePengawasan">
-                        </div>
-                        <div class="mb-3" hidden>
-                            <input type="text" class="form-control" name="param" readonly
-                                value="{{ Crypt::encrypt('update') }}">
-                        </div>
-                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="pills-tab3-tab" data-bs-toggle="pill" href="#pills-tab3"
-                                    role="tab" aria-controls="pills-tab3" aria-selected="true">Kesimpulan</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-tab4-tab" data-bs-toggle="pill" href="#pills-tab4"
-                                    role="tab" aria-controls="pills-tab4" aria-selected="false">Rekomendasi</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade show active" id="pills-tab3" role="tabpanel"
-                                aria-labelledby="pills-tab3-tab">
-                                <div class="mb-3">
-                                    <label class="form-label" for="kesimpulan">Kesimpulan
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <textarea name="kesimpulan" id="kesimpulan" class="form-control" placeholder="Kesimpulan...">{{ $pengawasan ? $pengawasan->kesimpulan : old('kesimpulan') }}</textarea>
-                                    @error('kesimpulan')
-                                        <small class="text-danger mt-1">* {{ $message }}</small>
-                                    @enderror
+                        <div class="modal-body">
+                            @csrf
+                            @method('POST')
+                            <div class="mb-3" hidden>
+                                <label for="id">
+                                    ID
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" required
+                                    value="{{ Crypt::encrypt($rapat->id) }}" readonly id="id" name="id">
+                            </div>
+                            <div class="mb-3" hidden>
+                                <label for="kodePengawasan">
+                                    Kode Pengawasan
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" required value="{{ $kodePengawasan }}"
+                                    readonly id="kodePengawasan" name="kodePengawasan">
+                            </div>
+                            <div class="mb-3" hidden>
+                                <input type="text" class="form-control" name="param" readonly
+                                    value="{{ Crypt::encrypt('update') }}">
+                            </div>
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="pills-tab3-tab" data-bs-toggle="pill"
+                                        href="#pills-tab3" role="tab" aria-controls="pills-tab3"
+                                        aria-selected="true">Kesimpulan</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-tab4-tab" data-bs-toggle="pill" href="#pills-tab4"
+                                        role="tab" aria-controls="pills-tab4" aria-selected="false">Rekomendasi</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-tab3" role="tabpanel"
+                                    aria-labelledby="pills-tab3-tab">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="kesimpulan">Kesimpulan
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea name="kesimpulan" id="kesimpulan" class="form-control" placeholder="Kesimpulan...">{{ $pengawasan ? $pengawasan->kesimpulan : old('kesimpulan') }}</textarea>
+                                        @error('kesimpulan')
+                                            <small class="text-danger mt-1">* {{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-tab4" role="tabpanel"
+                                    aria-labelledby="pills-tab4-tab">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="rekomendasi">Rekomendasi
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea name="rekomendasi" id="rekomendasi" class="form-control" placeholder="Rekomendasi...">{{ $pengawasan ? $pengawasan->rekomendasi : old('rekomendasi') }}</textarea>
+                                        @error('rekomendasi')
+                                            <small class="text-danger mt-1">* {{ $message }}</small>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="pills-tab4" role="tabpanel" aria-labelledby="pills-tab4-tab">
-                                <div class="mb-3">
-                                    <label class="form-label" for="rekomendasi">Rekomendasi
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <textarea name="rekomendasi" id="rekomendasi" class="form-control" placeholder="Rekomendasi...">{{ $pengawasan ? $pengawasan->rekomendasi : old('rekomendasi') }}</textarea>
-                                    @error('rekomendasi')
-                                        <small class="text-danger mt-1">* {{ $message }}</small>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+
+        <!-- This form for make a temuan wasbid-->
+        <form action="{{ route('pengawasan.simpan-temuan') }}" method="POST">
+            <div class="modal fade modal-animate" id="animateModalTemuanAdd" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Tambah Temuan</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @csrf
+                            @method('POST')
+                            <div class="mb-3" hidden>
+                                <label for="id">
+                                    ID
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" required
+                                    value="{{ Crypt::encrypt($rapat->id) }}" readonly id="id" name="id">
+                            </div>
+                            <div class="mb-3" hidden>
+                                <label for="idWasbid">
+                                    ID Pengawasan
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" required
+                                    value="{{ $pengawasan ? Crypt::encrypt($pengawasan->id) : '' }}" readonly
+                                    id="idWasbid" name="idWasbid">
+                            </div>
+                            <div class="mb-3" hidden>
+                                <input type="text" class="form-control" name="param" readonly
+                                    value="{{ Crypt::encrypt('save') }}">
+                            </div>
+                            <!-- Tab For temuan pengawasan bidang  -->
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="pills-judul-tab" data-bs-toggle="pill"
+                                        href="#pills-judul" role="tab" aria-controls="pills-judul"
+                                        aria-selected="true">Judul Temuan</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-kondisi-tab" data-bs-toggle="pill"
+                                        href="#pills-kondisi" role="tab" aria-controls="pills-kondisi"
+                                        aria-selected="false">Kondisi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-kriteria-tab" data-bs-toggle="pill"
+                                        href="#pills-kriteria" role="tab" aria-controls="pills-kriteria"
+                                        aria-selected="false">Kriteria</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-sebab-tab" data-bs-toggle="pill" href="#pills-sebab"
+                                        role="tab" aria-controls="pills-sebab" aria-selected="false">Sebab</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-akibat-tab" data-bs-toggle="pill" href="#pills-akibat"
+                                        role="tab" aria-controls="pills-akibat" aria-selected="false">Akibat</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-rekomendasi-tab" data-bs-toggle="pill"
+                                        href="#pills-rekomendasi" role="tab" aria-controls="pills-rekomendasi"
+                                        aria-selected="false">Rekomendasi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-waktu-penyelesaian-tab" data-bs-toggle="pill"
+                                        href="#pills-waktu-penyelesaian" role="tab"
+                                        aria-controls="pills-waktu-penyelesaian" aria-selected="false">Waktu
+                                        Penyelesaian</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-judul" role="tabpanel"
+                                    aria-labelledby="pills-judul-tab">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="judul">Judul Temuan
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea name="judul" id="judul" class="form-control" placeholder="Judul...">{{ old('judul') }}</textarea>
+                                        @error('judul')
+                                            <small class="text-danger mt-1">* {{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-kondisi" role="tabpanel"
+                                    aria-labelledby="pills-kondisi-tab">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="kondisi">Kondisi
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea name="kondisi" id="kondisi" class="form-control" placeholder="Kondisi...">{{ old('kondisi') }}</textarea>
+                                        @error('kondisi')
+                                            <small class="text-danger mt-1">* {{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-kriteria" role="tabpanel"
+                                    aria-labelledby="pills-kriteria-tab">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="kriteria">Kriteria
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea name="kriteria" id="kriteria" class="form-control" placeholder="Kriteria...">{{ old('kriteria') }}</textarea>
+                                        @error('kriteria')
+                                            <small class="text-danger mt-1">* {{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-sebab" role="tabpanel"
+                                    aria-labelledby="pills-sebab-tab">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="sebab">Sebab
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea name="sebab" id="sebab" class="form-control" placeholder="Sebab...">{{ old('sebab') }}</textarea>
+                                        @error('sebab')
+                                            <small class="text-danger mt-1">* {{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-akibat" role="tabpanel"
+                                    aria-labelledby="pills-akibat-tab">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="akibat">Akibat
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea name="akibat" id="akibat" class="form-control" placeholder="Akibat...">{{ old('akibat') }}</textarea>
+                                        @error('akibat')
+                                            <small class="text-danger mt-1">* {{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-rekomendasi" role="tabpanel"
+                                    aria-labelledby="pills-rekomendasi-tab">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="rekomendasi1">Rekomendasi
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea name="rekomendasi" id="rekomendasi1" class="form-control" placeholder="Rekomendasi...">{{ old('rekomendasi') }}</textarea>
+                                        @error('rekomendasi')
+                                            <small class="text-danger mt-1">* {{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-waktu-penyelesaian" role="tabpanel"
+                                    aria-labelledby="pills-tab4-tab">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="waktuPenyelesaian">Waktu Penyelesaian
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea name="waktuPenyelesaian" id="waktuPenyelesaian" class="form-control" placeholder="Waktu Penyelesaian...">{{ old('rekomendasi') }}</textarea>
+                                        @error('waktuPenyelesaian')
+                                            <small class="text-danger mt-1">* {{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Tab temuan pengawasan bidang -->
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    @endif
 
     <!-- This form for tutorial tips -->
     <div class="modal fade modal-animate" id="animateModalTips" tabindex="-1" aria-hidden="true">
@@ -444,6 +636,30 @@
 
             new SimpleMDE({
                 element: document.querySelector("#rekomendasi"),
+            });
+
+            new SimpleMDE({
+                element: document.querySelector("#judul"),
+            });
+
+            new SimpleMDE({
+                element: document.querySelector("#kondisi"),
+            });
+
+            new SimpleMDE({
+                element: document.querySelector("#kriteria"),
+            });
+
+            new SimpleMDE({
+                element: document.querySelector("#sebab"),
+            });
+
+            new SimpleMDE({
+                element: document.querySelector("#akibat"),
+            });
+
+            new SimpleMDE({
+                element: document.querySelector("#rekomendasi1"),
             });
 
         })();
