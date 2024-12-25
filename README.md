@@ -10,6 +10,8 @@ Fitur Pada Aplikasi
 - Manajemen Dokumen Pengawasan Bidang
 - Manajemen Arsip Laporan Monitoring dan Evaluasi
 - Manajemen Arsip Surat Keputusan
+- Monitoring Hasil Pengawasan Bidang
+- Monitoring Kelengkapan Dokumen Rapat
 
 ## Version
 Relase Version 3.0.0
@@ -21,4 +23,4 @@ Relase Version 3.0.0
 ## License
 
 The SIWAKJON is not open-sourced software licensed under the Era DigiSoft Solution
-If you want to use this application, contact Qori Chairawan,S.Kom
+If you want to use this application, contact Qori Chairawan, S.Kom., CITM
