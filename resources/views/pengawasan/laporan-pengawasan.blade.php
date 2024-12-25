@@ -28,8 +28,38 @@
                 </div>
                 <div class="card-body">
                     <h5 class="mb-3">Buat Laporan Pengawasan Bidang</h5>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
                     @if ($pengawasan)
+                        @if ($temuan->exists())
+                            <div class="alert alert-warning" role="alert">
+                                <p style="text-align: justify;" class="m-0">
+                                    <strong>Perhatian !</strong>
+                                    Kamu sudah mengisi temuan pengawasan nih, selanjutnya silahkan isi kesimpulan dan
+                                    rekomendasi dari hasil pengawasan ya klik tombol berwarna hijau dibawah dengan tulisan
+                                    <strong>"Kesimpulan & Rekomendasi"</strong>, setelah itu kamu dapat mencetak laporan
+                                    pada
+                                    halamanan <a title="Detail Pengawasan" href="{{ $routeBack }}"
+                                        class="text-dark">Detail Pengawasan</a>
+                                </p>
+                            </div>
+                        @else
+                            <div class="alert alert-warning" role="alert">
+                                <p style="text-align: justify;" class="m-0">
+                                    <strong>Perhatian !</strong>
+                                    Silahkan mengisi temuan pengawasan ya, Klik tab <strong>Temuan</strong> kemudian klik
+                                    tombol <strong>Tambah Temuan</strong>, isi temuan pengawasan dan simpan
+                                </p>
+                            </div>
+                        @endif
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="pills-pengawasan-tab" data-bs-toggle="pill"
@@ -94,7 +124,6 @@
                                                             $hakim = json_decode($pengawasan->hakim_pengawas);
                                                         @endphp
                                                         <ul>
-
                                                             @foreach ($hakim as $pengawas)
                                                                 <li style="font-weight: 800;">
                                                                     {{ $pengawas->nama }}
@@ -118,32 +147,99 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Judul Temuan</th>
-                                                <th>Kondisi</th>
-                                                <th>Kriteria</th>
-                                                <th>Sebab</th>
-                                                <th>Akibat</th>
-                                                <th>Rekomendasi</th>
-                                                <th>Waktu</th>
+                                                <th>Temuan</th>
+                                                <th>Waktu Penyelesaian</th>
                                                 <th>Created At</th>
                                                 <th>Updated At</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
+                                            @if ($temuan->exists())
+                                                @php
+                                                    $no = 1;
+                                                @endphp
+                                                @foreach ($temuan->get() as $itemTemuan)
+                                                    <tr>
+                                                        <td style="vertical-align: top;">{{ $no }}</td>
+                                                        <td style="vertical-align: top;">
+                                                            <p style="text-align: justify;">
+                                                                <strong>Judul</strong> : {{ $itemTemuan->judul }}
+                                                            </p>
+                                                            <p style="text-align: justify;">
+                                                                <strong>Kriteria</strong> : {{ $itemTemuan->kriteria }}
+                                                            </p>
+                                                            <p style="text-align: justify;">
+                                                                <strong>Kondisi</strong> {{ $itemTemuan->kondisi }}
+                                                            </p>
+                                                            <p style="text-align: justify;">
+                                                                <strong>Sebab</strong> : {{ $itemTemuan->sebab }}
+                                                            </p>
+                                                            <p style="text-align: justify;">
+                                                                <strong>Akibat</strong> : {{ $itemTemuan->akibat }}
+                                                            </p>
+                                                            <p style="text-align: justify;">
+                                                                <strong>Rekomendasi</strong> :
+                                                                {{ $itemTemuan->rekomendasi }}
+                                                            </p>
+                                                        </td>
+                                                        <td style="vertical-align: top;">
+                                                            {{ $itemTemuan->waktu_penyelesaian }}
+                                                        </td>
+                                                        <td style="vertical-align: top;">
+                                                            {{ $itemTemuan->created_at }}
+                                                        </td>
+                                                        <td style="vertical-align: top;">
+                                                            {{ $itemTemuan->updated_at }}
+                                                        </td>
+                                                        <td style="vertical-align: top;">
+                                                            <a href="javascript:void(0);"
+                                                                class="avtar avtar-xs btn-link-secondary edit-temuan"
+                                                                data-id="{{ Crypt::encrypt($itemTemuan->id) }}"
+                                                                data-judul="{{ $itemTemuan->judul }}"
+                                                                data-kondisi="{{ $itemTemuan->kondisi }}"
+                                                                data-kriteria="{{ $itemTemuan->kriteria }}"
+                                                                data-sebab="{{ $itemTemuan->sebab }}"
+                                                                data-akibat="{{ $itemTemuan->akibat }}"
+                                                                data-rekomendasi="{{ $itemTemuan->rekomendasi }}"
+                                                                data-waktuPenyelesaian="{{ $itemTemuan->waktu_penyelesaian }}">
+                                                                <i class="ti ti-eye f-20"></i>
+                                                            </a>
+                                                            <a href="#" class="avtar avtar-xs btn-link-secondary"
+                                                                onclick=" Swal.fire({
+                                                                    icon: 'warning',
+                                                                    title: 'Hapus Data ?',
+                                                                    text: 'Data yang dihapus tidak dapat dikembalikan !',
+                                                                    showCancelButton: true,
+                                                                    confirmButtonText: 'Hapus',
+                                                                    cancelButtonText: 'Batal',
+                                                                }).then((result) => {
+                                                                    if (result.isConfirmed) {
+                                                                        document.getElementById('deleteForm{{ $no }}').submit();
+                                                                    }
+                                                                });">
+                                                                <i class="ti ti-trash f-20"></i>
+                                                            </a>
+                                                            <form id="deleteForm{{ $no }}"
+                                                                action="{{ route('pengawasan.hapus-temuan', ['id' => Crypt::encrypt($itemTemuan->id)]) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                    @php
+                                                        $no++;
+                                                    @endphp
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="6">
+                                                        Temuan pengawasan belum tersedia, silahkan tambah isi temuan
+                                                        pengawasan ya.
+                                                    </td>
+                                                </tr>
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>
@@ -152,11 +248,11 @@
                     @endif
 
                     <div class="d-flex mt-4" style="gap: 5px;">
-                        <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModalLaporan"
-                            class="btn btn-primary btn-sm">
+                        <button data-pc-animate="fade-in-scale" data-bs-toggle="modal"
+                            data-bs-target="#animateModalLaporan" class="btn btn-primary btn-sm">
                             <i class="fas fa-file-pdf"></i> {{ $pengawasan ? 'Edit' : 'Tambah' }} Laporan
                         </button>
-                        @if ($pengawasan)
+                        @if ($pengawasan && $temuan->exists())
                             <button data-pc-animate="fade-in-scale" data-bs-toggle="modal"
                                 data-bs-target="#animateModalKesimpulan" class="btn btn-primary btn-sm">
                                 <i class="fas fa-file-pdf"></i> Kesimpulan &
@@ -180,7 +276,7 @@
     <!-- This form for make a report -->
     <form action="{{ route('pengawasan.simpan-laporan') }}" method="POST">
         <div class="modal fade modal-animate" id="animateModalLaporan" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{{ $pengawasan ? 'Edit' : 'Tambah' }} Pengawasan</h5>
@@ -245,8 +341,8 @@
                                     <label class="form-label" for="dasarHukum">Dasar Hukum
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <textarea name="dasarHukum" id="dasarHukum" class="form-control"
-                                        placeholder="Dasar Hukum... Cth: Undang-Undang Nomor: 48 Tahun 2009 Tentang Kekuasaan Kehakiman;">{{ $pengawasan ? $pengawasan->dasar_hukum : old('dasarHukum') }}</textarea>
+                                    <textarea name="dasarHukum" id="dasarHukum" class="form-control" style="max-height: 10%;"
+                                        placeholder="Dasar Hukum... Cth: Undang-Undang Nomor: 48 Tahun 2009 Tentang Kekuasaan Kehakiman;">{{ $pengawasan ? $pengawasan->dasar_hukum : '' }}</textarea>
                                     @error('dasarHukum')
                                         <small class="text-danger mt-1">* {{ $message }}</small>
                                     @enderror
@@ -358,7 +454,7 @@
             </div>
         </form>
 
-        <!-- This form for make a temuan wasbid-->
+        <!-- This form for make a temuan wasbid (adding data action)-->
         <form action="{{ route('pengawasan.simpan-temuan') }}" method="POST">
             <div class="modal fade modal-animate" id="animateModalTemuanAdd" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -508,7 +604,7 @@
                                         <label class="form-label" for="waktuPenyelesaian">Waktu Penyelesaian
                                             <span class="text-danger">*</span>
                                         </label>
-                                        <textarea name="waktuPenyelesaian" id="waktuPenyelesaian" class="form-control" placeholder="Waktu Penyelesaian...">{{ old('rekomendasi') }}</textarea>
+                                        <textarea name="waktuPenyelesaian" id="waktuPenyelesaian" class="form-control" placeholder="Waktu Penyelesaian...">{{ old('waktuPenyelesaian') }}</textarea>
                                         @error('waktuPenyelesaian')
                                             <small class="text-danger mt-1">* {{ $message }}</small>
                                         @enderror
@@ -526,6 +622,187 @@
                 </div>
             </div>
         </form>
+
+        @if ($temuan != null)
+            <!-- This form for make a temuan wasbid (editing data action)-->
+            <form action="{{ route('pengawasan.simpan-temuan') }}" method="POST" id="formTemuanEdit">
+                <div class="modal fade modal-animate" id="animateModalTemuanEdit" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Temuan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                @csrf
+                                @method('POST')
+                                <div class="mb-3" hidden>
+                                    <label for="id">
+                                        ID
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" required
+                                        value="{{ Crypt::encrypt($rapat->id) }}" readonly id="id" name="id">
+                                </div>
+                                <div class="mb-3" hidden>
+                                    <label for="idWasbid">
+                                        ID Pengawasan
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" required
+                                        value="{{ $pengawasan ? Crypt::encrypt($pengawasan->id) : '' }}" readonly
+                                        id="idWasbid" name="idWasbid">
+                                </div>
+                                <div class="mb-3" hidden>
+                                    <label for="idTemuan">
+                                        ID Temuan
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" required value="" readonly
+                                        id="idTemuan" name="idTemuan">
+                                </div>
+                                <div class="mb-3" hidden>
+                                    <input type="text" class="form-control" name="param" readonly
+                                        value="{{ Crypt::encrypt('update') }}">
+                                </div>
+                                <!-- Tab For temuan pengawasan bidang edit action -->
+                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="pills-judulEdit-tab" data-bs-toggle="pill"
+                                            href="#pills-judulEdit" role="tab" aria-controls="pills-judulEdit"
+                                            aria-selected="true">Judul Temuan</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-kondisiEdit-tab" data-bs-toggle="pill"
+                                            href="#pills-kondisiEdit" role="tab" aria-controls="pills-kondisiEdit"
+                                            aria-selected="false">Kondisi</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-kriteriaEdit-tab" data-bs-toggle="pill"
+                                            href="#pills-kriteriaEdit" role="tab" aria-controls="pills-kriteriaEdit"
+                                            aria-selected="false">Kriteria</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-sebabEdit-tab" data-bs-toggle="pill"
+                                            href="#pills-sebabEdit" role="tab" aria-controls="pills-sebabEdit"
+                                            aria-selected="false">Sebab</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-akibatEdit-tab" data-bs-toggle="pill"
+                                            href="#pills-akibatEdit" role="tab" aria-controls="pills-akibatEdit"
+                                            aria-selected="false">Akibat</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-rekomendasiEdit-tab" data-bs-toggle="pill"
+                                            href="#pills-rekomendasiEdit" role="tab"
+                                            aria-controls="pills-rekomendasiEdit" aria-selected="false">Rekomendasi</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-waktu-penyelesaianEdit-tab" data-bs-toggle="pill"
+                                            href="#pills-waktu-penyelesaianEdit" role="tab"
+                                            aria-controls="pills-waktu-penyelesaianEdit" aria-selected="false">Waktu
+                                            Penyelesaian</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade show active" id="pills-judulEdit" role="tabpanel"
+                                        aria-labelledby="pills-judulEdit-tab">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="judulEdit">Judul Temuan
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea name="judul" id="judulEdit" class="form-control" placeholder="Judul..."></textarea>
+                                            @error('judul')
+                                                <small class="text-danger mt-1">* {{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-kondisiEdit" role="tabpanel"
+                                        aria-labelledby="pills-kondisiEdit-tab">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="kondisiEdit">Kondisi
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea name="kondisi" id="kondisiEdit" class="form-control" placeholder="Kondisi..."></textarea>
+                                            @error('kondisi')
+                                                <small class="text-danger mt-1">* {{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-kriteriaEdit" role="tabpanel"
+                                        aria-labelledby="pills-kriteriaEdit-tab">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="kriteriaEdit">Kriteria
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea name="kriteria" id="kriteriaEdit" class="form-control" placeholder="Kriteria..."></textarea>
+                                            @error('kriteria')
+                                                <small class="text-danger mt-1">* {{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-sebabEdit" role="tabpanel"
+                                        aria-labelledby="pills-sebabEdit-tab">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="sebabEdit">Sebab
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea name="sebab" id="sebabEdit" class="form-control" placeholder="Sebab..."></textarea>
+                                            @error('sebab')
+                                                <small class="text-danger mt-1">* {{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-akibatEdit" role="tabpanel"
+                                        aria-labelledby="pills-akibatEdit-tab">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="akibatEdit">Akibat
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea name="akibat" id="akibatEdit" class="form-control" placeholder="Akibat..."></textarea>
+                                            @error('akibat')
+                                                <small class="text-danger mt-1">* {{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-rekomendasiEdit" role="tabpanel"
+                                        aria-labelledby="pills-rekomendasiEdit-tab">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="rekomendasiEdit">Rekomendasi
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea name="rekomendasi" id="rekomendasiEdit" class="form-control" placeholder="Rekomendasi..."></textarea>
+                                            @error('rekomendasi')
+                                                <small class="text-danger mt-1">* {{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-waktu-penyelesaianEdit" role="tabpanel"
+                                        aria-labelledby="pills-tab4-tab">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="waktuPenyelesaianEdit">Waktu Penyelesaian
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea name="waktuPenyelesaian" id="waktuPenyelesaianEdit" class="form-control"
+                                                placeholder="Waktu Penyelesaian..."></textarea>
+                                            @error('waktuPenyelesaian')
+                                                <small class="text-danger mt-1">* {{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Tab temuan pengawasan bidang -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        @endif
     @endif
 
     <!-- This form for tutorial tips -->
@@ -620,6 +897,7 @@
         }
     </script>
     <script src="{{ asset('assets/js/plugins/simplemde.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         (function() {
             new SimpleMDE({
@@ -638,6 +916,7 @@
                 element: document.querySelector("#rekomendasi"),
             });
 
+            // for form add temuan
             new SimpleMDE({
                 element: document.querySelector("#judul"),
             });
@@ -664,4 +943,69 @@
 
         })();
     </script>
+    @if ($temuan != null)
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // for form edit temuan
+                let judulEdit = new SimpleMDE({
+                    element: document.querySelector("#judulEdit"),
+                });
+
+                let kondisiEdit = new SimpleMDE({
+                    element: document.querySelector("#kondisiEdit"),
+                });
+
+                let kriteriaEdit = new SimpleMDE({
+                    element: document.querySelector("#kriteriaEdit"),
+                });
+
+                let sebabEdit = new SimpleMDE({
+                    element: document.querySelector("#sebabEdit"),
+                });
+
+                let akibatEdit = new SimpleMDE({
+                    element: document.querySelector("#akibatEdit"),
+                });
+
+                let rekomendasiEdit = new SimpleMDE({
+                    element: document.querySelector("#rekomendasiEdit"),
+                });
+
+                const editButtons = document.querySelectorAll('.edit-temuan');
+                const editModal = new bootstrap.Modal(document.getElementById('animateModalTemuanEdit'));
+                const editForm = document.getElementById('formTemuanEdit');
+
+                editButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const judul = this.getAttribute('data-judul');
+                        const kondisi = this.getAttribute('data-kondisi');
+                        const kriteria = this.getAttribute('data-kriteria');
+                        const sebab = this.getAttribute('data-sebab');
+                        const akibat = this.getAttribute('data-akibat');
+                        const rekomendasi = this.getAttribute('data-rekomendasi');
+                        const waktuPenyelesaian = this.getAttribute('data-waktuPenyelesaian');
+
+                        document.getElementById('idTemuan').value = id;
+                        document.getElementById('judulEdit').value = judul;
+                        document.getElementById('kriteriaEdit').value = kriteria;
+                        document.getElementById('sebabEdit').value = sebab;
+                        document.getElementById('akibatEdit').value = akibat;
+                        document.getElementById('rekomendasiEdit').value = rekomendasi;
+                        document.getElementById('waktuPenyelesaianEdit').value = waktuPenyelesaian;
+
+                        // loaded incoming data on simplemde
+                        judulEdit.value(judul);
+                        kondisiEdit.value(kondisi);
+                        kriteriaEdit.value(kriteria);
+                        sebabEdit.value(sebab);
+                        akibatEdit.value(akibat);
+                        rekomendasiEdit.value(rekomendasi);
+
+                        editModal.show();
+                    });
+                });
+            });
+        </script>
+    @endif
 @endsection

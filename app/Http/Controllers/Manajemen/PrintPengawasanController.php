@@ -3,15 +3,20 @@
 namespace App\Http\Controllers\Manajemen;
 
 use PDF;
+use Carbon\Carbon;
+use App\Helpers\TimeSession;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Pengaturan\AplikasiModel;
+use App\Models\Manajemen\TemuanWasbidModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Pengguna\PejabatPenggantiModel;
 use App\Models\Manajemen\DokumentasiRapatModel;
+use App\Models\Manajemen\PengawasanBidangModel;
+use PHPUnit\Framework\MockObject\Stub\ReturnStub;
 
 class PrintPengawasanController extends Controller
 {
@@ -97,5 +102,38 @@ class PrintPengawasanController extends Controller
         $pdf->setPaper('Folio', 'potrait');
         return $pdf->stream('Dokumentasi ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
 
+    }
+
+    public function printLaporanPengawasan(Request $request)
+    {
+        // Generate QR code
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
+
+        // Search pengawasan on database
+        $pengawasan = PengawasanBidangModel::with('temuanWasbid')->where('detail_rapat_id', '=', $rapat->detailRapat->id);
+        if (!$pengawasan->exists()) {
+            return redirect()->back()->with('error', 'Pengawasan tidak ditemukan !');
+        }
+
+        $tanggalRapat = Carbon::parse($rapat->detailRapat->tanggal_rapat);
+        $minMonth = 1;
+        $newDate = $tanggalRapat->subMonths($minMonth);
+        $setPeriode = TimeSession::convertMonthIndonesian($newDate);
+
+        $url = url('/verification') . '/' . $rapat->kode_rapat;
+        $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
+        $data = [
+            'aplikasi' => AplikasiModel::first(),
+            'rapat' => $rapat,
+            'pengawasan' => $pengawasan->get(),
+            'qrCode' => $qrCode,
+            'title' => $pengawasan->first(),
+            'periode' => $setPeriode
+        ];
+
+        $pdf = PDF::loadView('template.pdf-laporan-pengawasan', $data);
+        $pdf->setPaper('Folio', 'potrait');
+        return $pdf->stream('Laporan Pengawasan Bidang ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+        // return view('template.pdf-laporan-pengawasan', $data);
     }
 }

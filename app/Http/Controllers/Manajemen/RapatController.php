@@ -33,6 +33,10 @@ class RapatController extends Controller
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->whereHas('klasifikasiRapat', function ($query) {
+            $query->where('rapat', '!=', 'Pengawasan');
+        })->orderBy('created_at', 'desc')->get();
+
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
             ['title' => 'Manajemen Rapat', 'link' => 'javascript:void(0);', 'page' => ''],
@@ -45,7 +49,7 @@ class RapatController extends Controller
             'breadcumbs' => $breadcumb,
             'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->where('rapat', '!=', 'Pengawasan')->orderBy('created_at', 'desc')->get(),
             'klasifikasiJabatan' => KlasifikasiJabatanModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
-            'rapat' => ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->orderBy('created_at', 'desc')->get()
+            'rapat' => $rapat
         ];
 
         return view('rapat.data-rapat', $data);

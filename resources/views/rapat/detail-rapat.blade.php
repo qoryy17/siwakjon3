@@ -156,7 +156,7 @@
                                     @if ($edoc)
                                         <a target="_blank" class="btn btn-sm btn-secondary"
                                             href="{{ asset('storage/' . $edoc->path_file_edoc) }}">
-                                            <i class="fas fa-file-pdf"></i> Dokumentasi
+                                            <i class="fas fa-file-pdf"></i> Edoc File PDF
                                         </a>
                                         Last Update Uploaded : {{ $edoc->updated_at }}
                                     @endif

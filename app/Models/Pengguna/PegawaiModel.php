@@ -29,12 +29,12 @@ class PegawaiModel extends Model
 
     public function user(): belongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'pegawai_id', 'id');
     }
 
     public function jabatan(): BelongsTo
     {
-        return $this->belongsTo(JabatanModel::class);
+        return $this->belongsTo(JabatanModel::class, 'jabatan_id', 'id');
     }
 
     public function hakimPengawas(): BelongsTo

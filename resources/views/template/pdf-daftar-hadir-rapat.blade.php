@@ -38,7 +38,7 @@
         }
 
         .body-content {
-            font-size: 14px;
+            /* font-size: 14px; */
         }
 
         .table-title {
@@ -49,7 +49,7 @@
         .table-present {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            /* font-size: 14px; */
         }
 
         .qrcode {

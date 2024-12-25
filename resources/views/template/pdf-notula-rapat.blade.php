@@ -38,7 +38,7 @@
         }
 
         .body-content {
-            font-size: 15px;
+            /* font-size: 15px; */
         }
 
         .table-title {
@@ -49,7 +49,7 @@
         .table-header-notula {
             width: 100%;
             border-collapse: collapse;
-            font-size: 15px;
+            /* font-size: 15px; */
             line-height: 1.5;
         }
 
@@ -62,12 +62,12 @@
         .pembahasan p,
         .catatan p,
         .kesimpulan p {
-            font-size: 15px;
+            /* font-size: 15px; */
         }
 
         .table-footer {
             width: 100%;
-            font-size: 15px;
+            /* font-size: 15px; */
         }
 
         .qrcode {

@@ -26,7 +26,8 @@ class TemuanWasbidModel extends Model
 
     public $timestamps = true;
 
-    public function pengawasanBidang(): BelongsTo{
+    public function pengawasanBidang(): BelongsTo
+    {
         return $this->belongsTo(PengawasanBidangModel::class);
     }
 }

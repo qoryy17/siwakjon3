@@ -35,6 +35,6 @@ class PengawasanBidangModel extends Model
 
     public function temuanWasbid(): BelongsTo
     {
-        return $this->belongsTo(TemuanWasbidModel::class);
+        return $this->belongsTo(TemuanWasbidModel::class, 'id', 'pengawasan_bidang_id');
     }
 }

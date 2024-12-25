@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Manajemen;
 
-use App\Http\Requests\Manajemen\TemuanWasbidRequest;
 use Carbon\Carbon;
-use App\Models\User;
 use App\Helpers\RouteLink;
 use Illuminate\Support\Str;
 use App\Helpers\TimeSession;
@@ -16,6 +14,7 @@ use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Hakim\HakimPengawasModel;
 use App\Models\Manajemen\EdocWasbidModel;
 use App\Models\Pengaturan\UnitKerjaModel;
 use App\Models\Manajemen\DetailRapatModel;
@@ -26,9 +25,8 @@ use App\Models\Manajemen\DokumentasiRapatModel;
 use App\Models\Manajemen\KlasifikasiRapatModel;
 use App\Models\Manajemen\PengawasanBidangModel;
 use App\Http\Requests\Manajemen\FormNotulaRequest;
-use App\Http\Requests\Manajemen\FormLaporanRequest;
 use App\Http\Requests\Manajemen\FormManajemenRapat;
-use App\Http\Requests\Manajemen\FormKesimpulanRequest;
+use App\Http\Requests\Manajemen\TemuanWasbidRequest;
 use App\Http\Requests\Manajemen\FormUndanganRapatRequest;
 
 class PengawasanController extends Controller
@@ -532,27 +530,34 @@ class PengawasanController extends Controller
 
     public function saveLaporan(Request $request): RedirectResponse
     {
-        // Search hakim pengawas
-        $hakimWasbid = [];
-        $hakim = User::with('pegawai')->where('unit_kerja_id', '=', htmlspecialchars($request->input('unitKerja')));
-        if ($hakim->exists()) {
-            foreach ($hakim->get() as $kimwas) {
-                $hakimWasbid[] = [
-                    'pegawai_id' => $kimwas->pegawai_id,
-                    'nama' => $kimwas->name
-                ];
-            }
-
-        } else {
-            return redirect()->back()->with('error', 'Hakim pengawas tidak tersedia ! Silahkan hubungi Superadmin atau Administrator');
-        }
-
+        $paramIncoming = Crypt::decrypt($request->input('param'));
         // Search dokumen rapat
         $rapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->input('id')));
-        $objek = UnitKerjaModel::findOrFail(htmlspecialchars($request->input('unitKerja')));
         $save = null;
 
-        if (Crypt::decrypt($request->input('param')) == 'save') {
+        if ($paramIncoming == 'save') {
+            // Search objek pengawasan
+            $objek = UnitKerjaModel::findOrFail(htmlspecialchars($request->input('unitKerja')));
+            // Search hakim pengawas
+            $hakimWasbid = [];
+            $unitKerja = htmlspecialchars($request->input('unitKerja'));
+
+            $hakim = HakimPengawasModel::with([
+                'pegawai' => function ($query) {
+                    $query->orderBy('nip', 'desc');
+                }
+            ])->where('unit_kerja_id', '=', $unitKerja);
+
+            if ($hakim->exists()) {
+                foreach ($hakim->get() as $kimwas) {
+                    $hakimWasbid[] = [
+                        'pegawai_id' => $kimwas->pegawai_id,
+                        'nama' => $kimwas->pegawai->nama
+                    ];
+                }
+            } else {
+                return redirect()->back()->with('error', 'Hakim pengawas tidak tersedia ! Silahkan hubungi Superadmin atau Administrator');
+            }
 
             // Run validated
             $request->validate(
@@ -593,7 +598,7 @@ class PengawasanController extends Controller
                 $error = 'Laporan gagal di simpan !';
             }
 
-        } elseif (Crypt::decrypt($request->input('param')) == 'update') {
+        } elseif ($paramIncoming == 'update') {
 
             // Run validated
             $request->validate(
@@ -614,10 +619,10 @@ class PengawasanController extends Controller
                 'rekomendasi' => htmlspecialchars($request->input('rekomendasi')),
             ];
 
-            $pengawasan = PengawasanBidangModel::where('kode_pengawasan', '=', htmlspecialchars($request->input('kodePengawasan')))->first();
+            $pengawasan = PengawasanBidangModel::where('detail_rapat_id', '=', $rapat->detailRapat->id);
             $save = $pengawasan->update($formData);
-            $success = 'Kesimpulan & Rekomendasi berhasil di simpan !';
-            $error = 'Kesimpulan & Rekomendasi gagal di simpan !';
+            $success = 'Kesimpulan dan Rekomendasi berhasil di simpan !';
+            $error = 'Kesimpulan dan Rekomendasi gagal di simpan !';
 
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
@@ -630,14 +635,20 @@ class PengawasanController extends Controller
         return redirect()->route('pengawasan.laporan', ['id' => $request->input('id')])->with('success', $success);
     }
 
-    public function saveTemuan(TemuanWasbidRequest $request)
+    public function saveTemuan(TemuanWasbidRequest $request): RedirectResponse
     {
         // Run validate
         $request->validated();
         $save = null;
 
+        // Search pengawasan on database, if not exists redirect back with error message
+        $pengawasan = PengawasanBidangModel::findOrFail(Crypt::decrypt($request->input('idWasbid')));
+        if (!$pengawasan) {
+            return redirect()->back()->with('error', 'Data pengawasan tidak ditemukan !');
+        }
+
         $formData = [
-            'kode_pengawasan' => Crypt::decrypt(htmlspecialchars($request->input('idWasbid'))),
+            'pengawasan_bidang_id' => Crypt::decrypt(htmlspecialchars($request->input('idWasbid'))),
             'judul' => $request->input('judul'),
             'kondisi' => $request->input('kondisi'),
             'kriteria' => $request->input('kriteria'),
@@ -646,38 +657,38 @@ class PengawasanController extends Controller
             'rekomendasi' => $request->input('rekomendasi'),
             'waktu_penyelesaian' => $request->input('waktuPenyelesaian'),
         ];
-        // Search pengawasan on database, if not exist redirect back with error message
-        $pengawasan = PengawasanBidangModel::findOrFail(Crypt::decrypt($request->input('idWasbid')));
-        if (!$pengawasan) {
-            return redirect()->back()->with('error', 'Data pengawasan tidak ditemukan !');
-        }
 
-        $paramIncoming = Crypt::decrypt($request->input('id'));
+        $paramIncoming = Crypt::decrypt($request->input('param'));
 
         if ($paramIncoming == 'save') {
-            $formData = [
-                'judul' => $request->input('judul'),
-                'kondisi' => $request->input('kondisi'),
-                'kriteria' => $request->input('kriteria'),
-                'sebab' => $request->input('sebab'),
-                'akibat' => $request->input('akibat'),
-                'rekomendasi' => $request->input('rekomendasi'),
-                'waktu_penyelesaian' => $request->input('waktuPenyelesaian'),
-            ];
-
+            $save = TemuanWasbidModel::create($formData);
+            $success = 'Temuan berhasil di simpan !';
+            $error = 'Temuan gagal di simpan !';
         } elseif ($paramIncoming == 'update') {
-
+            $searchTemuan = TemuanWasbidModel::findOrFail(Crypt::decrypt($request->input('idTemuan')));
+            $save = $searchTemuan->update($formData);
+            $success = 'Temuan berhasil di perbarui';
+            $error = 'Temuan gagal di perbarui';
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', '');
+            return redirect()->back()->with('error', $error);
         }
 
-        return redirect()->route('pengawasan.detail', ['id' => htmlspecialchars($request->input('id'))])->with('success', $success);
+        return redirect()->route('pengawasan.laporan', ['id' => htmlspecialchars($request->input('id'))])->with('success', $success);
     }
 
+    public function deleteTemuan(Request $request)
+    {
+        $temuan = TemuanWasbidModel::findOrFail(Crypt::decrypt($request->id));
+        if ($temuan) {
+            $temuan->delete();
+            return redirect()->back()->with('success', 'Temuan berhasil di hapus !');
+        }
+        return redirect()->back()->with('success', 'Temuan gagal di hapus !');
+    }
     public function saveEdoc(Request $request): RedirectResponse
     {
         $year = date('Y');

@@ -71,7 +71,7 @@
                                         </td>
                                         <td style="vertical-align: top;">
                                             @if ($edoc)
-                                                <a href="{{ asset('storage/' . $edoc->path_file_edoc) }}"
+                                                <a target="_blank" href="{{ asset('storage/' . $edoc->path_file_tlhp) }}"
                                                     class="btn btn-sm btn-primary">
                                                     <i class="fas fa-file-pdf"></i>
                                                 </a>

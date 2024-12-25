@@ -7,7 +7,6 @@ namespace App\Models;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Pengaturan\UnitKerjaModel;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -55,9 +54,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function pegawai(): belongsTo
+    public function pegawai(): BelongsTo
     {
-        return $this->belongsTo(related: PegawaiModel::class);
+        return $this->BelongsTo(PegawaiModel::class, 'pegawai_id', 'id');
     }
 
     public function unitKerja(): BelongsTo

@@ -38,7 +38,7 @@
         }
 
         .body-content {
-            font-size: 15px;
+            /* font-size: 15px; */
         }
 
         .table-content {

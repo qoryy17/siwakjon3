@@ -150,7 +150,7 @@
                                     <i class="fas fa-file-pdf"></i> Dokumentasi
                                 </a>
                             @endif
-                            @if ($pengawasan)
+                            @if ($pengawasan && $pengawasan->rekomendasi != null)
                                 <a target="_blank" class="btn btn-sm btn-warning"
                                     href="{{ route('pengawasan.print-laporan', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                     <i class="fas fa-file-pdf"></i> Laporan
@@ -158,7 +158,7 @@
                             @endif
                         </li>
                         @if (Auth::user()->roles != 'User' || Auth::user()->id == $rapat->dibuat)
-                            @if ($pengawasan)
+                            @if ($pengawasan && $pengawasan->rekomendasi != null)
                                 <li class="list-group-item px-0">
                                     <p class="mb-1 text-muted">Unggah Dokumen</p>
                                     <button data-pc-animate="fade-in-scale" data-bs-toggle="modal"
@@ -167,8 +167,8 @@
                                     </button>
                                     @if ($edoc)
                                         <a target="_blank" class="btn btn-sm btn-secondary"
-                                            href="{{ asset('storage/' . $edoc->path_file_edoc) }}">
-                                            <i class="fas fa-file-pdf"></i> Dokumentasi
+                                            href="{{ asset('storage/' . $edoc->path_file_tlhp) }}">
+                                            <i class="fas fa-file-pdf"></i> Edoc File PDF
                                         </a>
                                         Last Update Uploaded : {{ $edoc->updated_at }}
                                     @endif
@@ -179,7 +179,7 @@
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">Unggah File Edoc Rapat</h5>
+                                                        <h5 class="modal-title">Unggah File Edoc Pengawasan</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"> </button>
                                                     </div>
@@ -197,7 +197,9 @@
                                                             <input type="file" class="form-control" aria-label="file"
                                                                 id="file" name="file" required>
                                                             <small class="text-danger mt-1">
-                                                                Dokumen rapat yang diunggah harus berformat PDF, maksimal
+                                                                Dokumen pengawasan (Undangan, Daftar Hadir, Notula,
+                                                                Dokumentasi dan Laporan) yang diunggah harus berformat PDF,
+                                                                maksimal
                                                                 ukuran file 10MB dan harus sudah ditandatangani.
                                                             </small>
                                                             @error('file')
