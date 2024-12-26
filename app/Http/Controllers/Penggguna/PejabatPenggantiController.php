@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Penggguna;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Pengaturan\PejabatPenggantiRequest;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Pengguna\PejabatPenggantiModel;
+use App\Http\Requests\Pengaturan\PejabatPenggantiRequest;
 
 class PejabatPenggantiController extends Controller
 {
@@ -87,11 +88,13 @@ class PejabatPenggantiController extends Controller
             $save = PejabatPenggantiModel::create($formData);
             $success = 'Pejabat Pengganti berhasil di simpan !';
             $error = 'Pejabat Pengganti gagal di simpan !';
+            $activity = Auth::user()->name . 'Menambahkan pejabat pengganti ' . $formData['pejabat'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             $search = PejabatPenggantiModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Pejabat Pengganti berhasil di perbarui !';
             $error = 'Pejabat Pengganti gagal di perbarui !';
+            $activity = Auth::user()->name . 'Memperbarui pejabat pengganti dengan id ' . $request->input('id') . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -99,6 +102,16 @@ class PejabatPenggantiController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', $error);
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('pejabatPengganti.index')->with('success', $success);
     }
@@ -108,6 +121,15 @@ class PejabatPenggantiController extends Controller
         // Checking data pejabat pengganti on database
         $pejabatPengganti = PejabatPenggantiModel::findOrFail(Crypt::decrypt($request->id));
         if ($pejabatPengganti) {
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . 'Menghapus pejabat pengganti ' . $pejabatPengganti->pejabat . ', timestamp ' . now()
+                ]
+            );
             $pejabatPengganti->delete();
             return redirect()->route('pejabatPengganti.index')->with('success', 'Pejabat Pengganti berhasil di hapus !');
         }

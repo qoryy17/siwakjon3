@@ -9,6 +9,7 @@ use App\Helpers\TimeSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
@@ -231,6 +232,7 @@ class PengawasanController extends Controller
             }
             $success = 'Dokumen Rapat berhasil di simpan !';
             $error = 'Dokumen Rapat gagal di simpan !';
+            $activity = Auth::user()->name . 'Menambahkan dokumen pengawasan ' . $formDetailRapat['perihal'] . ', timestamp' . now();
         } elseif ($paramIncoming == 'update') {
             try {
                 DB::beginTransaction();
@@ -267,6 +269,7 @@ class PengawasanController extends Controller
 
             $success = 'Dokumen Rapat berhasil di perbarui !';
             $error = 'Dokumen Rapat gagal di perbarui !';
+            $activity = Auth::user()->name . 'Memperbarui dokumen pengawasan dengan id ' . $request->input('id') . ', timestamp' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -278,6 +281,16 @@ class PengawasanController extends Controller
         if (!$saveDetailRapat) {
             return redirect()->back()->with('error', $error);
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('pengawasan.index')->with('success', $success);
     }

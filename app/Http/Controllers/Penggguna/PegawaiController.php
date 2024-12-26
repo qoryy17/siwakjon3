@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Penggguna;
 
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pengguna\JabatanModel;
 use App\Models\Pengguna\PegawaiModel;
@@ -112,6 +112,7 @@ class PegawaiController extends Controller
             $save = PegawaiModel::create($formData);
             $success = 'Pegawai berhasil di simpan !';
             $error = 'Pegawai gagal di simpan !';
+            $activity = Auth::user()->name . 'Menambahkan pegawai ' . $formData['nama'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             $search = PegawaiModel::findOrFail(Crypt::decrypt($request->input('id')));
 
@@ -136,6 +137,7 @@ class PegawaiController extends Controller
             $save = $search->update($formData);
             $success = 'Pegawai berhasil di perbarui !';
             $error = 'Pegawai gagal di perbarui !';
+            $activity = Auth::user()->name . 'Memperbarui pegawai dengan id ' . $request->input('id') . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -143,6 +145,16 @@ class PegawaiController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', $error);
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('pengguna.pegawai')->with('success', $success);
     }
@@ -156,6 +168,15 @@ class PegawaiController extends Controller
             if (Storage::disk('public')->exists($pegawai->foto)) {
                 Storage::disk('public')->delete($pegawai->foto);
             }
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . 'Menghapus pegawai ' . $pegawai->nama . ', timestamp ' . now()
+                ]
+            );
             $pegawai->delete();
             return redirect()->route('pengguna.pegawai')->with('success', 'Pegawai berhasil di hapus !');
         }

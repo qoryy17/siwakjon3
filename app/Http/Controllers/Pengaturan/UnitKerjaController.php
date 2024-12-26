@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Pengaturan;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Pengaturan\UnitKerjaRequest;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Pengaturan\UnitKerjaModel;
+use App\Http\Requests\Pengaturan\UnitKerjaRequest;
 
 class UnitKerjaController extends Controller
 {
@@ -86,11 +87,13 @@ class UnitKerjaController extends Controller
             $save = UnitKerjaModel::create($formData);
             $success = 'Unit Kerja berhasil di simpan !';
             $error = 'Unit Kerja gagal di simpan !';
+            $activity = Auth::user()->name . ' Menambahkan unit kerja ' . $formData['unit_kerja'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             $search = UnitKerjaModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Unit Kerja berhasil di perbarui !';
             $error = 'Unit Kerja gagal di perbarui !';
+            $activity = Auth::user()->name . ' Memperbarui unit kerja dengan id ' . $request->input('id') . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -98,6 +101,16 @@ class UnitKerjaController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', $error);
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('unitKerja.index')->with('success', $success);
     }
@@ -107,6 +120,15 @@ class UnitKerjaController extends Controller
         // Checking data unit kerja on database
         $unitKerja = UnitKerjaModel::findOrFail(Crypt::decrypt($request->id));
         if ($unitKerja) {
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus unit kerja ' . $unitKerja->unit_kerja . ', timestamp ' . now()
+                ]
+            );
             $unitKerja->delete();
             return redirect()->route('unitKerja.index')->with('success', 'Unit Kerja berhasil di hapus !');
         }

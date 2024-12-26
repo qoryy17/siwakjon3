@@ -9,11 +9,13 @@ use App\Helpers\TimeSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Manajemen\EdocRapatModel;
 use App\Models\Manajemen\DetailRapatModel;
 use App\Models\Pengaturan\SetKodeRapatModel;
 use App\Models\Manajemen\ManajemenRapatModel;
@@ -24,7 +26,6 @@ use App\Models\Manajemen\KlasifikasiJabatanModel;
 use App\Http\Requests\Manajemen\FormNotulaRequest;
 use App\Http\Requests\Manajemen\FormManajemenRapat;
 use App\Http\Requests\Manajemen\FormUndanganRapatRequest;
-use App\Models\Manajemen\EdocRapatModel;
 
 class RapatController extends Controller
 {
@@ -227,6 +228,7 @@ class RapatController extends Controller
             }
             $success = 'Dokumen Rapat berhasil di simpan !';
             $error = 'Dokumen Rapat gagal di simpan !';
+            $activity = Auth::user()->name . ' Menambahkan rapat ' . $formData['perihal'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             try {
                 DB::beginTransaction();
@@ -267,6 +269,7 @@ class RapatController extends Controller
 
             $success = 'Dokumen Rapat berhasil di perbarui !';
             $error = 'Dokumen Rapat gagal di perbarui !';
+            $activity = Auth::user()->name . ' Memperbarui rapat dengan id ' . $request->input('id') . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -278,6 +281,16 @@ class RapatController extends Controller
         if (!$saveDetailRapat) {
             return redirect()->back()->with('error', $error);
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('rapat.index')->with('success', $success);
     }
@@ -309,6 +322,16 @@ class RapatController extends Controller
                 }
                 $dokumentasi->delete();
             }
+
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus dokumen rapat ' . $detailRapat->perihal . ', timestamp ' . now()
+                ]
+            );
 
             // After all data delete, remove data rapat on manajemen rapat
             $rapat->delete();
@@ -380,6 +403,16 @@ class RapatController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', 'Notula gagal di simpan !');
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => Auth::user()->name . ' Menyimpan notula rapat ' . $notula->perihal . ', timestamp' . now()
+            ]
+        );
 
         return redirect()->route('rapat.detail', ['id' => $request->input('id')])->with('success', 'Notula berhasil di simpan !');
     }
@@ -455,6 +488,16 @@ class RapatController extends Controller
             return redirect()->back()->with('error', 'Dokumentasi gagal di simpan !');
         }
 
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => Auth::user()->name . ' Menyimpan dokumentasi rapat detail id ' . $dokumentasi->perihal . ', timestamp' . now()
+            ]
+        );
+
         return redirect()->route('rapat.form-dokumentasi', ['id' => $request->input('id')])->with('success', 'Dokumentasi berhasil di simpan !');
     }
 
@@ -467,6 +510,15 @@ class RapatController extends Controller
             if (Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
                 Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
             }
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus dokumentasi rapat ' . $detailRapat->perihal . ', timestamp' . now()
+                ]
+            );
             $dokumentasi->delete();
             return redirect()->back()->with('success', 'Dokumentasi berhasil di hapus !');
         }
@@ -518,13 +570,26 @@ class RapatController extends Controller
                 Storage::disk('public')->delete($existEdoc->path_file_edoc);
             }
             $save = $existEdoc->update($formData);
+
+            $activity = Auth::user()->name . ' Memperbarui edoc file rapat ' . $edocRapat->perihal . ', timestamp' . now();
         } else {
             $save = EdocRapatModel::create($formData);
+            $activity = Auth::user()->name . ' Mengunggah edoc file rapat ' . $edocRapat->perihal . ', timestamp' . now();
         }
 
         if (!$save) {
             return redirect()->back()->with('error', 'File Edoc gagal di simpan !');
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('rapat.detail', ['id' => $request->input('id')])->with('success', 'File Edoc berhasil di simpan !');
     }
