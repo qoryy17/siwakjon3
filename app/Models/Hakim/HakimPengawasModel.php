@@ -23,11 +23,13 @@ class HakimPengawasModel extends Model
 
     public $timestamps = true;
 
-    public function pegawai(): BelongsTo{
-        return $this->belongsTo(PegawaiModel::class);
+    public function pegawai(): BelongsTo
+    {
+        return $this->belongsTo(PegawaiModel::class, 'id');
     }
 
-    public function unitKerja(): BelongsTo{
+    public function unitKerja(): BelongsTo
+    {
         return $this->belongsTo(UnitKerjaModel::class);
     }
 }

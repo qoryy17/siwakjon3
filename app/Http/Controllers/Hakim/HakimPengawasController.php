@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Hakim;
 
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hakim\HakimPengawasRequest;
 use Illuminate\Support\Facades\Auth;
@@ -16,23 +15,51 @@ use App\Models\Pengaturan\UnitKerjaModel;
 
 class HakimPengawasController extends Controller
 {
-    public function indexDaftarHakim()
+    public function indexDaftarHakim(Request $request)
     {
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
+
+
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
             ['title' => 'Pengawasan Bidang', 'link' => 'javascript:void(0);', 'page' => ''],
             ['title' => 'Hakim Pengawas', 'link' => route('pengawasan.daftar-hakim-pengawas'), 'page' => 'aria-current="page"']
         ];
+
+        if ($request->input('search')) {
+            $request->validate(
+                ['search' => 'string'],
+                ['search' => 'Kata Pencarian harus berupa karakter valid !']
+            );
+            $hakim = $this->getHakimPengawas($request->input('search'));
+        } else {
+            $hakim = HakimPengawasModel::with('pegawai')->with('unitKerja')
+                ->whereHas('pegawai', function ($query) {
+                    $query->orderBy('nip', 'desc');
+                })->where('aktif', '=', 'Y');
+        }
+
         $data = [
             'title' => 'Pengawasan Bidang | Daftar Hakim Pengawas',
             'routeHome' => $route,
-            'breadcumbs' => $breadcumb
+            'breadcumbs' => $breadcumb,
+            'hakim' => $hakim,
         ];
 
         return view('pengawasan.daftar-hakim-pengawas', $data);
+    }
+    protected function getHakimPengawas($keyword)
+    {
+        $hakim = HakimPengawasModel::with('pegawai')->with('unitKerja')
+            ->whereHas('pegawai', function ($query) use ($keyword) {
+                $query->where('nip', 'like', "%$keyword%")
+                    ->orWhere('nama', 'like', "%$keyword%")
+                    ->orderBy('nip', 'desc');
+            })->where('aktif', '=', 'Y');
+
+        return $hakim;
     }
 
     public function indexHakimPengawas()

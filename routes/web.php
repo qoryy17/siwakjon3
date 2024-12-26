@@ -122,6 +122,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(HakimPengawasController::class)->group(function () {
         Route::get('/pengawasan-bidang/daftar-hakim-pengawas', 'indexDaftarHakim')->name('pengawasan.daftar-hakim-pengawas');
+
         Route::get('/manajemen-pengguna/hakim-pengawas/form/{param}/{id}', 'formHakimPengawas')->name('pengguna.form-hakim-pengawas');
         Route::get('/manajemen-pengguna/hakim-pengawas', 'indexHakimPengawas')->name('pengguna.hakim-pengawas');
         Route::post('/manajemen-pengguna/simpan-hakim-pengawas', 'save')->name('pengguna.simpan-hakim-pengawas');
