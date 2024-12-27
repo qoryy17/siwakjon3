@@ -111,11 +111,13 @@ class MonevController extends Controller
             $save = AgendaMonevModel::create($formData);
             $success = 'Agenda Monev berhasil di simpan !';
             $error = 'Agenda Monev gagal di simpan !';
+            $activity = Auth::user()->name . ' Menambahkan agenda monev ' . $formData['nama_agenda'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             $search = AgendaMonevModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Agenda Monev berhasil di perbarui !';
             $error = 'Agenda Monev gagal di perbarui !';
+            $activity = Auth::user()->name . ' Memperbarui agenda monev ' . $search->nama_agenda . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -123,6 +125,16 @@ class MonevController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', $error);
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('monev.index')->with('success', $success);
     }
@@ -132,7 +144,15 @@ class MonevController extends Controller
         // Checking data agenda monev on database
         $agendaMonev = AgendaMonevModel::findOrFail(Crypt::decrypt($request->id));
         if ($agendaMonev) {
-            ArsipMonevModel::where('agenda_monev_id', '=', $agendaMonev->id)->delete();
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus agenda monev ' . $agendaMonev->nama_agenda . ', timestamp ' . now()
+                ]
+            );
             $agendaMonev->delete();
             return redirect()->route('monev.index')->with('success', 'Agenda Monev berhasil di hapus !');
         }
@@ -194,6 +214,17 @@ class MonevController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', 'Monev gagal di simpan !');
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => Auth::user()->name . ' Menambahkan laporan monev ' . $formData['judul_monev'] . ', timestamp ' . now()
+            ]
+        );
+
         return redirect()->route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($formData['agenda_monev_id'])])->with('success', 'Monev berhasil di simpan !');
     }
 
@@ -230,6 +261,16 @@ class MonevController extends Controller
             return redirect()->back()->with('error', 'Monev gagal di perbarui !');
         }
 
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => Auth::user()->name . ' Memperbarui laporan monev ' . $search->judul_monev . ', timestamp ' . now()
+            ]
+        );
+
         return redirect()->route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($formData['agenda_monev_id'])])->with('success', 'Monev berhasil di perbarui !');
     }
 
@@ -238,6 +279,15 @@ class MonevController extends Controller
         // Checking data monev on database
         $arsipMonev = ArsipMonevModel::findOrFail(Crypt::decrypt($request->id));
         if ($arsipMonev) {
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus laporan monev ' . $arsipMonev->judul_monev . ', timestamp ' . now()
+                ]
+            );
             $arsipMonev->delete();
             return redirect()->route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($arsipMonev->agenda_monev_id)])->with('success', 'Monev berhasil di hapus !');
         }
@@ -331,6 +381,15 @@ class MonevController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', 'Laporan monev gagal diunggah !');
         }
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => Auth::user()->name . ' Mengunggah laporan monev ' . $search->judul_monev . ', timestamp ' . now()
+            ]
+        );
 
         return redirect()->route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($formData['agenda_monev_id'])])->with('success', 'Laporan monev berhasil diunggah !');
     }
