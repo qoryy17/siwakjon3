@@ -338,6 +338,17 @@ class PengawasanController extends Controller
                 $edoc->delete();
             }
 
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus dokumen pengawasan ' . $detailRapat->perihal . ', timestamp ' . now()
+                ]
+            );
+
+            // After all data delete, remove data rapat on manajemen rapat
             $rapat->delete();
             return redirect()->route('pengawasan.index')->with('success', 'Rapat berhasil di hapus !');
         }
@@ -408,6 +419,16 @@ class PengawasanController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', 'Notula gagal di simpan !');
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => Auth::user()->name . ' Menyimpan notula pengawasan ' . $notula->perihal . ', timestamp' . now()
+            ]
+        );
 
         return redirect()->route('pengawasan.detail', ['id' => $request->input('id')])->with('success', 'Notula berhasil di simpan !');
     }
@@ -483,6 +504,16 @@ class PengawasanController extends Controller
             return redirect()->back()->with('error', 'Dokumentasi gagal di simpan !');
         }
 
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => Auth::user()->name . ' Menyimpan dokumentasi pengawasan ' . $dokumentasi->perihal . ', timestamp' . now()
+            ]
+        );
+
         return redirect()->route('pengawasan.form-dokumentasi', ['id' => $request->input('id')])->with('success', 'Dokumentasi berhasil di simpan !');
     }
 
@@ -495,6 +526,15 @@ class PengawasanController extends Controller
             if (Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
                 Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
             }
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus dokumentasi rapat ' . $detailRapat->perihal . ', timestamp' . now()
+                ]
+            );
             $dokumentasi->delete();
             return redirect()->back()->with('success', 'Dokumentasi berhasil di hapus !');
         }
@@ -605,10 +645,12 @@ class PengawasanController extends Controller
                 $save = $pengawasan->update($formData);
                 $success = 'Laporan berhasil di perbarui !';
                 $error = 'Laporan gagal di perbarui !';
+                $activity = Auth::user()->name . ' Menambahkan laporan pengawasan ' . $rapat->detailRapat->perihal . ', timestamp' . now();
             } else {
                 $save = PengawasanBidangModel::create($formData);
                 $success = 'Laporan berhasil di simpan !';
                 $error = 'Laporan gagal di simpan !';
+                $activity = Auth::user()->name . ' Memperbarui laporan pengawasan ' . $rapat->detailRapat->perihal . ', timestamp' . now();
             }
 
         } elseif ($paramIncoming == 'update') {
@@ -636,6 +678,7 @@ class PengawasanController extends Controller
             $save = $pengawasan->update($formData);
             $success = 'Kesimpulan dan Rekomendasi berhasil di simpan !';
             $error = 'Kesimpulan dan Rekomendasi gagal di simpan !';
+            $activity = Auth::user()->name . ' Menambahkan kesimpulan dan rekomendasi laporan pengawasan ' . $rapat->detailRapat->perihal . ', timestamp' . now();
 
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
@@ -644,6 +687,16 @@ class PengawasanController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', $error);
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('pengawasan.laporan', ['id' => $request->input('id')])->with('success', $success);
     }
@@ -677,11 +730,13 @@ class PengawasanController extends Controller
             $save = TemuanWasbidModel::create($formData);
             $success = 'Temuan berhasil di simpan !';
             $error = 'Temuan gagal di simpan !';
+            $activity = Auth::user()->name . ' Menambahkan temuan ' . $pengawasan->kode_pengawasan . ', timestamp' . now();
         } elseif ($paramIncoming == 'update') {
             $searchTemuan = TemuanWasbidModel::findOrFail(Crypt::decrypt($request->input('idTemuan')));
             $save = $searchTemuan->update($formData);
             $success = 'Temuan berhasil di perbarui';
             $error = 'Temuan gagal di perbarui';
+            $activity = Auth::user()->name . ' Memperbarui temuan ' . $pengawasan->kode_pengawasan . ', timestamp' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -690,6 +745,16 @@ class PengawasanController extends Controller
             return redirect()->back()->with('error', $error);
         }
 
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
+
         return redirect()->route('pengawasan.laporan', ['id' => htmlspecialchars($request->input('id'))])->with('success', $success);
     }
 
@@ -697,11 +762,21 @@ class PengawasanController extends Controller
     {
         $temuan = TemuanWasbidModel::findOrFail(Crypt::decrypt($request->id));
         if ($temuan) {
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus temuan' . $temuan->judul . ', timestamp ' . now()
+                ]
+            );
             $temuan->delete();
             return redirect()->back()->with('success', 'Temuan berhasil di hapus !');
         }
         return redirect()->back()->with('success', 'Temuan gagal di hapus !');
     }
+
     public function saveEdoc(Request $request): RedirectResponse
     {
         $year = date('Y');
@@ -747,13 +822,25 @@ class PengawasanController extends Controller
                 Storage::disk('public')->delete($existEdoc->path_file_tlhp);
             }
             $save = $existEdoc->update($formData);
+            $activity = Auth::user()->name . ' Memperbarui edoc pengawasan ' . $rapat->perihal . ', timestamp' . now();
         } else {
             $save = EdocWasbidModel::create($formData);
+            $activity = Auth::user()->name . ' Menambahkan edoc pengawasan ' . $rapat->perihal . ', timestamp' . now();
         }
 
         if (!$save) {
             return redirect()->back()->with('error', 'File Edoc gagal di simpan !');
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('pengawasan.detail', ['id' => $request->input('id')])->with('success', 'File Edoc berhasil di simpan !');
     }

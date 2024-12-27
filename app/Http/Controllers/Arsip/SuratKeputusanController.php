@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
@@ -121,6 +122,7 @@ class SuratKeputusanController extends Controller
             $save = ArsipSuratKeputusanModel::create($formData);
             $success = 'Arsip Surat Keputusan berhasil di simpan !';
             $error = 'Arsip Surat Keputusan gagal di simpan !';
+            $activity = Auth::user()->name . ' Menambahkan arsip surat keputusan ' . $formData['judul'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             $search = ArsipSuratKeputusanModel::findOrFail(Crypt::decrypt($request->input('id')));
             if ($request->file('file')) {
@@ -158,6 +160,7 @@ class SuratKeputusanController extends Controller
             $save = $search->update($formData);
             $success = 'Arsip Surat Keputusan berhasil di perbarui !';
             $error = 'Arsip Surat Keputusan gagal di perbarui !';
+            $activity = Auth::user()->name . ' memperbarui arsip surat keputusan dengan id ' . $request->input('id') . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -166,6 +169,15 @@ class SuratKeputusanController extends Controller
             return redirect()->back()->with('error', $error);
         }
 
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
         return redirect()->route('arsip.surat-keputusan')->with('success', $success);
     }
 
@@ -178,6 +190,15 @@ class SuratKeputusanController extends Controller
             if (Storage::disk('public')->exists($suratKeputusan->path_file_sk)) {
                 Storage::disk('public')->delete($suratKeputusan->path_file_sk);
             }
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus arsip surat keputusan ' . $suratKeputusan->judul . ', timestamp ' . now()
+                ]
+            );
             $suratKeputusan->delete();
             return redirect()->route('arsip.surat-keputusan')->with('success', 'Arsip Surat Keputusan berhasil di hapus !');
         }

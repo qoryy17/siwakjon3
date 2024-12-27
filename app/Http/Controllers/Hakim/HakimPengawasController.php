@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Hakim;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Hakim\HakimPengawasRequest;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Hakim\HakimPengawasModel;
 use App\Models\Pengaturan\UnitKerjaModel;
+use App\Http\Requests\Hakim\HakimPengawasRequest;
 
 class HakimPengawasController extends Controller
 {
@@ -142,11 +143,13 @@ class HakimPengawasController extends Controller
             $save = HakimPengawasModel::create($formData);
             $success = 'Hakim Pengawas berhasil di simpan !';
             $error = 'Hakim Pengawas gagal di simpan !';
+            $activity = Auth::user()->name . ' Menambahkan hakim pengawas ' . $formData['pegawai_id'] . ', timestamp' . now();
         } elseif ($paramIncoming == 'update') {
             $search = HakimPengawasModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Hakim Pengawas berhasil di perbarui !';
             $error = 'Hakim Pengawas gagal di perbarui !';
+            $activity = Auth::user()->name . ' Memperbarui hakim pengawas ' . $formData['pegawai_id'] . ', timestamp' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -154,6 +157,16 @@ class HakimPengawasController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', $error);
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('pengguna.hakim-pengawas')->with('success', $success);
     }
@@ -163,6 +176,15 @@ class HakimPengawasController extends Controller
         // Checking data hakim on database
         $hakim = HakimPengawasModel::findOrFail(Crypt::decrypt($request->id));
         if ($hakim) {
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus hakim pengawas dengan id ' . $hakim->id . ', timestamp ' . now()
+                ]
+            );
             $hakim->delete();
             return redirect()->route('pengguna.hakim-pengawas')->with('success', 'Hakim Pengawas berhasil di hapus !');
         }

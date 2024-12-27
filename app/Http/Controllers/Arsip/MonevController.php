@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Arsip\ArsipMonevModel;
 use Illuminate\Http\RedirectResponse;
@@ -408,11 +409,13 @@ class MonevController extends Controller
             $save = PeriodeMonevModel::create($formData);
             $success = 'Periode Monev berhasil di simpan !';
             $error = 'Periode Monev gagal di simpan !';
+            $activity = Auth::user()->name . ' Menambahkan periode monev ' . $formData['periode'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             $search = PeriodeMonevModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Periode Monev berhasil di perbarui !';
             $error = 'Periode Monev gagal di perbarui !';
+            $activity = Auth::user()->name . ' Memperbarui periode monev dengan id ' . $request->input('id') . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -420,6 +423,16 @@ class MonevController extends Controller
         if (!$save) {
             return redirect()->back()->with('error', $error);
         }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
 
         return redirect()->route('monev.periode')->with('success', $success);
     }
@@ -429,6 +442,15 @@ class MonevController extends Controller
         // Checking data periode monev on database
         $periodeMonev = PeriodeMonevModel::findOrFail(Crypt::decrypt($request->id));
         if ($periodeMonev) {
+            // Saving logs activity
+            LogsModel::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'activity' => Auth::user()->name . ' Menghapus periode monev ' . $periodeMonev->periode . ', timestamp ' . now()
+                ]
+            );
             $periodeMonev->delete();
             return redirect()->route('monev.periode')->with('success', 'Periode Monev berhasil di hapus !');
         }

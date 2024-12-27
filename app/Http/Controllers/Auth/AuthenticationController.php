@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Helpers\RouteLink;
 use App\Models\User;
+use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
@@ -44,6 +45,15 @@ class AuthenticationController extends Controller
         Auth::login($existingUser, true);
         $request->session()->regenerate();
         $intended = RouteLink::homeIntended(Auth::user()->roles);
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => Auth::user()->name . ' Telah login pada sistem aplikasi, timestamp ' . now()
+            ]
+        );
         return redirect()->intended($intended);
     }
 

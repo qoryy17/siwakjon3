@@ -494,7 +494,7 @@ class RapatController extends Controller
                 'user_id' => Auth::user()->id,
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Menyimpan dokumentasi rapat detail id ' . $dokumentasi->perihal . ', timestamp' . now()
+                'activity' => Auth::user()->name . ' Menyimpan dokumentasi rapat ' . $dokumentasi->perihal . ', timestamp' . now()
             ]
         );
 
@@ -570,7 +570,6 @@ class RapatController extends Controller
                 Storage::disk('public')->delete($existEdoc->path_file_edoc);
             }
             $save = $existEdoc->update($formData);
-
             $activity = Auth::user()->name . ' Memperbarui edoc file rapat ' . $edocRapat->perihal . ', timestamp' . now();
         } else {
             $save = EdocRapatModel::create($formData);
