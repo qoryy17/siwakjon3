@@ -74,6 +74,9 @@
                         Harap untuk mengecek kembali secara berkala <strong>Daftar Hakim Pengawas</strong>
                     </p>
                 </div>
+                <a href="{{ route('pengawasan.daftar-hakim-pengawas') }}" class="btn btn-primary">
+                    <i class="fas fa-recycle"></i> Muat Ulang
+                </a>
             @endif
 
             <!-- [ Main Content ] end -->
