@@ -109,9 +109,12 @@
                         <li class="pc-item">
                             <a class="pc-link" href="{{ route('monev.index') }}">Laporan Monev</a>
                         </li>
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('monev.periode') }}">Periode Monev</a>
-                        </li>
+                        @if (Auth::user()->roles == \App\Enum\RolesEnum::SUPERADMIN->value ||
+                                Auth::user()->roles == \App\Enum\RolesEnum::ADMIN->value)
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('monev.periode') }}">Periode Monev</a>
+                            </li>
+                        @endif
                     </ul>
                 </li>
                 <li class="pc-item pc-hasmenu">
@@ -128,89 +131,96 @@
                         </li>
                     </ul>
                 </li>
-                <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">
-                        <span class="pc-micon"> <i class="ph-duotone ph-user-circle"></i></span>
-                        <span class="pc-mtext">Manajemen Pengguna</span>
-                        <span class="pc-arrow">
-                            <i data-feather="chevron-right"></i>
-                        </span>
-                    </a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('pengguna.akun') }}">Akun</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('pengguna.pegawai') }}">Pegawai</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('pengguna.hakim-pengawas') }}">Hakim Pengawas</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="pc-item pc-caption">
-                    <label>Pengaturan</label>
-                </li>
-                <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">
-                        <span class="pc-micon"> <i class="ph-duotone ph-gear-six"></i></span>
-                        <span class="pc-mtext">Manajemen Pengaturan</span>
-                        <span class="pc-arrow">
-                            <i data-feather="chevron-right"></i>
-                        </span>
-                    </a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('jabatan.index') }}">Jabatan</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('unitKerja.index') }}">Unit Kerja</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('pejabatPengganti.index') }}">Pejabat Pengganti</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link"
-                                href="{{ route('klasifikasi.index', ['param' => 'rapat']) }}">Klasifikasi Rapat</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link"
-                                href="{{ route('klasifikasi.index', ['param' => 'surat']) }}">Klasifikasi
-                                Surat</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link"
-                                href="{{ route('klasifikasi.index', ['param' => 'jabatan']) }}">Klasifikasi
-                                Jabatan</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('klasifikasi.set-kode') }}">Set Kode Rapat</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">
-                        <span class="pc-micon"> <i class="ph-duotone ph-monitor"></i></span>
-                        <span class="pc-mtext">Pengaturan Aplikasi</span>
-                        <span class="pc-arrow">
-                            <i data-feather="chevron-right"></i>
-                        </span>
-                    </a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('aplikasi.pengembang') }}">Catatan Pengembang</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('aplikasi.konfigurasi') }}">Konfigurasi</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('aplikasi.version') }}">Version</a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('aplikasi.logs') }}">Logs</a>
-                        </li>
-                    </ul>
-                </li>
+                @if (Auth::user()->roles != \App\Enum\RolesEnum::USER->value)
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"> <i class="ph-duotone ph-user-circle"></i></span>
+                            <span class="pc-mtext">Manajemen Pengguna</span>
+                            <span class="pc-arrow">
+                                <i data-feather="chevron-right"></i>
+                            </span>
+                        </a>
+                        <ul class="pc-submenu">
+                            @if (Auth::user()->roles == \App\Enum\RolesEnum::SUPERADMIN->value)
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('pengguna.akun') }}">Akun</a>
+                                </li>
+                            @endif
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('pengguna.pegawai') }}">Pegawai</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('pengguna.hakim-pengawas') }}">Hakim Pengawas</a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+                @if (Auth::user()->roles == \App\Enum\RolesEnum::SUPERADMIN->value)
+                    <li class="pc-item pc-caption">
+                        <label>Pengaturan</label>
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"> <i class="ph-duotone ph-gear-six"></i></span>
+                            <span class="pc-mtext">Manajemen Pengaturan</span>
+                            <span class="pc-arrow">
+                                <i data-feather="chevron-right"></i>
+                            </span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('jabatan.index') }}">Jabatan</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('unitKerja.index') }}">Unit Kerja</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('pejabatPengganti.index') }}">Pejabat Pengganti</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link"
+                                    href="{{ route('klasifikasi.index', ['param' => 'rapat']) }}">Klasifikasi
+                                    Rapat</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link"
+                                    href="{{ route('klasifikasi.index', ['param' => 'surat']) }}">Klasifikasi
+                                    Surat</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link"
+                                    href="{{ route('klasifikasi.index', ['param' => 'jabatan']) }}">Klasifikasi
+                                    Jabatan</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('klasifikasi.set-kode') }}">Set Kode Rapat</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="javascript:void(0);" class="pc-link">
+                            <span class="pc-micon"> <i class="ph-duotone ph-monitor"></i></span>
+                            <span class="pc-mtext">Pengaturan Aplikasi</span>
+                            <span class="pc-arrow">
+                                <i data-feather="chevron-right"></i>
+                            </span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('aplikasi.pengembang') }}">Catatan Pengembang</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('aplikasi.konfigurasi') }}">Konfigurasi</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('aplikasi.version') }}">Version</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('aplikasi.logs') }}">Logs</a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
                 <div class="card nav-action-card bg-brand-color-4">
                     <div class="card-body"
                         style="background-image: url('{{ asset('assets/images/nav-card-bg.svg') }}')">
