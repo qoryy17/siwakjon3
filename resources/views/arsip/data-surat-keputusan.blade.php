@@ -25,10 +25,14 @@
                 <div class="card-header">
                     <h3>Arsip Surat Keputusan</h3>
                     <small class="d-block mb-2">Arsip Elektronik Seluruh Surat Keputusan</small>
-                    <a href="{{ route('arsip.form-sk', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
-                        class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
-                        Tambah
-                    </a>
+                    @if (Auth::user()->roles == \App\Enum\RolesEnum::SUPERADMIN->value ||
+                            Auth::user()->roles == \App\Enum\RolesEnum::ADMIN->value)
+                        <a href="{{ route('arsip.form-sk', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                            class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
+                            Tambah
+                        </a>
+                    @endif
+
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
@@ -44,7 +48,10 @@
                                     <th>Diunggah</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
-                                    <th>Aksi</th>
+                                    @if (Auth::user()->roles == \App\Enum\RolesEnum::SUPERADMIN->value ||
+                                            Auth::user()->roles == \App\Enum\RolesEnum::ADMIN->value)
+                                        <th>Aksi</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,13 +79,15 @@
                                         <td style="vertical-align: top;">{{ $diunggah->name }}</td>
                                         <td style="vertical-align: top;">{{ $item->created_at }}</td>
                                         <td style="vertical-align: top;">{{ $item->updated_at }}</td>
-                                        <td>
-                                            <a href="{{ route('arsip.form-sk', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
-                                                class="avtar avtar-xs btn-link-secondary">
-                                                <i class="ti ti-edit f-20"></i>
-                                            </a>
-                                            <a href="#" class="avtar avtar-xs btn-link-secondary"
-                                                onclick=" Swal.fire({
+                                        @if (Auth::user()->roles == \App\Enum\RolesEnum::SUPERADMIN->value ||
+                                                Auth::user()->roles == \App\Enum\RolesEnum::ADMIN->value)
+                                            <td>
+                                                <a href="{{ route('arsip.form-sk', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
+                                                    class="avtar avtar-xs btn-link-secondary">
+                                                    <i class="ti ti-edit f-20"></i>
+                                                </a>
+                                                <a href="#" class="avtar avtar-xs btn-link-secondary"
+                                                    onclick=" Swal.fire({
                                                     icon: 'warning',
                                                     title: 'Hapus Data ?',
                                                     text: 'Data yang dihapus tidak dapat dikembalikan !',
@@ -90,15 +99,17 @@
                                                         document.getElementById('deleteForm{{ $no }}').submit();
                                                     }
                                                 });">
-                                                <i class="ti ti-trash f-20"></i>
-                                            </a>
-                                            <form id="deleteForm{{ $no }}"
-                                                action="{{ route('arsip.hapus-sk', ['id' => Crypt::encrypt($item->id)]) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                        </td>
+                                                    <i class="ti ti-trash f-20"></i>
+                                                </a>
+                                                <form id="deleteForm{{ $no }}"
+                                                    action="{{ route('arsip.hapus-sk', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </td>
+                                        @endif
+
                                     </tr>
                                     @php
                                         $no++;

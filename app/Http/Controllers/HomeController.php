@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Helpers\ViewUser;
 use App\Helpers\RouteLink;
 use App\Helpers\TimeSession;
-use App\Helpers\ViewUser;
-use App\Models\Pengaturan\LogsModel;
 use Illuminate\Http\Request;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
+use App\Models\Manajemen\ManajemenRapatModel;
+use App\Models\Manajemen\KlasifikasiRapatModel;
+use App\Models\Manajemen\KlasifikasiJabatanModel;
 
 class HomeController extends Controller
 {
@@ -118,16 +121,21 @@ class HomeController extends Controller
         $data = [
             'title' => env('APP_NAME') . ' | Logs',
             'routeHome' => route('home.user'),
-            'breadcumbs' => $breadcumb
+            'breadcumbs' => $breadcumb,
+            'logs' => LogsModel::with('user')->where('user_id', '=', Auth::user()->id)->orderBy('created_at', 'desc')->get(),
         ];
 
-        return view('aplikasi.logs', $data);
+        return view('aplikasi.data-logs', $data);
     }
 
     public function pintasanRapat()
     {
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
+
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->whereHas('klasifikasiRapat', function ($query) {
+            $query->where('rapat', '!=', 'Pengawasan');
+        })->where('dibuat', '=', Auth::user()->id)->orderBy('created_at', 'desc')->get();
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -138,7 +146,10 @@ class HomeController extends Controller
         $data = [
             'title' => 'Manajemen Rapat | Rapat Saya',
             'routeHome' => route('home.superadmin'),
-            'breadcumbs' => $breadcumb
+            'breadcumbs' => $breadcumb,
+            'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->where('rapat', '!=', 'Pengawasan')->orderBy('created_at', 'desc')->get(),
+            'klasifikasiJabatan' => KlasifikasiJabatanModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
+            'rapat' => $rapat
         ];
 
         return view('rapat.data-rapat', $data);
@@ -149,6 +160,10 @@ class HomeController extends Controller
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->whereHas('klasifikasiRapat', function ($query) {
+            $query->where('rapat', 'Pengawasan');
+        })->orderBy('created_at', 'desc')->get();
+
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
             ['title' => 'Pengawasan Bidang', 'link' => 'javascript:void(0);', 'page' => ''],
@@ -157,48 +172,11 @@ class HomeController extends Controller
         $data = [
             'title' => 'Pengawasan Bidang | Rapat Saya',
             'routeHome' => route('home.superadmin'),
-            'breadcumbs' => $breadcumb
+            'breadcumbs' => $breadcumb,
+            'rapat' => $rapat
         ];
 
         return view('pengawasan.data-rapat-pengawasan', $data);
-    }
-
-    public function pintasanMonev()
-    {
-        // Redirect home page for role
-        $route = RouteLink::homePage(Auth::user()->roles);
-
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $route, 'page' => ''],
-            ['title' => 'Manajemen Monev', 'link' => 'javascript:void(0);', 'page' => ''],
-            ['title' => 'Laporan Monev', 'link' => route('monev.index'), 'page' => 'aria-current="page"']
-        ];
-        $data = [
-            'title' => 'Manajemen Monev | Laporan Monev Saya',
-            'routeHome' => route('home.superadmin'),
-            'breadcumbs' => $breadcumb
-        ];
-
-        return view('monev.data-monev', $data);
-    }
-
-    public function pintasanSK()
-    {
-        // Redirect home page for role
-        $route = RouteLink::homePage(Auth::user()->roles);
-
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $route, 'page' => ''],
-            ['title' => 'Manajemen Arsip', 'link' => 'javascript:void(0);', 'page' => ''],
-            ['title' => 'Surat Keputusan', 'link' => route('pengawasan.index'), 'page' => 'aria-current="page"']
-        ];
-        $data = [
-            'title' => 'Manajemen Arsip | Surat Keputusan',
-            'routeHome' => route('home.superadmin'),
-            'breadcumbs' => $breadcumb
-        ];
-
-        return view('arsip.data-surat-keputusan', $data);
     }
 
     public function notifikasi()

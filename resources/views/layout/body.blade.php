@@ -320,11 +320,11 @@
                                     <i class="ph-duotone ph-files"></i>
                                     <span>Pengawasan</span>
                                 </a>
-                                <a href="{{ route('home.pintasan-monev') }}" class="dropdown-item">
+                                <a href="{{ route('monev.index') }}" class="dropdown-item">
                                     <i class="ph-duotone ph-file-pdf"></i>
                                     <span>Monev Saya</span>
                                 </a>
-                                <a href="{{ route('home.pintasan-sk') }}" class="dropdown-item">
+                                <a href="{{ route('arsip.surat-keputusan') }}" class="dropdown-item">
                                     <i class="ph-duotone ph-file-pdf"></i>
                                     <span>Surat Keputusan</span>
                                 </a>
