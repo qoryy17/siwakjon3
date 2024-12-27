@@ -96,34 +96,40 @@
                                             aria-label="scrollable content" style="height: 100%; overflow: hidden scroll;">
                                             <div class="simplebar-content" style="padding: 0px;">
                                                 <div class="card-body">
-                                                    <div class="row align-items-center m-b-30">
-                                                        <div class="col-auto p-r-0">
-                                                            <i
-                                                                class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
+                                                    @if ($agendaRapat->exists())
+                                                        @foreach ($agendaRapat->get() as $agenda)
+                                                            <div class="row align-items-center m-b-30">
+                                                                <div class="col-auto p-r-0">
+                                                                    <i
+                                                                        class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <a href="javascript:void(0);">
+                                                                        <h6>
+                                                                            {{ $agenda->detailRapat->perihal }} <br>
+                                                                            <span>Tanggal Rapat :
+                                                                                {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
+                                                                            </span>
+                                                                        </h6>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <div class="row align-items-center m-b-30">
+                                                            <div class="col-auto p-r-0">
+                                                                <i
+                                                                    class="feather icon-bell bg-light-warning feed-icon text-warning"></i>
+                                                            </div>
+                                                            <div class="col">
+                                                                <a href="javascript:void(0);">
+                                                                    <h6>
+                                                                        Belum Ada Agenda Rapat Bulan Ini...
+                                                                    </h6>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <a href="#!">
-                                                                <h6>
-                                                                    Rapat Kinerja Bulanan Periode Desember <br>
-                                                                    <span>Tanggal Rapat : 23-12-2024</span>
-                                                                </h6>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row align-items-center m-b-30">
-                                                        <div class="col-auto p-r-0">
-                                                            <i
-                                                                class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
-                                                        </div>
-                                                        <div class="col">
-                                                            <a href="#!">
-                                                                <h6>
-                                                                    Rapat Pengawasan Bidang Kepaniteraan Perdata <br>
-                                                                    <span>Tanggal Rapat : 23-12-2024</span>
-                                                                </h6>
-                                                            </a>
-                                                        </div>
-                                                    </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -140,7 +146,8 @@
                             </div>
                         </div>
                         <div class="card-footer text-center">
-                            <a href="#!" class="b-b-primary text-primary">Lihat Semua Agenda Rapat</a>
+                            <a href="{{ route('rapat.index') }}" class="b-b-primary text-primary">Lihat Semua Agenda
+                                Rapat</a>
                         </div>
                     </div>
                 </div>
@@ -194,18 +201,9 @@
                         <div class="card-body px-0 py-2">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-grow-1 mx-3">
-                                            Menambahkan dokumen rapat "berjenjang kepaniteraan perdata" <br>
-                                            <small class="text-success">Oleh : Sarah Luksiana Turnip |
-                                                {{ now() }}</small>
-                                        </div>
-                                        <div class="flex-shrink-0">
-                                            <a href="#" class="avtar avtar-s btn-link-secondary">
-                                                <i class="ti ti-chevron-right f-20"></i>
-                                            </a>
-                                        </div>
-                                    </div>
+                                    <p>{{ $logs->activity }} </p>
+                                    <small class="text-success">Oleh : {{ $logs->user->name }} |
+                                        {{ $logs->created_at }}</small>
                                 </li>
                             </ul>
                         </div>

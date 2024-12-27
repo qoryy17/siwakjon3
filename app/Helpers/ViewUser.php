@@ -65,4 +65,9 @@ class ViewUser
     {
         return DetailRapatModel::whereYear('created_at', date('Y'))->where('notulen', '=', null)->count();
     }
+
+    public static function agendaRapat()
+    {
+        return ManajemenRapatModel::with('detailRapat')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'));
+    }
 }

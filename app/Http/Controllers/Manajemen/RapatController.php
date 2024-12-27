@@ -214,7 +214,7 @@ class RapatController extends Controller
                     'lampiran' => htmlspecialchars($requestRapat->input('lampiran')),
                     'perihal' => htmlspecialchars($requestRapat->input('perihal')),
                     'acara' => nl2br(htmlspecialchars($requestRapat->input('acara'))),
-                    'agenda' => nl2br(htmlspecialchars($requestRapat->input('agenda'))),
+                    'agenda' => nl2br($requestRapat->input('agenda')),
                     'jam_mulai' => htmlspecialchars($requestRapat->input('jamRapat')),
                     'tempat' => htmlspecialchars($requestRapat->input('tempat')),
                     'peserta' => htmlspecialchars($requestRapat->input('peserta')),
@@ -228,7 +228,7 @@ class RapatController extends Controller
             }
             $success = 'Dokumen Rapat berhasil di simpan !';
             $error = 'Dokumen Rapat gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan rapat ' . $formData['perihal'] . ', timestamp ' . now();
+            $activity = Auth::user()->name . ' Menambahkan rapat ' . $formDetailRapat['perihal'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             try {
                 DB::beginTransaction();
@@ -251,7 +251,7 @@ class RapatController extends Controller
                     'lampiran' => htmlspecialchars($requestRapat->input('lampiran')),
                     'perihal' => htmlspecialchars($requestRapat->input('perihal')),
                     'acara' => nl2br(htmlspecialchars($requestRapat->input('acara'))),
-                    'agenda' => nl2br(htmlspecialchars($requestRapat->input('agenda'))),
+                    'agenda' => nl2br($requestRapat->input('agenda')),
                     'jam_mulai' => htmlspecialchars($requestRapat->input('jamRapat')),
                     'tempat' => htmlspecialchars($requestRapat->input('tempat')),
                     'peserta' => htmlspecialchars($requestRapat->input('peserta')),
@@ -388,6 +388,7 @@ class RapatController extends Controller
             'kesimpulan' => nl2br(htmlspecialchars($request->input('kesimpulan'))),
             'disahkan' => htmlspecialchars($request->input('disahkan')),
         ];
+
         try {
             DB::beginTransaction();
             $search = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->input('id')));

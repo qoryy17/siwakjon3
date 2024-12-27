@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Helpers\RouteLink;
 use App\Helpers\TimeSession;
 use App\Helpers\ViewUser;
+use App\Models\Pengaturan\LogsModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -33,7 +34,9 @@ class HomeController extends Controller
             'countRapatBulan' => ViewUser::countRapatBulan(),
             'countRapatWasbid' => ViewUser::countRapatWasbid(),
             'countMonev' => ViewUser::countMonev(),
-            'countRapat' => ViewUser::countRapat()
+            'countRapat' => ViewUser::countRapat(),
+            'agendaRapat' => ViewUser::agendaRapat(),
+            'logs' => LogsModel::with('user')->orderBy('created_at', 'desc')->first(),
         ];
 
         return view('home.home-superadmin', $data);
