@@ -200,11 +200,19 @@
                         </div>
                         <div class="card-body px-0 py-2">
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <p>{{ $logs->activity }} </p>
-                                    <small class="text-success">Oleh : {{ $logs->user->name }} |
-                                        {{ $logs->created_at }}</small>
-                                </li>
+                                @if ($logs)
+                                    <li class="list-group-item">
+                                        <p>{{ $logs->activity }} </p>
+                                        <small class="text-success">Oleh : {{ $logs->user->name }} |
+                                            {{ $logs->created_at }}</small>
+                                    </li>
+                                @else
+                                    <li class="list-group-item">
+                                        <p>
+                                            Logs aktivitas belum ada...
+                                        </p>
+                                    </li>
+                                @endif
                             </ul>
                         </div>
                     </div>
