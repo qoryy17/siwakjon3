@@ -251,5 +251,6 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(LogsController::class)->group(function () {
         Route::get('/pengaturan-aplikasi/logs', 'indexLogs')->name('aplikasi.logs');
+        Route::post('/pengaturan-aplikasi/logs/hapus', 'deleteLogs')->name('aplikasi.logs-hapus');
     });
 });

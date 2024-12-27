@@ -11,7 +11,7 @@ class LogsModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'sw_unit_kerja';
+    protected $table = 'sw_logs';
     protected $primaryKey = 'id';
 
     protected $fillable = [
@@ -23,7 +23,8 @@ class LogsModel extends Model
 
     public $timestamps = true;
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 }
