@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\Pengaturan\VersionModel;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Profil\ProfilRequest;
 use App\Models\Manajemen\ManajemenRapatModel;
@@ -106,7 +107,8 @@ class HomeController extends Controller
         $data = [
             'title' => env('APP_NAME') . ' | Version',
             'routeHome' => route('home.user'),
-            'breadcumbs' => $breadcumb
+            'breadcumbs' => $breadcumb,
+            'version' => VersionModel::orderBy('created_at', 'desc')
         ];
 
         return view('aplikasi.version', $data);

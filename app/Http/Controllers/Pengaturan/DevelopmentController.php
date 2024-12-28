@@ -186,7 +186,7 @@ class DevelopmentController extends Controller
             'release_date' => Carbon::createFromFormat('m/d/Y', htmlentities($request->input('releaseDate')))->format('Y-m-d'),
             'category' => htmlspecialchars($request->input('category')),
             'patch_version' => htmlspecialchars($request->input('patchVersion')),
-            'note' => $request->input('note')
+            'note' => nl2br($request->input('note'))
         ];
 
         $paramIncoming = Crypt::decrypt($request->input('param'));

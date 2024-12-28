@@ -83,7 +83,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="pc_demo1">Note <span class="text-danger">*</span></label>
-                            <textarea name="note" id="pc_demo1" class="form-control" placeholder="Note...">{{ $version ? $version->note : old('note') }}</textarea>
+                            <textarea name="note" id="pc_demo1" class="form-control" placeholder="Note...">{!! $version ? $version->note : old('note') !!}</textarea>
                             @error('note')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror

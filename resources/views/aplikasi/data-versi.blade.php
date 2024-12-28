@@ -56,7 +56,7 @@
                                         </td>
                                         <td style="vertical-align: top;">{{ $item->category }}</td>
                                         <td style="vertical-align: top;">{{ $item->patch_version }}</td>
-                                        <td style="vertical-align: top;">{{ $item->note }}</td>
+                                        <td style="vertical-align: top;text-wrap: wrap;">{!! $item->note !!}</td>
                                         <td style="vertical-align: top;">{{ $item->created_at }}</td>
                                         <td style="vertical-align: top;">{{ $item->updated_at }}</td>
                                         <td style="vertical-align: top;">

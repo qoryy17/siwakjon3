@@ -444,7 +444,7 @@
                                         </a>
                                     </li>
                                     <li class="list-group-item">
-                                        <a href="#" class="dropdown-item">
+                                        <a href="{{ route('home.logs') }}" class="dropdown-item">
                                             <span class="d-flex align-items-center">
                                                 <i class="ph-duotone ph-activity"></i>
                                                 <span>Logs Aktivitas</span>

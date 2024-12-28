@@ -31,11 +31,11 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item px-0 pt-0">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <p class="mb-1 text-muted">Aplikasi</p>
                                             <p class="mb-0 fw-bold">{{ env('APP_NAME') }}</p>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-8">
                                             <p class="mb-1 text-muted">Deskripsi</p>
                                             <p class="mb-0 fw-bold">{{ env('APP_DESC') }}</p>
                                         </div>
@@ -43,11 +43,11 @@
                                 </li>
                                 <li class="list-group-item px-0">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <p class="mb-1 text-muted">Developer</p>
                                             <p class="mb-0 fw-bold">{{ env('APP_AUTHOR') }}</p>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-8">
                                             <p class="mb-1 text-muted">Lisensi Langganan</p>
                                             <p class="mb-0 fw-bold">Pertahun</p>
                                         </div>
@@ -86,10 +86,13 @@
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <div class="d-inline-flex align-items-center mb-2">
-                                        <h6 class="mb-0"><u>V 3.0.0</u></h6>
+                                        <h6 class="mb-0">
+                                            <u>{{ $version->exists() ? $version->first()->patch_version : '' }}</u>
+                                        </h6>
                                         <span class="badge bg-light-success ms-2">Latest</span>
                                     </div>
-                                    <p class="mb-0 text-muted">On {{ now() }}</p>
+                                    <p class="mb-0 text-muted">Published
+                                        {{ $version->exists() ? $version->first()->created_at : '' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -151,40 +154,32 @@
                                     <div class="simplebar-content" style="padding: 0px;">
                                         <div class="card-body">
                                             <ul class="list-group list-group-flush acc-feeds-list">
-                                                <li class="list-group-item p-0 mb-3">
-                                                    <div class="row">
-                                                        <div class="col-md-4 feed-title">
-                                                            <p class="mb-1 text-muted">Version 3.0.0</p>
-                                                            <small class="mb-0">{{ now() }}</small>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <p class="mb-1 text-muted">Perform task related to
-                                                                project manager with the 100+
-                                                                team
-                                                                under my
-                                                                observation. Team management is key
-                                                                role in this company.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li class="list-group-item p-0 mb-3">
-                                                    <div class="row">
-                                                        <div class="col-md-4 feed-title">
-                                                            <p class="mb-1 text-muted">Version 3.0.0</p>
-                                                            <p class="mb-0">{{ now() }}</p>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <p class="mb-1 text-muted">Perform task related to
-                                                                project manager with the 100+
-                                                                team
-                                                                under my
-                                                                observation. Team management is key
-                                                                role in this company.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </li>
+                                                @if ($version->exists())
+                                                    @foreach ($version->get() as $item)
+                                                        <li class="list-group-item p-0 mb-3">
+                                                            <div class="row">
+                                                                <div class="col-md-4 feed-title">
+                                                                    <p class="mb-1 text-muted fw-bold">
+                                                                        Version {{ $item->patch_version }}
+                                                                    </p>
+                                                                    <small class="mb-0">Release Date
+                                                                        :
+                                                                        {{ \App\Helpers\TimeSession::convertDateToIndonesian($item->release_date) }}
+                                                                        <br>
+                                                                        Category : {{ $item->category }}
+                                                                    </small>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <p class="mb-1 text-muted"
+                                                                        style="text-align: justify;">
+                                                                        {!! $item->note !!}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    @endforeach
+                                                @else
+                                                @endif
                                             </ul>
                                         </div>
                                     </div>
