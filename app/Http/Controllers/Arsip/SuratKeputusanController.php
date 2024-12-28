@@ -137,8 +137,8 @@ class SuratKeputusanController extends Controller
                 );
 
                 // Delete old file pdf
-                if (Storage::disk('public')->exists($directory . $search->path_file_sk)) {
-                    Storage::disk('public')->delete($directory . $search->path_file_sk);
+                if (Storage::disk('public')->exists($search->path_file_sk)) {
+                    Storage::disk('public')->delete($search->path_file_sk);
                 }
 
                 // File pdf upload process

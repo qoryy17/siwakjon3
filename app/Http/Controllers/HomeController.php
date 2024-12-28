@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Enum\RolesEnum;
 use App\Helpers\ViewUser;
 use App\Helpers\RouteLink;
 use App\Helpers\TimeSession;
@@ -10,7 +11,11 @@ use Illuminate\Http\Request;
 use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\Profil\ProfilRequest;
 use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Manajemen\KlasifikasiRapatModel;
 use App\Models\Manajemen\KlasifikasiJabatanModel;
@@ -191,11 +196,39 @@ class HomeController extends Controller
         ];
         $data = [
             'title' => 'Notifikasi | Pesan Masuk',
-            'routeHome' => route('home.superadmin'),
+            'routeHome' => $route,
             'breadcumbs' => $breadcumb
         ];
 
         return view('aplikasi.notifikasi', $data);
+    }
+
+    public function profil()
+    {
+        // Redirect home page for role
+        $route = RouteLink::homePage(Auth::user()->roles);
+
+        $breadcumb = [
+            ['title' => 'Home', 'link' => $route, 'page' => ''],
+            ['title' => 'Profil', 'link' => 'javascript:void(0);', 'page' => 'aria-current="page"'],
+        ];
+
+        $pengguna = User::findOrFail(Auth::user()->id);
+        if ($pengguna && $pengguna->pegawai_id != null) {
+            $pegawai = PegawaiModel::with('user')->with('jabatan')->findOrFail($pengguna->pegawai_id);
+        } else {
+            $pegawai = null;
+        }
+
+        $data = [
+            'title' => 'Profil Saya',
+            'routeHome' => $route,
+            'breadcumbs' => $breadcumb,
+            'pengguna' => $pengguna,
+            'pegawai' => $pegawai
+        ];
+
+        return view('pengguna.profil', $data);
     }
 
     public function gantiPassword(Request $request): RedirectResponse
@@ -230,5 +263,59 @@ class HomeController extends Controller
         Auth::logout();
         $request->session()->regenerate();
         return redirect()->route('signin')->with('success', 'Password berhasil diubah silahkan login ulang !');
+    }
+
+    public function saveProfil(ProfilRequest $request): RedirectResponse
+    {
+        // Set directory
+        $directory = 'images/pegawai/';
+        $search = PegawaiModel::findOrFail(Auth::user()->pegawai_id);
+
+        $formData = [
+            'nip' => htmlspecialchars($request->input('nip')),
+            'nama' => htmlspecialchars($request->input('nama')),
+            'keterangan' => nl2br(htmlspecialchars($request->input('keterangan'))),
+        ];
+
+        if ($request->file('foto')) {
+            // Delete old foto
+            if ($search && $search->foto != null) {
+                if (Storage::disk('public')->exists($search->foto)) {
+                    Storage::disk('public')->delete($search->foto);
+                }
+            }
+            // Foto upload process
+            $fileFoto = $request->file('foto');
+            $fileHashname = $fileFoto->hashName();
+            $uploadPath = $directory . $fileHashname;
+            $fileUpload = $fileFoto->storeAs($directory, $fileHashname, 'public');
+
+            // If Foto has failed to upload
+            if (!$fileUpload) {
+                return redirect()->back()->with('error', 'Unggah Foto gagal !')->withInput();
+            }
+
+            $formData['foto'] = $uploadPath;
+        }
+
+        $save = $search->update($formData);
+
+        if (!$save) {
+            return redirect()->route('home.profil')->with('error', 'Profil gagal di perbarui !');
+        }
+        // Save email user
+        $user = User::findOrFail(Auth::user()->id);
+        $user->update(['email' => htmlspecialchars($request->input('email'))]);
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => Auth::user()->name . ' Memperbarui profil pengguna, timestamp ' . now()
+            ]
+        );
+
+        return redirect()->route('home.profil')->with('success', 'Profil berhasil di perbarui !');
     }
 }

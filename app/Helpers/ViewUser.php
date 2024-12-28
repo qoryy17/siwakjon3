@@ -70,4 +70,9 @@ class ViewUser
     {
         return ManajemenRapatModel::with('detailRapat')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'));
     }
+
+    public static function countTotalRapatUser()
+    {
+        return ManajemenRapatModel::where('dibuat', '=', Auth::user()->id)->count();
+    }
 }

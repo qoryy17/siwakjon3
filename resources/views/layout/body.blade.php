@@ -257,7 +257,7 @@
                             <div class="dropdown-menu">
                                 <ul>
                                     <li>
-                                        <a class="pc-user-links">
+                                        <a class="pc-user-links" href="{{ route('home.profil') }}">
                                             <i class="ph-duotone ph-user"></i>
                                             <span>Profil Saya</span>
                                         </a>
@@ -406,7 +406,8 @@
                     </a>
                     <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                         <div class="dropdown-header d-flex align-items-center justify-content-between">
-                            <h5 class="m-0">{{ \App\Helpers\ViewUser::jabatan() }}</h5>
+                            <h5 class="m-0 text-center" style="text-wrap: wrap;">
+                                {{ \App\Helpers\ViewUser::jabatan() }}</h5>
                         </div>
                         <div class="dropdown-body">
                             <div class="profile-notification-scroll position-relative"
@@ -427,7 +428,7 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item">
-                                        <a href="#" class="dropdown-item">
+                                        <a href="{{ route('home.profil') }}" class="dropdown-item">
                                             <span class="d-flex align-items-center">
                                                 <i class="ph-duotone ph-user-circle"></i>
                                                 <span>Edit Profil</span>

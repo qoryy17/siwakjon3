@@ -51,6 +51,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/dashboard/rapat', 'pintasanRapat')->name('home.pintasan-rapat');
         Route::get('/dashboard/rapat-pengawasan', 'pintasanPengawasan')->name('home.pintasan-pengawasan');
         Route::get('/dashboard/notifikasi', 'notifikasi')->name('home.notifikasi');
+        Route::get('/dashboard/profil', 'profil')->name('home.profil');
+        Route::post('/dashboard/profil/simpan', 'saveProfil')->name('home.simpan-profil');
 
         Route::post('/dashboard/ganti-password', 'gantiPassword')->name('home.ganti-password');
     });

@@ -118,8 +118,8 @@ class PegawaiController extends Controller
 
             if ($request->file('foto')) {
                 // Delete old foto
-                if (Storage::disk('public')->exists($directory . $search->foto)) {
-                    Storage::disk('public')->delete($directory . $search->foto);
+                if (Storage::disk('public')->exists($search->foto)) {
+                    Storage::disk('public')->delete($search->foto);
                 }
                 // Foto upload process
                 $fileFoto = $request->file('foto');
