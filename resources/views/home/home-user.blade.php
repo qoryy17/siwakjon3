@@ -270,7 +270,7 @@
                                                             <div class="col">
                                                                 <a href="javascript:void(0);">
                                                                     <h6>
-                                                                        Belum Ada Agenda Rapat Bulan Ini...
+                                                                        Belum Ada Informasi Pengembangan Aplikasi...
                                                                     </h6>
                                                                 </a>
                                                             </div>
@@ -290,9 +290,6 @@
                                 <div class="simplebar-scrollbar"
                                     style="height: 289px; transform: translate3d(0px, 0px, 0px); display: block;"></div>
                             </div>
-                        </div>
-                        <div class="card-footer text-center">
-                            <a href="#!" class="b-b-primary text-primary">Lihat Semua Agenda Rapat</a>
                         </div>
                     </div>
                 </div>
