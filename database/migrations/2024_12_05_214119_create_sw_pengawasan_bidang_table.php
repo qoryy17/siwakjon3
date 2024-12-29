@@ -28,8 +28,8 @@ return new class extends Migration {
             $table->foreign('detail_rapat_id')->references('id')->on('sw_detail_rapat')->onDelete('cascade')->onUpdate('cascade');
         });
 
-        // create table sw_temuan_pengawasan_bidang
-        Schema::create('sw_temuan_pengawasan_bidang', function (Blueprint $table) {
+        // create table sw_temuan_pengawasan
+        Schema::create('sw_temuan_pengawasan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pengawasan_bidang_id');
             $table->text('judul');
@@ -61,7 +61,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::dropIfExists('sw_pengawasan_bidang');
-        Schema::dropIfExists('sw_temuan_pengawasan_bidang');
+        Schema::dropIfExists('sw_temuan_pengawasan');
         Schema::dropIfExists('sw_edoc_tlhp');
     }
 };

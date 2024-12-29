@@ -10,7 +10,7 @@ class TemuanWasbidModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'sw_temuan_pengawasan_bidang';
+    protected $table = 'sw_temuan_pengawasan';
     protected $primaryKey = 'id';
 
     protected $fillable = [

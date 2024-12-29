@@ -91,6 +91,11 @@
                             </a>
                         </li>
                         <li class="pc-item">
+                            <a class="pc-link" href="">
+                                Kunjungan Pengawasan
+                            </a>
+                        </li>
+                        <li class="pc-item">
                             <a class="pc-link" href="{{ route('pengawasan.daftar-hakim-pengawas') }}">
                                 Daftar Hakim Pengawas
                             </a>
