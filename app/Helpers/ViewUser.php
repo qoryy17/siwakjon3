@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Arsip\ArsipMonevModel;
 use App\Models\Manajemen\DetailRapatModel;
 use App\Models\Manajemen\ManajemenRapatModel;
+use App\Models\Pengaturan\NoteDeveloperModel;
 use App\Models\Pengguna\JabatanModel;
 use App\Models\Pengguna\PegawaiModel;
 
@@ -74,5 +75,18 @@ class ViewUser
     public static function countTotalRapatUser()
     {
         return ManajemenRapatModel::where('dibuat', '=', Auth::user()->id)->count();
+    }
+
+    public static function informasiPengembang()
+    {
+        return NoteDeveloperModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc');
+    }
+
+    public static function rapatUser()
+    {
+        return ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')
+            ->whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->where('dibuat', '=', Auth::user()->id)->orderBy('created_at', 'desc')->limit(5);
     }
 }

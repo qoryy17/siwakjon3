@@ -34,7 +34,7 @@
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Rapat Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
-                                <h3 class="f-w-300 d-flex align-items-center m-b-0">30</h3>
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $countRapatBulan }}</h3>
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
                             <p class="text-muted text-sm mt-3">Periode Desember</p>
@@ -48,7 +48,7 @@
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Pengawasan Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
-                                <h3 class="f-w-300 d-flex align-items-center m-b-0">30</h3>
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $countRapatWasbid }}</h3>
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
                             <p class="text-muted text-sm mt-3">Periode Desember</p>
@@ -62,7 +62,7 @@
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Monev Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
-                                <h3 class="f-w-300 d-flex align-items-center m-b-0">37</h3>
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $countMonev }}</h3>
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
                             <p class="text-muted text-sm mt-3">Periode Desember</p>
@@ -74,7 +74,6 @@
             <div class="card table-card">
                 <div class="card-header d-flex align-items-center justify-content-between py-3">
                     <h5 class="mb-0">Rapat Belum Dilengkapi</h5>
-                    <button class="btn btn-sm btn-link-primary">Lihat Semua</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -85,25 +84,65 @@
                                     <th>Tanggal Rapat</th>
                                     <th>Kategori</th>
                                     <th>Keterangan</th>
-                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        Rapat Berjenjang Kepaniteraan
-                                    </td>
-                                    <td>21 Desember 2024</td>
-                                    <td>Berjenjang</td>
-                                    <td>Notulen belum di upload</td>
-                                    <td><span class="badge text-bg-danger">Belum Lengkap</span></td>
-                                    <td>
-                                        <a href="#" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-eye f-20"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @if ($rapatUser->exists())
+                                    @php
+                                        $no = 1;
+                                    @endphp
+                                    @foreach ($rapatUser->get() as $rapat)
+                                        @php
+                                            $getDokumentasi = \App\Models\Manajemen\DokumentasiRapatModel::where(
+                                                'detail_rapat_id',
+                                                '=',
+                                                $rapat->detailRapat->id,
+                                            )->first();
+
+                                            $getEdoc = \App\Models\Manajemen\EdocRapatModel::where(
+                                                'detail_rapat_id',
+                                                '=',
+                                                $rapat->detailRapat->id,
+                                            )->first();
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                {{ $rapat->detailRapat->perihal }}
+                                            </td>
+                                            <td>
+                                                {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->tanggal_rapat) }}
+                                            </td>
+                                            <td>
+                                                {{ $rapat->klasifikasiRapat->rapat }}
+                                            </td>
+                                            <td>
+                                                @if ($rapat->detailRapat->notulen == null)
+                                                    <span class="text-danger">
+                                                        Notulen belum di lengkapi !
+                                                    </span>
+                                                @elseif (!$getDokumentasi)
+                                                    <span class="text-danger">
+                                                        Dokumentasi belum dilengkapi !
+                                                    </span>
+                                                @elseif (!$getEdoc)
+                                                    <span class="text-danger">
+                                                        Edoc PDF belum dilengkapi !
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('rapat.detail', ['id' => Crypt::encrypt($rapat->id)]) }}"
+                                                    class="avtar avtar-xs btn-link-secondary">
+                                                    <i class="ti ti-eye f-20"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $no++;
+                                        @endphp
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -129,34 +168,40 @@
                                             aria-label="scrollable content" style="height: 100%; overflow: hidden scroll;">
                                             <div class="simplebar-content" style="padding: 0px;">
                                                 <div class="card-body">
-                                                    <div class="row align-items-center m-b-30">
-                                                        <div class="col-auto p-r-0">
-                                                            <i
-                                                                class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
+                                                    @if ($agendaRapat->exists())
+                                                        @foreach ($agendaRapat->get() as $agenda)
+                                                            <div class="row align-items-center m-b-30">
+                                                                <div class="col-auto p-r-0">
+                                                                    <i
+                                                                        class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <a href="javascript:void(0);">
+                                                                        <h6>
+                                                                            {{ $agenda->detailRapat->perihal }} <br>
+                                                                            <span>Tanggal Rapat :
+                                                                                {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
+                                                                            </span>
+                                                                        </h6>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <div class="row align-items-center m-b-30">
+                                                            <div class="col-auto p-r-0">
+                                                                <i
+                                                                    class="feather icon-bell bg-light-warning feed-icon text-warning"></i>
+                                                            </div>
+                                                            <div class="col">
+                                                                <a href="javascript:void(0);">
+                                                                    <h6>
+                                                                        Belum Ada Agenda Rapat Bulan Ini...
+                                                                    </h6>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <a href="#!">
-                                                                <h6>
-                                                                    Rapat Kinerja Bulanan Periode Desember <br>
-                                                                    <span>Tanggal Rapat : 23-12-2024</span>
-                                                                </h6>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row align-items-center m-b-30">
-                                                        <div class="col-auto p-r-0">
-                                                            <i
-                                                                class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
-                                                        </div>
-                                                        <div class="col">
-                                                            <a href="#!">
-                                                                <h6>
-                                                                    Rapat Pengawasan Bidang Kepaniteraan Perdata <br>
-                                                                    <span>Tanggal Rapat : 23-12-2024</span>
-                                                                </h6>
-                                                            </a>
-                                                        </div>
-                                                    </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -173,7 +218,8 @@
                             </div>
                         </div>
                         <div class="card-footer text-center">
-                            <a href="#!" class="b-b-primary text-primary">Lihat Semua Agenda Rapat</a>
+                            <a href="{{ route('rapat.index') }}" class="b-b-primary text-primary">Lihat Semua Agenda
+                                Rapat</a>
                         </div>
                     </div>
                 </div>
@@ -196,34 +242,40 @@
                                             style="height: 100%; overflow: hidden scroll;">
                                             <div class="simplebar-content" style="padding: 0px;">
                                                 <div class="card-body">
-                                                    <div class="row align-items-center m-b-30">
-                                                        <div class="col-auto p-r-0">
-                                                            <i
-                                                                class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
+                                                    @if ($informasi->exists())
+                                                        @foreach ($informasi->get() as $pengembang)
+                                                            <div class="row align-items-center m-b-30">
+                                                                <div class="col-auto p-r-0" style="vertical-align: top;">
+                                                                    <i
+                                                                        class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <a href="javascript:void(0);">
+                                                                        <h6 style="line-height: 1.5;">
+                                                                            {{ $pengembang->catatan }} <br>
+                                                                            <span>Published:
+                                                                                {{ $pengembang->created_at }}
+                                                                            </span>
+                                                                        </h6>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <div class="row align-items-center m-b-30">
+                                                            <div class="col-auto p-r-0">
+                                                                <i
+                                                                    class="feather icon-bell bg-light-warning feed-icon text-warning"></i>
+                                                            </div>
+                                                            <div class="col">
+                                                                <a href="javascript:void(0);">
+                                                                    <h6>
+                                                                        Belum Ada Agenda Rapat Bulan Ini...
+                                                                    </h6>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <a href="#!">
-                                                                <h6>
-                                                                    Rapat Kinerja Bulanan Periode Desember <br>
-                                                                    <span>Tanggal Rapat : 23-12-2024</span>
-                                                                </h6>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row align-items-center m-b-30">
-                                                        <div class="col-auto p-r-0">
-                                                            <i
-                                                                class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
-                                                        </div>
-                                                        <div class="col">
-                                                            <a href="#!">
-                                                                <h6>
-                                                                    Rapat Pengawasan Bidang Kepaniteraan Perdata <br>
-                                                                    <span>Tanggal Rapat : 23-12-2024</span>
-                                                                </h6>
-                                                            </a>
-                                                        </div>
-                                                    </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

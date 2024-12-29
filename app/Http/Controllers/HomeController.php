@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Enum\RolesEnum;
 use App\Helpers\ViewUser;
 use App\Helpers\RouteLink;
 use App\Helpers\TimeSession;
@@ -13,13 +12,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Crypt;
 use App\Models\Pengaturan\VersionModel;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Profil\ProfilRequest;
 use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Manajemen\KlasifikasiRapatModel;
 use App\Models\Manajemen\KlasifikasiJabatanModel;
+use Illuminate\Support\Facades\Crypt;
 
 class HomeController extends Controller
 {
@@ -87,7 +86,13 @@ class HomeController extends Controller
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
             'routeHome' => route('home.user'),
             'breadcumbs' => $breadcumb,
-            'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name
+            'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name,
+            'countRapatBulan' => ViewUser::countRapatBulan(),
+            'countRapatWasbid' => ViewUser::countRapatWasbid(),
+            'countMonev' => ViewUser::countMonev(),
+            'agendaRapat' => ViewUser::agendaRapat(),
+            'informasi' => ViewUser::informasiPengembang(),
+            'rapatUser' => ViewUser::rapatUser(),
         ];
 
         return view('home.home-user', $data);
