@@ -114,8 +114,6 @@
                 <div class="row">
                     <div class="col my-1">
                         <p class="m-0">Made by {{ env('APP_AUTHOR') }}
-                            <a href="https://www.instagram.com/qori_chairawan17/" target="_blank"> | Era DigiSoft
-                                Solution</a>
                         </p>
                     </div>
                     <div class="col-auto my-1">
