@@ -245,8 +245,9 @@
                     </div>
                     <div class="flex-grow-1 ms-3">
                         <div class="dropdown">
-                            <a href="#" class="arrow-none dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false" data-bs-offset="0,20">
+                            <a href="javascript:void(0);" title="{{ Auth::user()->name }}"
+                                class="arrow-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                                data-bs-offset="0,20">
                                 <div class="d-flex align-items-center">
                                     <div class="flex-grow-1 me-2">
                                         <h6 class="mb-0">{{ Str::limit(Auth::user()->name, 20) }}</h6>
