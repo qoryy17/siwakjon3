@@ -116,11 +116,11 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/pengawasan-bidang/rapat-pengawasan/form-kunjungan/{param}/{id}', 'formKunjungan')->name('kunjungan.form-kunjungan');
         Route::get('/pengawasan-bidang/kunjungan-pengawasan/detail/{id}', 'detailKunjungan')->name('kunjungan.detail');
         Route::post('/pengawasan-bidang/kunjungan-pengawasan/simpan', 'saveKunjungan')->name('kunjungan.simpan-kunjungan');
-        Route::delete('/pengawasan-bidang/kunjungan-pengawasan/hapus', 'hapusKunjungan')->name('kunjungan.hapus-kunjungan');
+        Route::delete('/pengawasan-bidang/kunjungan-pengawasan/hapus', 'deleteKunjungan')->name('kunjungan.hapus-kunjungan');
 
         Route::get('/pengawasan-bidang/rapat-pengawasan/form-agenda/{param}/{id}', 'formAgenda')->name('kunjungan.form-agenda');
         Route::post('/pengawasan-bidang/kunjungan-pengawasan/agenda/simpan', 'saveAgenda')->name('kunjungan.simpan-agenda');
-        Route::delete('/pengawasan-bidang/kunjungan-pengawasan/agenda/hapus', 'hapusAgenda')->name('kunjungan.hapus-agenda');
+        Route::delete('/pengawasan-bidang/kunjungan-pengawasan/agenda/hapus', 'deleteAgenda')->name('kunjungan.hapus-agenda');
     });
 });
 

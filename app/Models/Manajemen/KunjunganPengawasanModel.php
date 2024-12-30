@@ -2,6 +2,7 @@
 
 namespace App\Models\Manajemen;
 
+use App\Models\Pengaturan\UnitKerjaModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -17,6 +18,11 @@ class KunjunganPengawasanModel extends Model
     ];
 
     public $timestamps = true;
+
+    public function unitKerja(): BelongsTo
+    {
+        return $this->belongsTo(UnitKerjaModel::class);
+    }
 
     public function detailKunjungan(): BelongsTo
     {

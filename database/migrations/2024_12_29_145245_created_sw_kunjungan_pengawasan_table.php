@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->uuid('kode_kunjungan');
             $table->unsignedBigInteger("unit_kerja_id")->nullable();
             $table->unsignedBigInteger('dibuat');
-            $table->text('file_edoc')->nullable();
+            $table->text('path_file_edoc')->nullable();
             $table->dateTime('waktu_unggah')->nullable();
             $table->timestamps();
             $table->foreign('unit_kerja_id')->references('id')->on('sw_unit_kerja')->onDelete('set null')->onUpdate('cascade');
@@ -29,6 +29,7 @@ return new class extends Migration {
             $table->string('agenda');
             $table->text('pembahasan');
             $table->unsignedBigInteger('hakim_pengawas_id')->nullable();
+            $table->timestamps();
 
             $table->foreign('hakim_pengawas_id')->references('id')->on('sw_hakim_pengawas')->onDelete('set null')->onUpdate('cascade');
             $table->foreign('kunjungan_pengawasan_id')->references('id')->on('sw_kunjungan_pengawasan')->onDelete('cascade')->onUpdate('cascade');

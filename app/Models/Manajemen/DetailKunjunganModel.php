@@ -2,6 +2,7 @@
 
 namespace App\Models\Manajemen;
 
+use App\Models\Hakim\HakimPengawasModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -26,5 +27,10 @@ class DetailKunjunganModel extends Model
     public function kunjunganPengawasan(): BelongsTo
     {
         return $this->belongsTo(KunjunganPengawasanModel::class);
+    }
+
+    public function hakimPengawas(): BelongsTo
+    {
+        return $this->belongsTo(HakimPengawasModel::class);
     }
 }

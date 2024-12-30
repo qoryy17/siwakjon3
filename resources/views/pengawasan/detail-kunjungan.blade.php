@@ -33,12 +33,13 @@
                                 <div class="col-md-6">
                                     <p class="mb-1 text-muted">Kode Kunjungan</p>
                                     <p class="mb-0 fw-bold">
+                                        {{ $kunjungan->kode_kunjungan }}
                                     </p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="mb-1 text-muted">Unit Pengawasan</p>
                                     <p class="mb-0 fw-bold">
-                                        Kepaniteraan Hukum
+                                        {{ $kunjungan->unitKerja->unit_kerja }}
                                     </p>
                                 </div>
                             </div>
@@ -48,13 +49,17 @@
                                 <div class="col-md-6">
                                     <p class="mb-1 text-muted">Dibuat Oleh</p>
                                     <p class="mb-0 fw-bold">
+                                        @php
+                                            $dibuat = \App\Models\User::findOrFail($kunjungan->dibuat);
+                                        @endphp
+                                        {{ $dibuat->name }}
                                     </p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="mb-1 text-muted">TimeStamp</p>
                                     <p class="mb-0 fw-bold">
-                                        Created At :
-                                        Last Updated :
+                                        Created At : {{ $kunjungan->created_at }}
+                                        Last Updated : {{ $kunjungan->updated_at }}
                                     </p>
                                 </div>
                             </div>
@@ -68,9 +73,13 @@
                             kunjungan ini, hasil kunjungan merupakan bahan monitoring oleh pimpinan dalam pelaksanaan
                             pengawasan !
                         </div>
+                        <a href="{{ route('kunjungan.form-kunjungan', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($kunjungan->id)]) }}"
+                            class="btn btn-primary btn-sm">
+                            <i class="ph-duotone ph-note-pencil"></i> Edit Kunjungan
+                        </a>
                         <button class="btn btn-primary btn-sm" data-pc-animate="fade-in-scale" data-bs-toggle="modal"
                             data-bs-target="#animateModalAgendaAdd">
-                            <i class="ph-duotone ph-file-plus"></i> Tambah
+                            <i class="ph-duotone ph-file-plus"></i> Tambah Agenda
                         </button>
                     </div>
                     <div class="table-responsive mt-3">
@@ -87,52 +96,57 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td style="vertical-align: top;">1</td>
-                                    <td style="vertical-align: top;">21 Desember 2024</td>
-                                    <td style="vertical-align: top;">10:00 WIB</td>
-                                    <td style="vertical-align: top;">Kunjungan Minggu Pertama</td>
-                                    <td style="vertical-align:top; text-wrap: wrap;">Lorem ipsum dolor sit amet Lorem ipsum
-                                        dolor sit amet
-                                        consectetur adipisicing elit.
-                                        Amet quibusdam consectetur sequi excepturi, dolores dolor sint id ipsa numquam rerum
-                                        magnam, saepe vel voluptatem nemo ut est temporibus ratione vitae.</td>
-                                    <td style="vertical-align: top;">Morailam Purba</td>
-                                    <td style="vertical-align: top;">
-                                        <a href="" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-printer f-20"></i>
-                                        </a>
-                                        <a class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-edit f-20"></i>
-                                        </a>
-                                        <a href="" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-trash f-20"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="vertical-align: top;">1</td>
-                                    <td style="vertical-align: top;">21 Desember 2024</td>
-                                    <td style="vertical-align: top;">10:00 WIB</td>
-                                    <td style="vertical-align: top;">Kunjungan Minggu Pertama</td>
-                                    <td style="vertical-align:top; text-wrap: wrap;">Lorem ipsum dolor sit amet Lorem ipsum
-                                        dolor sit amet
-                                        consectetur adipisicing elit.
-                                        Amet quibusdam consectetur sequi excepturi, dolores dolor sint id ipsa numquam rerum
-                                        magnam, saepe vel voluptatem nemo ut est temporibus ratione vitae.</td>
-                                    <td style="vertical-align: top;">Morailam Purba</td>
-                                    <td style="vertical-align: top;">
-                                        <a href="" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-printer f-20"></i>
-                                        </a>
-                                        <a class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-edit f-20"></i>
-                                        </a>
-                                        <a href="" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-trash f-20"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @if ($detailKunjungan->exists())
+                                    @php
+                                        $no = 1;
+                                    @endphp
+                                    @foreach ($detailKunjungan->get() as $item)
+                                        @php
+                                            $pengawas = \App\Models\Pengguna\PegawaiModel::findOrFail(
+                                                $item->hakimPengawas->pegawai_id,
+                                            );
+                                        @endphp
+                                        <tr>
+                                            <td style="vertical-align: top;">{{ $no }}</td>
+                                            <td style="vertical-align: top;">
+                                                {{ \App\Helpers\TimeSession::convertDateToIndonesian($item->tanggal) }}
+                                            </td>
+                                            <td style="vertical-align: top;">
+                                                {{ $item->waktu }} WIB
+                                            </td>
+                                            <td style="vertical-align: top;">
+                                                {!! $item->agenda !!}
+                                            </td>
+                                            <td style="vertical-align:top; text-wrap: wrap;">
+                                                {!! $item->pembahasan !!}
+                                            </td>
+                                            <td style="vertical-align: top;">
+                                                {{ $pengawas->nama }}
+                                            </td>
+                                            <td style="vertical-align: top;">
+                                                <a href="" class="avtar avtar-xs btn-link-secondary">
+                                                    <i class="ti ti-printer f-20"></i>
+                                                </a>
+                                                <a class="avtar avtar-xs btn-link-secondary">
+                                                    <i class="ti ti-edit f-20"></i>
+                                                </a>
+                                                <a href="" class="avtar avtar-xs btn-link-secondary">
+                                                    <i class="ti ti-trash f-20"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $no++;
+                                        @endphp
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="7">
+                                            Belum ada agenda kunjungan pengawasan...
+                                        </td>
+                                    </tr>
+                                @endif
+
                             </tbody>
                         </table>
                     </div>
@@ -166,9 +180,8 @@
                         <!-- Tab For temuan pengawasan bidang  -->
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="pills-agenda-tab" data-bs-toggle="pill"
-                                    href="#pills-agenda" role="tab" aria-controls="pills-agenda"
-                                    aria-selected="true">Agenda Kunjungan</a>
+                                <a class="nav-link active" id="pills-agenda-tab" data-bs-toggle="pill" href="#pills-agenda"
+                                    role="tab" aria-controls="pills-agenda" aria-selected="true">Agenda Kunjungan</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-pembahasan-tab" data-bs-toggle="pill"
@@ -179,6 +192,14 @@
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-agenda" role="tabpanel"
                                 aria-labelledby="pills-agenda-tab">
+                                <div class="mb-3" hidden>
+                                    <label class="form-label" for="idKunjungan">ID Kunjungan
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" name="idKunjungan" id="idKunjungan"
+                                        placeholder="ID Kunjungan..." value="{{ Crypt::encrypt($kunjungan->id) }}"
+                                        readonly required>
+                                </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="tanggal">Tanggal Kunjungan
                                         <span class="text-danger">*</span>
@@ -221,7 +242,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" for="hakim">Unit Pengawasan
+                                    <label class="form-label" for="hakim">Hakim Pengawas
                                         <span class="text-danger">*</span>
                                     </label>
                                     <select class="form-control" required data-trigger name="hakim" id="hakim">
@@ -229,7 +250,7 @@
                                         @foreach ($hakim as $kimwas)
                                             <option value="{{ $kimwas->id }}"
                                                 @if (old('unitKerja') == $kimwas->id) selected @endif>
-                                                {{ $hakim->pegawai->nama }}
+                                                {{ $kimwas->pegawai->nama }}
                                             </option>
                                         @endforeach
                                     </select>
