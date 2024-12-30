@@ -91,7 +91,7 @@
                             </a>
                         </li>
                         <li class="pc-item">
-                            <a class="pc-link" href="">
+                            <a class="pc-link" href="{{ route('kunjungan.index') }}">
                                 Kunjungan Pengawasan
                             </a>
                         </li>

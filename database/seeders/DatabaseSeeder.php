@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         User::insert([
-            'name' => 'Qori Chairawan',
+            'name' => 'Qori Chairawan, S.Kom., CITM',
             'email' => 'test@siwakjon.local',
             'email_verified_at' => now(),
             'password' => Hash::make('siwakjon'),

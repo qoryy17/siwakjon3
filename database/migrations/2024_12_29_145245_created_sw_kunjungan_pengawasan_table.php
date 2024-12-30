@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->uuid('kode_kunjungan');
             $table->unsignedBigInteger("unit_kerja_id")->nullable();
             $table->unsignedBigInteger('dibuat');
+            $table->text('file_edoc')->nullable();
+            $table->dateTime('waktu_unggah')->nullable();
             $table->timestamps();
             $table->foreign('unit_kerja_id')->references('id')->on('sw_unit_kerja')->onDelete('set null')->onUpdate('cascade');
         });
