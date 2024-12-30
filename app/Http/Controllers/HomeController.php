@@ -24,18 +24,20 @@ class HomeController extends Controller
 {
     public function berandaSuperadmin()
     {
+        $route = RouteLink::homeString(Auth::user()->roles);
+        $routeHome = RouteLink::homePage(Auth::user()->roles);
         if (Auth::user()->roles != "Superadmin") {
-            $route = RouteLink::homeString(Auth::user()->roles);
             return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
         }
+
         $breadcumb = [
-            ['title' => 'Home', 'link' => route('home.superadmin'), 'page' => ''],
-            ['title' => 'Dashboard', 'link' => route('home.superadmin'), 'page' => 'aria-current="page"']
+            ['title' => 'Home', 'link' => $routeHome, 'page' => ''],
+            ['title' => 'Dashboard', 'link' => $routeHome, 'page' => 'aria-current="page"']
         ];
 
         $data = [
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
-            'routeHome' => route('home.superadmin'),
+            'routeHome' => $routeHome,
             'breadcumbs' => $breadcumb,
             'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name,
             'countPengguna' => ViewUser::countPengguna(),
@@ -52,18 +54,21 @@ class HomeController extends Controller
 
     public function berandaAdmin()
     {
+        $route = RouteLink::homeString(Auth::user()->roles);
+        $routeHome = RouteLink::homePage(Auth::user()->roles);
+
         if (Auth::user()->roles != "Administrator") {
-            $route = RouteLink::homeString(Auth::user()->roles);
             return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
         }
 
         $breadcumb = [
-            ['title' => 'Home', 'link' => route('home.administrator'), 'page' => ''],
-            ['title' => 'Dashboard', 'link' => route('home.administrator'), 'page' => 'aria-current="page"']
+            ['title' => 'Home', 'link' => $routeHome, 'page' => ''],
+            ['title' => 'Dashboard', 'link' => $routeHome, 'page' => 'aria-current="page"']
         ];
+
         $data = [
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
-            'routeHome' => route('home.administrator'),
+            'routeHome' => $routeHome,
             'breadcumbs' => $breadcumb,
             'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name
         ];
@@ -73,18 +78,20 @@ class HomeController extends Controller
 
     public function berandaUser()
     {
+        $route = RouteLink::homeString(Auth::user()->roles);
+        $routeHome = RouteLink::homePage(Auth::user()->roles);
+
         if (Auth::user()->roles != "User") {
-            $route = RouteLink::homeString(Auth::user()->roles);
             return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
         }
 
         $breadcumb = [
-            ['title' => 'Home', 'link' => route('home.user'), 'page' => ''],
-            ['title' => 'Dashboard', 'link' => route('home.user'), 'page' => 'aria-current="page"']
+            ['title' => 'Home', 'link' => $routeHome, 'page' => ''],
+            ['title' => 'Dashboard', 'link' => $routeHome, 'page' => 'aria-current="page"']
         ];
         $data = [
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
-            'routeHome' => route('home.user'),
+            'routeHome' => $routeHome,
             'breadcumbs' => $breadcumb,
             'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name,
             'countRapatBulan' => ViewUser::countRapatBulan(),
@@ -111,7 +118,7 @@ class HomeController extends Controller
 
         $data = [
             'title' => env('APP_NAME') . ' | Version',
-            'routeHome' => route('home.user'),
+            'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'version' => VersionModel::orderBy('created_at', 'desc')
         ];
