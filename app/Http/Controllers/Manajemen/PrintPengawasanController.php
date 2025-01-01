@@ -7,22 +7,21 @@ use Carbon\Carbon;
 use App\Helpers\TimeSession;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Manajemen\DetailKunjunganModel;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Pengaturan\AplikasiModel;
-use App\Models\Manajemen\TemuanWasbidModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Pengguna\PejabatPenggantiModel;
 use App\Models\Manajemen\DokumentasiRapatModel;
+use App\Models\Manajemen\KunjunganPengawasanModel;
 use App\Models\Manajemen\PengawasanBidangModel;
-use PHPUnit\Framework\MockObject\Stub\ReturnStub;
 
 class PrintPengawasanController extends Controller
 {
     public function printUndanganPengawasan(Request $request)
     {
-        // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
 
         if ($rapat->pejabat_pengganti_id) {
@@ -31,6 +30,7 @@ class PrintPengawasanController extends Controller
         } else {
             $pejabatPengganti = null;
         }
+        // Generate QR code
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
         $pegawai = PegawaiModel::with('jabatan')->findOrFail($rapat->pejabat_penandatangan);
@@ -48,8 +48,8 @@ class PrintPengawasanController extends Controller
     public function printDaftarHadirPengawasan(Request $request)
     {
         $peserta = $request->jumlahPeserta;
-        // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
+        // Generate QR code
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
         $data = [
@@ -65,8 +65,8 @@ class PrintPengawasanController extends Controller
 
     public function printNotulaPengawasan(Request $request)
     {
-        // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
+        // Generate QR code
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
 
@@ -86,10 +86,10 @@ class PrintPengawasanController extends Controller
 
     public function printDokumentasiPengawasan(Request $request)
     {
-        // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
         $dokumentasi = DokumentasiRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->get();
 
+        // Generate QR code
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
         $data = [
@@ -106,7 +106,6 @@ class PrintPengawasanController extends Controller
 
     public function printLaporanPengawasan(Request $request)
     {
-        // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
 
         // Search pengawasan on database
@@ -120,6 +119,7 @@ class PrintPengawasanController extends Controller
         $newDate = $tanggalRapat->subMonths($minMonth);
         $setPeriode = TimeSession::convertMonthIndonesian($newDate);
 
+        // Generate QR code
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
         $data = [
@@ -134,6 +134,26 @@ class PrintPengawasanController extends Controller
         $pdf = PDF::loadView('template.pdf-laporan-pengawasan', $data);
         $pdf->setPaper('Folio', 'potrait');
         return $pdf->stream('Laporan Pengawasan Bidang ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
-        // return view('template.pdf-laporan-pengawasan', $data);
+    }
+
+    public function printKunjunganPengawasan(Request $request)
+    {
+        // Search kunjungan on database
+        $detailKunjungan = DetailKunjunganModel::with('hakimPengawas')->findOrFail(Crypt::decrypt($request->id));
+        $kunjungan = KunjunganPengawasanModel::with('unitKerja')->findOrFail($detailKunjungan->kunjungan_pengawasan_id);
+
+        $hakim = PegawaiModel::findOrFail($detailKunjungan->hakimPengawas->pegawai_id);
+
+        $data = [
+            'aplikasi' => AplikasiModel::first(),
+            'kunjungan' => $kunjungan,
+            'detailKunjungan' => $detailKunjungan,
+            'title' => $kunjungan->unitKerja->unit_kerja,
+            'hakim' => $hakim
+        ];
+
+        $pdf = PDF::loadView('template.pdf-kunjungan-wasbid', $data);
+        $pdf->setPaper('Folio', 'potrait');
+        return $pdf->stream('Kunjungan Pengawasan Bidang ' . $kunjungan->unitKerja->unit_kerja . '.pdf');
     }
 }

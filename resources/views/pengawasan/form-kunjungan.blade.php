@@ -74,7 +74,7 @@
                             <button type="reset" class="btn btn-sm btn-secondary">
                                 <i class="fas fa-recycle"></i> Batal
                             </button>
-                            <a href="{{ route('kunjungan.index') }}" class="btn btn-sm btn-warning">
+                            <a href="{{ $routeBack }}" class="btn btn-sm btn-warning">
                                 <i class="fas fa-reply-all"></i> Kembali
                             </a>
                         </div>

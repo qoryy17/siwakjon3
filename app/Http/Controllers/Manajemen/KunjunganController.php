@@ -53,11 +53,13 @@ class KunjunganController extends Controller
             $formTitle = 'Tambah';
             $searchKunjungan = null;
             $kodeKunjungan = Str::uuid();
+            $routeBack = route('kunjungan.index');
         } elseif (Crypt::decrypt($request->param) == 'edit') {
             $paramOutgoing = 'update';
             $formTitle = 'Edit';
             $searchKunjungan = KunjunganPengawasanModel::findOrFail(Crypt::decrypt($request->id));
             $kodeKunjungan = $searchKunjungan->kode_kunjungan;
+            $routeBack = route('kunjungan.detail', ['id' => $request->id]);
         } else {
             return redirect()->back()->with('error', 'Parameter tidak ditemukan !');
         }
@@ -80,7 +82,8 @@ class KunjunganController extends Controller
             'paramOutgoing' => Crypt::encrypt($paramOutgoing),
             'kunjungan' => $searchKunjungan,
             'unitKerja' => UnitKerjaModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
-            'kodeKunjungan' => $kodeKunjungan
+            'kodeKunjungan' => $kodeKunjungan,
+            'routeBack' => $routeBack
         ];
 
         return view('pengawasan.form-kunjungan', $data);
@@ -219,7 +222,7 @@ class KunjunganController extends Controller
             $success = 'Agenda Kunjungan berhasil di simpan !';
             $error = 'Agenda Kunjungan gagal di simpan !';
         } elseif ($paramIncoming == 'update') {
-            $search = DetailKunjunganModel::findOrFail(Crypt::decrypt($request->input('id')));
+            $search = DetailKunjunganModel::findOrFail(Crypt::decrypt($request->input('idAgenda')));
             $save = $search->update($formData);
             $success = 'Agenda Kunjungan berhasil di perbarui !';
             $error = 'Agenda Kunjungan gagal di perbarui !';
@@ -263,5 +266,71 @@ class KunjunganController extends Controller
         }
 
         return redirect()->route('kunjungan.detail', ['id' => Crypt::encrypt($detailKunjungan->kunjungan_pengawasan_id)])->with('error', 'Agenda Kunjungan gagal di hapus !');
+    }
+
+    public function saveEdoc(Request $request): RedirectResponse
+    {
+        $year = date('Y');
+        $month = date('m');
+        $directory = 'pdf/kunjungan/' . $year . '/' . $month . '/';
+        // this output directory : /pdf/kunjungan/2024/12/
+        $save = null;
+
+        // Run validate file
+        $request->validate(
+            ['file' => 'required|file|mimes:pdf|max:10240'],
+            [
+                'file.required' => 'File wajib di isi !',
+                'file.file' => 'File harus berupa file valid !',
+                'file.mimes' => 'File hanya boleh bertipe pdf',
+                'file.max' => 'File maksimal berukuran 10MB',
+            ]
+        );
+
+        // File pdf upload process
+        $filePDF = $request->file('file');
+        $fileHashname = $filePDF->hashName();
+        $uploadPath = $directory . $fileHashname;
+        $fileUpload = $filePDF->storeAs($directory, $fileHashname, 'public');
+
+        // If file pdf has failed to upload
+        if (!$fileUpload) {
+            return redirect()->back()->with('error', 'Unggah file gagal !')->withInput();
+        }
+
+        $existEdoc = KunjunganPengawasanModel::with('unitKerja')->findOrFail(Crypt::decrypt($request->input('id')));
+
+        $formData = [
+            'path_file_edoc' => $uploadPath,
+            'waktu_unggah' => now(),
+        ];
+
+        if ($existEdoc->path_file_edoc != null) {
+            // Delete old file pdf
+            if (Storage::disk('public')->exists($existEdoc->path_file_edoc)) {
+                Storage::disk('public')->delete($existEdoc->path_file_edoc);
+            }
+            $activity = Auth::user()->name . ' Memperbarui edoc kunjungan pengawasan ' . $existEdoc->unitKerja->unit_kerja . ', timestamp ' . now();
+        } else {
+            $activity = Auth::user()->name . ' Menambahkan edoc kunjungan pengawasan ' . $existEdoc->unitKerja->unit_kerja . ', timestamp ' . now();
+        }
+
+        $save = $existEdoc->update($formData);
+
+        if (!$save) {
+            return redirect()->back()->with('error', 'File Edoc gagal di simpan !');
+        }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
+
+        return redirect()->route('kunjungan.detail', ['id' => $request->input('id')])->with('success', 'File Edoc berhasil di simpan !');
     }
 }

@@ -15,6 +15,8 @@ class KunjunganPengawasanModel extends Model
         'kode_kunjungan',
         'unit_kerja_id',
         'dibuat',
+        'path_file_edoc',
+        'waktu_unggah'
     ];
 
     public $timestamps = true;

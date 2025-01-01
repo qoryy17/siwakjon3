@@ -29,10 +29,15 @@
                         membuat di sistem !
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <a href="{{ route('pengawasan.form-undangan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
-                        class="btn btn-primary btn-sm">
-                        <i class="ph-duotone ph-file-plus"></i> Tambah
-                    </a>
+                    @if (
+                        \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::HAKIM->value ||
+                            Auth::user()->roles == 'Superadmin' ||
+                            Auth::user()->roles == 'Administrator')
+                        <a href="{{ route('pengawasan.form-undangan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                            class="btn btn-primary btn-sm">
+                            <i class="ph-duotone ph-file-plus"></i> Tambah
+                        </a>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">

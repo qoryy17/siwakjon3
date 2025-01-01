@@ -121,6 +121,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/pengawasan-bidang/rapat-pengawasan/form-agenda/{param}/{id}', 'formAgenda')->name('kunjungan.form-agenda');
         Route::post('/pengawasan-bidang/kunjungan-pengawasan/agenda/simpan', 'saveAgenda')->name('kunjungan.simpan-agenda');
         Route::delete('/pengawasan-bidang/kunjungan-pengawasan/agenda/hapus', 'deleteAgenda')->name('kunjungan.hapus-agenda');
+
+        Route::post('/pengawasan-bidang/kunjungan-pengawasan/edoc/simpan', 'saveEdoc')->name('kunjungan.simpan-edoc');
     });
 });
 
@@ -131,6 +133,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/pengawasan-bidang/print/notula/{id}', 'printNotulaPengawasan')->name('pengawasan.print-notula');
         Route::get('/pengawasan-bidang/print/dokumentasi/{id}', 'printDokumentasiPengawasan')->name('pengawasan.print-dokumentasi');
         Route::get('/pengawasan-bidang/print/laporan/{id}', 'printLaporanPengawasan')->name('pengawasan.print-laporan');
+        Route::get('/pengawasan-bidang/print/kunjungan/{id}', 'printKunjunganPengawasan')->name('kunjungan.print-kunjungan');
     });
 });
 

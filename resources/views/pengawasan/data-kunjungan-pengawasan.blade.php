@@ -29,10 +29,15 @@
                         bulan
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <a href="{{ route('kunjungan.form-kunjungan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
-                        class="btn btn-primary btn-sm">
-                        <i class="ph-duotone ph-file-plus"></i> Tambah
-                    </a>
+                    @if (
+                        \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::HAKIM->value ||
+                            Auth::user()->roles == 'Superadmin' ||
+                            Auth::user()->roles == 'Administrator')
+                        <a href="{{ route('kunjungan.form-kunjungan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                            class="btn btn-primary btn-sm">
+                            <i class="ph-duotone ph-file-plus"></i> Tambah
+                        </a>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
@@ -64,10 +69,10 @@
                                         <td>
                                             @if ($item->path_file_edoc != null)
                                                 <a target="_blank" href="{{ asset('storage/' . $item->path_file_edoc) }}"
+                                                    class="btn btn-primary btn-sm"
                                                     title="File Edoc {{ $item->unitKerja->unit_kerja }}">
                                                     <i class="fas fa-file-pdf"></i>
                                                 </a>
-                                                <br>
                                                 Timestamp : {{ $item->waktu_unggah }}
                                             @else
                                                 <span class="text-danger">
@@ -83,7 +88,7 @@
                                                 class="avtar avtar-xs btn-link-secondary">
                                                 <i class="ti ti-eye f-20"></i>
                                             </a>
-                                            @if (Auth::user()->id == $item->dibuat)
+                                            @if (Auth::user()->id == $item->dibuat || Auth::user()->roles == 'Superadmin' || Auth::user()->roles == 'Administrator')
                                                 <a href="#" class="avtar avtar-xs btn-link-secondary"
                                                     onclick=" Swal.fire({
                                                     icon: 'warning',
