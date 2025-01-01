@@ -70,7 +70,14 @@ class HomeController extends Controller
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
             'routeHome' => $routeHome,
             'breadcumbs' => $breadcumb,
-            'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name
+            'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name,
+            'countRapatBulan' => ViewUser::countRapatBulan(),
+            'countRapatWasbid' => ViewUser::countRapatWasbid(),
+            'countMonev' => ViewUser::countMonev(),
+            'agendaRapat' => ViewUser::agendaRapat(),
+            'informasi' => ViewUser::informasiPengembang(),
+            'pengawasTercepat' => ViewUser::pengawasTercepat(),
+            'monev' => ViewUser::monev()
         ];
 
         return view('home.home-admin', $data);
@@ -89,6 +96,7 @@ class HomeController extends Controller
             ['title' => 'Home', 'link' => $routeHome, 'page' => ''],
             ['title' => 'Dashboard', 'link' => $routeHome, 'page' => 'aria-current="page"']
         ];
+
         $data = [
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
             'routeHome' => $routeHome,

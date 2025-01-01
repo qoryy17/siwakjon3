@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Arsip\ArsipMonevModel;
 use App\Models\Manajemen\DetailRapatModel;
 use App\Models\Manajemen\ManajemenRapatModel;
+use App\Models\Manajemen\PengawasanBidangModel;
 use App\Models\Pengaturan\NoteDeveloperModel;
 use App\Models\Pengguna\JabatanModel;
 use App\Models\Pengguna\PegawaiModel;
@@ -88,5 +89,19 @@ class ViewUser
             ->whereMonth('created_at', date('m'))
             ->whereYear('created_at', date('Y'))
             ->where('dibuat', '=', Auth::user()->id)->orderBy('created_at', 'desc')->limit(5);
+    }
+
+    public static function pengawasTercepat()
+    {
+        // Search rapat pengawasan
+        return PengawasanBidangModel::where('status', '=', 'Approve')
+            ->whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->orderBy('approve_stamp', 'asc')->limit(1);
+    }
+
+    public static function monev()
+    {
+        return ArsipMonevModel::orderBy('created_at', 'desc')->limit(3);
     }
 }
