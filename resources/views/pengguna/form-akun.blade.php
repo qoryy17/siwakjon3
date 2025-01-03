@@ -40,6 +40,22 @@
                             <input type="text" class="form-control" name="param" readonly value="{{ $paramOutgoing }}">
                         </div>
                         <div class="mb-3">
+                            <label class="form-label" for="pegawai">Pegawai
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-control" data-trigger name="pegawai" id="pegawai" required>
+                                <option value="">Pilih Pegawai</option>
+                                @foreach ($pegawai as $itemPegawai)
+                                    <option value="{{ $itemPegawai->id }}"
+                                        @if (old('pegawai') == $itemPegawai->id) selected  @elseif ($pengguna && $pengguna->pegawai_id == $itemPegawai->id) selected @endif>
+                                        {{ $itemPegawai->nama }}</option>
+                                @endforeach
+                            </select>
+                            @error('pegawai')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label" for="email">Email
                                 <span class="text-danger">*</span>
                             </label>
@@ -63,23 +79,7 @@
                             @endif
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="pegawai">Pegawai
-                                <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-control" data-trigger name="pegawai" id="pegawai" required>
-                                <option value="">Pilih Pegawai</option>
-                                @foreach ($pegawai as $itemPegawai)
-                                    <option value="{{ $itemPegawai->id }}"
-                                        @if (old('pegawai') == $itemPegawai->id) selected  @elseif ($pengguna && $pengguna->pegawai_id == $itemPegawai->id) selected @endif>
-                                        {{ $itemPegawai->nama }}</option>
-                                @endforeach
-                            </select>
-                            @error('pegawai')
-                                <small class="text-danger mt-1">* {{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="unitKerja">Unit Kerja
+                            <label class="form-label" for="unitKerja">Unit Kerja / Unit Pengawasan (Khusus Akun Hakim)
                                 <span class="text-danger">*</span>
                             </label>
                             <select class="form-control" required data-trigger name="unitKerja" id="unitKerja">
