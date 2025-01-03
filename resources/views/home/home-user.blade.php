@@ -73,7 +73,7 @@
 
             <div class="card table-card">
                 <div class="card-header d-flex align-items-center justify-content-between py-3">
-                    <h5 class="mb-0">Rapat Belum Dilengkapi</h5>
+                    <h5 class="mb-0">Rapat Terbaru</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -100,11 +100,30 @@
                                                 $rapat->detailRapat->id,
                                             )->first();
 
-                                            $getEdoc = \App\Models\Manajemen\EdocRapatModel::where(
-                                                'detail_rapat_id',
-                                                '=',
-                                                $rapat->detailRapat->id,
-                                            )->first();
+                                            if ($rapat->klasifikasiRapat->rapat == 'Pengawasan') {
+                                                // Search pengawasan
+                                                $pengawasan = \App\Models\Manajemen\PengawasanBidangModel::where(
+                                                    'detail_rapat_id',
+                                                    '=',
+                                                    $rapat->detailRapat->id,
+                                                )->first();
+
+                                                if ($pengawasan) {
+                                                    $getEdoc = \App\Models\Manajemen\EdocWasbidModel::where(
+                                                        'pengawasan_bidang_id',
+                                                        '=',
+                                                        $pengawasan->id,
+                                                    )->first();
+                                                } else {
+                                                    $getEdoc = false;
+                                                }
+                                            } else {
+                                                $getEdoc = \App\Models\Manajemen\EdocRapatModel::where(
+                                                    'detail_rapat_id',
+                                                    '=',
+                                                    $rapat->detailRapat->id,
+                                                )->first();
+                                            }
                                         @endphp
                                         <tr>
                                             <td>
@@ -129,13 +148,24 @@
                                                     <span class="text-danger">
                                                         Edoc PDF belum dilengkapi !
                                                     </span>
+                                                @else
+                                                    <span class="text-success">
+                                                        Dokumen lengkap !
+                                                    </span>
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{ route('rapat.detail', ['id' => Crypt::encrypt($rapat->id)]) }}"
-                                                    class="avtar avtar-xs btn-link-secondary">
-                                                    <i class="ti ti-eye f-20"></i>
-                                                </a>
+                                                @if ($rapat->klasifikasiRapat->rapat == 'Pengawasan')
+                                                    <a href="{{ route('pengawasan.detail', ['id' => Crypt::encrypt($rapat->id)]) }}"
+                                                        class="avtar avtar-xs btn-link-secondary">
+                                                        <i class="ti ti-eye f-20"></i>
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('rapat.detail', ['id' => Crypt::encrypt($rapat->id)]) }}"
+                                                        class="avtar avtar-xs btn-link-secondary">
+                                                        <i class="ti ti-eye f-20"></i>
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                         @php
@@ -176,14 +206,27 @@
                                                                         class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
                                                                 </div>
                                                                 <div class="col">
-                                                                    <a href="javascript:void(0);">
-                                                                        <h6>
-                                                                            {{ $agenda->detailRapat->perihal }} <br>
-                                                                            <span>Tanggal Rapat :
-                                                                                {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
-                                                                            </span>
-                                                                        </h6>
-                                                                    </a>
+                                                                    @if ($agenda->klasifikasiRapat->rapat == 'Pengawasan')
+                                                                        <a title="Rapat {{ $agenda->perihal }}"
+                                                                            href="{{ route('pengawasan.detail', ['id' => Crypt::encrypt($agenda->id)]) }}">
+                                                                            <h6>
+                                                                                {{ $agenda->detailRapat->perihal }} <br>
+                                                                                <span>Tanggal Rapat :
+                                                                                    {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
+                                                                                </span>
+                                                                            </h6>
+                                                                        </a>
+                                                                    @else
+                                                                        <a title="Rapat {{ $agenda->perihal }}"
+                                                                            href="{{ route('rapat.detail', ['id' => Crypt::encrypt($agenda->id)]) }}">
+                                                                            <h6>
+                                                                                {{ $agenda->detailRapat->perihal }} <br>
+                                                                                <span>Tanggal Rapat :
+                                                                                    {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
+                                                                                </span>
+                                                                            </h6>
+                                                                        </a>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         @endforeach
@@ -251,7 +294,7 @@
                                                                 </div>
                                                                 <div class="col">
                                                                     <a href="javascript:void(0);">
-                                                                        <h6 style="line-height: 1.5;">
+                                                                        <h6 style="line-height: 1.5; font-weight: normal;">
                                                                             {{ $pengembang->catatan }} <br>
                                                                             <span>Published:
                                                                                 {{ $pengembang->created_at }}

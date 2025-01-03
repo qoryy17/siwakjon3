@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Arsip\ArsipMonevModel;
 use App\Models\Manajemen\DetailRapatModel;
+use App\Models\Manajemen\EdocWasbidModel;
 use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Manajemen\PengawasanBidangModel;
 use App\Models\Pengaturan\NoteDeveloperModel;
@@ -70,7 +71,7 @@ class ViewUser
 
     public static function agendaRapat()
     {
-        return ManajemenRapatModel::with('detailRapat')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'));
+        return ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'));
     }
 
     public static function countTotalRapatUser()
@@ -93,11 +94,14 @@ class ViewUser
 
     public static function pengawasTercepat()
     {
+        $getEdoc = EdocWasbidModel::orderBy('created_at', 'asc')->limit(1)->first();
         // Search rapat pengawasan
-        return PengawasanBidangModel::where('status', '=', 'Approve')
+        $pengawasan = PengawasanBidangModel::where('status', '=', 'Waiting')
             ->whereMonth('created_at', date('m'))
             ->whereYear('created_at', date('Y'))
-            ->orderBy('approve_stamp', 'asc')->limit(1);
+            ->where('id', '=', $getEdoc->pengawasan_bidang_id);
+
+        return $pengawasan;
     }
 
     public static function monev()

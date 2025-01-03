@@ -77,29 +77,27 @@
                         @php
                             $hakim = json_decode($pengawasTercepat->first()->hakim_pengawas);
                         @endphp
-                        <ul>
-                            @foreach ($hakim as $pengawas)
-                                <div class="card">
-                                    <div class="card-body position-relative">
-                                        <div class="text-center mt-3">
-                                            <div class="chat-avtar d-inline-flex mx-auto">
-                                                <img class="rounded-circle img-fluid wid-90 img-thumbnail"
-                                                    src="{{ asset('assets/images/badge.png') }}" alt="Badge">
-                                                <i class="chat-badge bg-danger me-2 mb-2"></i>
-                                            </div>
-                                            <h5 class="mb-0">
-                                                {{ $pengawas->nama }} <br>
-                                                Hakim Pengawas <br>
-                                                {{ $pengawasTercepat->first()->objek_pengawasan }}
-                                            </h5>
-                                            <p class="text-muted mt-1 text-sm m-0">Pengawasan Tercepat Bulan Ini 😍</p>
-                                            <small class="text-secondary">Waktu Penyelesaian :
-                                                {{ $pengawasTercepat->first()->datetime }}</small>
+                        @foreach ($hakim as $pengawas)
+                            <div class="card">
+                                <div class="card-body position-relative">
+                                    <div class="text-center mt-3">
+                                        <div class="chat-avtar d-inline-flex mx-auto">
+                                            <img class="rounded-circle img-fluid wid-90 img-thumbnail"
+                                                src="{{ asset('assets/images/badge.png') }}" alt="Badge">
+                                            <i class="chat-badge bg-danger me-2 mb-2"></i>
                                         </div>
+                                        <h5 class="mb-0">
+                                            {{ $pengawas->nama }} <br>
+                                            Hakim Pengawas
+                                            {{ $pengawasTercepat->first()->objek_pengawasan }}
+                                        </h5>
+                                        <p class="text-muted mt-1 text-sm m-0">Pengawasan Tercepat Bulan Ini 😍</p>
+                                        <small class="text-secondary">Waktu Penyelesaian :
+                                            {{ $pengawasTercepat->first()->created_at }}</small>
                                     </div>
                                 </div>
-                            @endforeach
-                        </ul>
+                            </div>
+                        @endforeach
                     @else
                         <div class="card">
                             <div class="card-body">
@@ -172,14 +170,27 @@
                                                                         class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
                                                                 </div>
                                                                 <div class="col">
-                                                                    <a href="javascript:void(0);">
-                                                                        <h6>
-                                                                            {{ $agenda->detailRapat->perihal }} <br>
-                                                                            <span>Tanggal Rapat :
-                                                                                {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
-                                                                            </span>
-                                                                        </h6>
-                                                                    </a>
+                                                                    @if ($agenda->klasifikasiRapat->rapat == 'Pengawasan')
+                                                                        <a title="Rapat {{ $agenda->perihal }}"
+                                                                            href="{{ route('pengawasan.detail', ['id' => Crypt::encrypt($agenda->id)]) }}">
+                                                                            <h6>
+                                                                                {{ $agenda->detailRapat->perihal }} <br>
+                                                                                <span>Tanggal Rapat :
+                                                                                    {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
+                                                                                </span>
+                                                                            </h6>
+                                                                        </a>
+                                                                    @else
+                                                                        <a title="Rapat {{ $agenda->perihal }}"
+                                                                            href="{{ route('rapat.detail', ['id' => Crypt::encrypt($agenda->id)]) }}">
+                                                                            <h6>
+                                                                                {{ $agenda->detailRapat->perihal }} <br>
+                                                                                <span>Tanggal Rapat :
+                                                                                    {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
+                                                                                </span>
+                                                                            </h6>
+                                                                        </a>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         @endforeach
@@ -247,10 +258,10 @@
                                                                 </div>
                                                                 <div class="col">
                                                                     <a href="javascript:void(0);">
-                                                                        <h6 style="line-height: 1.5;">
+                                                                        <h6 style="line-height: 1.5; font-weight: normal;">
                                                                             {{ $pengembang->catatan }} <br>
                                                                             <span>Published:
-                                                                                {{ $pengembang->created_at }}
+                                                                                { $pengembang->created_at }}
                                                                             </span>
                                                                         </h6>
                                                                     </a>

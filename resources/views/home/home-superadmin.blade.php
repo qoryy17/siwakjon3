@@ -104,14 +104,27 @@
                                                                         class="feather icon-bell bg-light-primary feed-icon text-primary"></i>
                                                                 </div>
                                                                 <div class="col">
-                                                                    <a href="javascript:void(0);">
-                                                                        <h6>
-                                                                            {{ $agenda->detailRapat->perihal }} <br>
-                                                                            <span>Tanggal Rapat :
-                                                                                {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
-                                                                            </span>
-                                                                        </h6>
-                                                                    </a>
+                                                                    @if ($agenda->klasifikasiRapat->rapat == 'Pengawasan')
+                                                                        <a title="Rapat {{ $agenda->perihal }}"
+                                                                            href="{{ route('pengawasan.detail', ['id' => Crypt::encrypt($agenda->id)]) }}">
+                                                                            <h6>
+                                                                                {{ $agenda->detailRapat->perihal }} <br>
+                                                                                <span>Tanggal Rapat :
+                                                                                    {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
+                                                                                </span>
+                                                                            </h6>
+                                                                        </a>
+                                                                    @else
+                                                                        <a title="Rapat {{ $agenda->perihal }}"
+                                                                            href="{{ route('rapat.detail', ['id' => Crypt::encrypt($agenda->id)]) }}">
+                                                                            <h6>
+                                                                                {{ $agenda->detailRapat->perihal }} <br>
+                                                                                <span>Tanggal Rapat :
+                                                                                    {{ \App\Helpers\TimeSession::convertDateToIndonesian($agenda->detailRapat->tanggal_rapat) }}
+                                                                                </span>
+                                                                            </h6>
+                                                                        </a>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         @endforeach

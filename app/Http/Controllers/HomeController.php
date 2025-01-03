@@ -172,7 +172,7 @@ class HomeController extends Controller
 
         $data = [
             'title' => 'Manajemen Rapat | Rapat Saya',
-            'routeHome' => route('home.superadmin'),
+            'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->where('rapat', '!=', 'Pengawasan')->orderBy('created_at', 'desc')->get(),
             'klasifikasiJabatan' => KlasifikasiJabatanModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
@@ -198,7 +198,7 @@ class HomeController extends Controller
         ];
         $data = [
             'title' => 'Pengawasan Bidang | Rapat Saya',
-            'routeHome' => route('home.superadmin'),
+            'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'rapat' => $rapat
         ];

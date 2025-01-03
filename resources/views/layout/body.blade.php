@@ -356,55 +356,6 @@
                         </div>
                     </div>
                 </li>
-                <li class="dropdown pc-h-item">
-                    <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
-                        role="button" aria-haspopup="false" aria-expanded="false">
-                        <i class="ph-duotone ph-bell"></i>
-                        <span class="badge bg-success pc-h-badge">3</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
-                        <div class="dropdown-header d-flex align-items-center justify-content-between">
-                            <h5 class="m-0">Notifikasi</h5>
-                        </div>
-                        <div class="dropdown-body text-wrap header-notification-scroll position-relative"
-                            style="max-height: calc(100vh - 235px)">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0">
-                                            <div class="avtar avtar-s bg-light-success">
-                                                <i class="ph-duotone ph-shield-checkered f-18"></i>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <div class="d-flex">
-                                                <div class="flex-grow-1 me-3 position-relative">
-                                                    <h6 class="mb-0 text-truncate">Security</h6>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <span class="text-sm">5 hour ago</span>
-                                                </div>
-                                            </div>
-                                            <p class="position-relative mt-1 mb-2">Lorem Ipsum is simply dummy text of
-                                                the printing and
-                                                typesetting industry. Lorem Ipsum has been the industry's standard
-                                                dummy text ever since the 1500s.</p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="dropdown-footer">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <div class="d-grid"><a href="{{ route('home.notifikasi') }}"
-                                            class="btn btn-primary">Lihat Notifikasi</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
                 <li class="dropdown pc-h-item header-user-profile">
                     <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                         role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
