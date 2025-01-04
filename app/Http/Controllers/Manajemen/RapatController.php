@@ -627,7 +627,7 @@ class RapatController extends Controller
         $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->input('rapat')));
 
         // Is rapat already on pengawasan bidang ?
-        $searchRapatOnPengawasan = PengawasanBidangModel::where('detail_rapat_id', '=', $searchRapat->detailRapat)->first();
+        $searchRapatOnPengawasan = PengawasanBidangModel::where('detail_rapat_id', '=', $searchRapat->detailRapat->id)->first();
         if ($searchRapatOnPengawasan) {
             return redirect()->back()->with('error', 'Rapat pengawasan bidang ini tidak dapat di set, karena telah sampai tahap laporan pengawasan !');
         }
