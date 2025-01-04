@@ -22,6 +22,7 @@ use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Pengguna\PejabatPenggantiModel;
 use App\Models\Manajemen\DokumentasiRapatModel;
 use App\Models\Manajemen\KlasifikasiRapatModel;
+use App\Http\Requests\Manajemen\SetRapatRequest;
 use App\Models\Manajemen\KlasifikasiJabatanModel;
 use App\Http\Requests\Manajemen\FormNotulaRequest;
 use App\Http\Requests\Manajemen\FormManajemenRapat;
@@ -592,5 +593,89 @@ class RapatController extends Controller
         );
 
         return redirect()->route('rapat.detail', ['id' => $request->input('id')])->with('success', 'File Edoc berhasil di simpan !');
+    }
+
+    public function indexSetRapat()
+    {
+        // Redirect home page for role
+        $route = RouteLink::homePage(Auth::user()->roles);
+
+        $breadcumb = [
+            ['title' => 'Home', 'link' => $route, 'page' => ''],
+            ['title' => 'Manajemen Pengaturan', 'link' => 'javascript:void(0);', 'page' => ''],
+            ['title' => 'Set Rapat Dinas ', 'link' => route('rapat.set-rapat'), 'page' => 'aria-current="page"']
+        ];
+        $data = [
+            'title' => 'Manajemen Pengaturan | Set Rapat Dinas',
+            'routeHome' => $route,
+            'breadcumbs' => $breadcumb,
+            'klasifikasi' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->orderBy('updated_at', 'desc')->get(),
+            'rapat' => ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->orderBy('created_at', 'desc')->get()
+        ];
+
+        return view('pengaturan.set-rapat', $data);
+    }
+
+    public function saveSetRapat(SetRapatRequest $request)
+    {
+        // Run validate
+        $request->validated();
+        $save = null;
+
+        // Search rapat on manajemen rapat
+        $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->input('rapat')));
+
+        // Search klasifikasi rapat on database
+        $klasifikasiRapat = KlasifikasiRapatModel::findOrFail(Crypt::decrypt($request->input('klasifikasi')));
+
+        if (htmlspecialchars($request->input('nomorRapat'))) {
+
+            // Run additonal validate
+            $request->validate(
+                ['nomorRapat' => 'numeric|string'],
+                [
+                    'nomorRapat.numeric' => 'Nomor rapat harus berupa angka !',
+                    'nomorRapat.string' => 'Nomor rapat harus berupa karakter valid !',
+                ]
+            );
+
+            // Change old nomor dokumen to new nomor dokumen
+            $explodeNomorDokumen = explode('/', $searchRapat->nomor_dokumen);
+            $indexsNumber = htmlspecialchars($request->input('nomorRapat'));
+            $implodeNomorDokumen = $indexsNumber . '/' . $explodeNomorDokumen[1] . '/' . $explodeNomorDokumen[2] . '/' . $explodeNomorDokumen[3] . '/' . $explodeNomorDokumen[4];
+
+            $formData = [
+                'nomor_indeks' => $indexsNumber,
+                'nomor_dokumen' => $implodeNomorDokumen,
+                'klasifikasi_rapat_id' => htmlspecialchars(Crypt::decrypt($request->input('klasifikasi'))),
+            ];
+
+            $activity = Auth::user()->name . ' Mengubah klasifikasi rapat : ' . $searchRapat->detailRapat->perihal . ' menjadi Rapat ' . $klasifikasiRapat->rapat . ', dengan nomor dokumen lama ' . $searchRapat->nomor_dokumen . ' menjadi ' . $implodeNomorDokumen . ', timestamp ' . now();
+        } else {
+            $formData = [
+                'klasifikasi_rapat_id' => htmlspecialchars(Crypt::decrypt($request->input('klasifikasi'))),
+            ];
+
+            $activity = Auth::user()->name . ' Mengubah klasifikasi rapat : ' . $searchRapat->detailRapat->perihal . ' menjadi Rapat ' . $klasifikasiRapat->rapat . ', timestamp ' . now();
+        }
+
+        // Save change data on database
+        $save = $searchRapat->update($formData);
+
+        if (!$save) {
+            return redirect()->back()->with('error', 'Set Rapat Dinas/Pengawasan gagal di simpan !');
+        }
+
+        // Saving logs activity
+        LogsModel::create(
+            [
+                'user_id' => Auth::user()->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'activity' => $activity
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Set Rapat Dinas/Pengawasan berhasil di simpan !');
     }
 }

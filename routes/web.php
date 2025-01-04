@@ -77,6 +77,12 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::delete('/manajemen-rapat/rapat-dinas/dokumentasi/hapus', 'deleteDokumentasi')->name('rapat.hapus-dokumentasi');
 
         Route::post('/manajemen-rapat/rapat-dinas/edoc/simpan', 'saveEdoc')->name('rapat.simpan-edoc');
+
+        // Special for set rapat on manajemen pengaturan, this route is only access for role superadmin and administrator, reject role user
+        Route::middleware(RejectUserMiddleware::class)->group(function () {
+            Route::get('/manajemen-pengaturan/set-rapat', 'indexSetRapat')->name('rapat.set-rapat');
+            Route::post('/manajemen-pengaturan/set-rapat/simpan', 'saveSetRapat')->name('rapat.simpan-set-rapat');
+        });
     });
 });
 

@@ -200,6 +200,9 @@
                             <li class="pc-item">
                                 <a class="pc-link" href="{{ route('klasifikasi.set-kode') }}">Set Kode Rapat</a>
                             </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('rapat.set-rapat') }}">Set Rapat Dinas</a>
+                            </li>
                         </ul>
                     </li>
                     <li class="pc-item pc-hasmenu">

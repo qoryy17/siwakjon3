@@ -99,7 +99,7 @@
         <div class="cover-periode">
             <h4>
                 {{ $aplikasi->satuan_kerja }} <br>
-                PERIODE {{ $periode }} TAHUN {{ $tahun->year }}
+                PERIODE {{ $periode }}
             </h4>
         </div>
     </div>

@@ -10,8 +10,9 @@
                         <div class="col-md-12">
                             <ul class="breadcrumb">
                                 @foreach ($breadcumbs as $bc)
-                                    <li class="breadcrumb-item"><a href="{{ $bc['link'] }}"
-                                            {{ $bc['page'] }}>{{ $bc['title'] }}</a></li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ $bc['link'] }}" {{ $bc['page'] }}>{{ $bc['title'] }}</a>
+                                    </li>
                                 @endforeach
                             </ul>
                         </div>
