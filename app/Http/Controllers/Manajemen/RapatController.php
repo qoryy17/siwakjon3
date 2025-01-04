@@ -617,7 +617,7 @@ class RapatController extends Controller
         return view('pengaturan.set-rapat', $data);
     }
 
-    public function saveSetRapat(SetRapatRequest $request)
+    public function saveSetRapat(SetRapatRequest $request): RedirectResponse
     {
         // Run validate
         $request->validated();
