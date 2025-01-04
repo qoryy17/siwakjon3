@@ -22,6 +22,7 @@ use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Pengguna\PejabatPenggantiModel;
 use App\Models\Manajemen\DokumentasiRapatModel;
 use App\Models\Manajemen\KlasifikasiRapatModel;
+use App\Models\Manajemen\PengawasanBidangModel;
 use App\Http\Requests\Manajemen\SetRapatRequest;
 use App\Models\Manajemen\KlasifikasiJabatanModel;
 use App\Http\Requests\Manajemen\FormNotulaRequest;
@@ -625,6 +626,11 @@ class RapatController extends Controller
         // Search rapat on manajemen rapat
         $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->input('rapat')));
 
+        // Is rapat already on pengawasan bidang ?
+        $searchRapatOnPengawasan = PengawasanBidangModel::where('detail_rapat_id', '=', $searchRapat->detailRapat)->first();
+        if ($searchRapatOnPengawasan) {
+            return redirect()->back()->with('error', 'Rapat pengawasan bidang ini tidak dapat di set, karena telah sampai tahap laporan pengawasan !');
+        }
         // Search klasifikasi rapat on database
         $klasifikasiRapat = KlasifikasiRapatModel::findOrFail(Crypt::decrypt($request->input('klasifikasi')));
 
