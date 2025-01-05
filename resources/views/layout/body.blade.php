@@ -100,6 +100,11 @@
                                 Daftar Hakim Pengawas
                             </a>
                         </li>
+                        <li class="pc-item">
+                            <a class="pc-link" href="{{ route('monitoring.index') }}">
+                                Monitoring Pengawasan
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="pc-item pc-hasmenu">

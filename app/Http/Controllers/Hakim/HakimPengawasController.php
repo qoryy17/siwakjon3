@@ -21,8 +21,6 @@ class HakimPengawasController extends Controller
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
-
-
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
             ['title' => 'Pengawasan Bidang', 'link' => 'javascript:void(0);', 'page' => ''],

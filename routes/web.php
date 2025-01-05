@@ -26,6 +26,7 @@ use App\Http\Controllers\Manajemen\KlasifikasiController;
 use App\Http\Controllers\Pengaturan\DevelopmentController;
 use App\Http\Controllers\Manajemen\PrintPengawasanController;
 use App\Http\Controllers\Penggguna\PejabatPenggantiController;
+use App\Http\Controllers\Manajemen\MonitoringPengawasanController;
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::get('/', function () {
@@ -97,6 +98,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     // Only superadmin, administrator and hakim can access this route
+    // We must add ketua and wakil ketua to access this route
     Route::middleware(RejectNonHakimMiddleware::class)->group(function () {
         Route::controller(PengawasanController::class)->group(function () {
             Route::get('/pengawasan-bidang/rapat-pengawasan', 'indexPengawasan')->name('pengawasan.index');
@@ -119,6 +121,12 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
             Route::post('/pengawasan-bidang/rapat-pengawasan/edoc/simpan', 'saveEdoc')->name('pengawasan.simpan-edoc');
         });
+    });
+});
+
+Route::middleware(AuthMiddleware::class)->group(function () {
+    Route::controller(MonitoringPengawasanController::class)->group(function () {
+        Route::get('/pengawasan-bidang/monitoring-pengawasan', 'indexMonitoring')->name('monitoring.index');
     });
 });
 

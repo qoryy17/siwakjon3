@@ -43,7 +43,6 @@
                     </div>
                 </form>
 
-
                 <div class="row">
                     @foreach ($hakim->get() as $item)
                         <div class="col-md-4 col-sm-12">
