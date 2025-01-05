@@ -32,6 +32,7 @@ return new class extends Migration {
         Schema::create('sw_temuan_pengawasan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pengawasan_bidang_id');
+            $table->text('objek_pengawasan');
             $table->text('judul');
             $table->text('kondisi');
             $table->text('kriteria');

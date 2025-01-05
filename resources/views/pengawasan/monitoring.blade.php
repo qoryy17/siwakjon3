@@ -40,15 +40,18 @@
                 </div>
             </div>
 
-            <form action="{{ route('pengawasan.daftar-hakim-pengawas') }}" method="GET">
+            <form action="{{ route('monitoring.index') }}" method="GET">
                 <div class="row align-items-center mb-3">
                     <div class="col">
                         <div class="input-group">
                             <span class="input-group-text"><i class="ti ti-search"></i></span>
-                            <select name="" id="" class="form-control">
+                            <select required class="form-control" name="search">
                                 <option value="">Pilih Objek/Unit Pengawasan</option>
+                                @foreach ($objekPengawasan as $item)
+                                    <option value="{{ $item->unit_kerja }}">{{ $item->unit_kerja }}</option>
+                                @endforeach
                             </select>
-                            <select name="" id="" class="form-control">
+                            <select name="tahun" required class="form-control">
                                 <option value="">Pilih Tahun</option>
                                 @for ($i = 0; $i < 5; $i++)
                                     <option value="{{ date('Y') + $i }}">{{ date('Y') + $i }}</option>
@@ -62,8 +65,8 @@
                 </div>
             </form>
 
-            <div class="row">
-                <div class="col-lg-8">
+            @if ($result != null)
+                @if ($result != 'Not Found')
                     <!-- Result Chart -->
                     <div class="card">
                         <div class="card-header">
@@ -73,200 +76,158 @@
                         </div>
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-1">
-                                <h3 class="mb-0">40<small class="text-muted">/ Tahun 2025</small></h3>
+                                <h3 class="mb-0">{{ $result['totalTemuan'] }}
+                                    <small class="text-muted">/ Tahun {{ $result['tahun'] }}</small>
+                                </h3>
                             </div>
-                            <p>Total Temuan Pengawasan Bidang Pada Kepaniteraan Hukum</p>
-                            <div id="customer-rate-graph"></div>
+                            <p>Total Temuan Pengawasan Bidang Pada {{ $result['objek'] }}</p>
+                            <div id="pengawasan-chart"></div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-lg-4">
                     <div class="card">
-                        <div class="card-header d-flex align-items-center justify-content-between">
-                            <h5>Statistik Pengawasan Tahun {{ date('Y') }}</h5>
-                            <i class="ph-duotone ph-info f-20 ms-1" data-bs-toggle="tooltip" data-bs-title="Overview"></i>
+                        <div class="card-header">
+                            <h5>
+                                Temuan Pengawasan Bidang {{ $result['objek'] }}
+                            </h5>
                         </div>
                         <div class="card-body">
-                            <div id="overview-bar-chart"></div>
-                            <div class="bg-body mt-3 py-2 px-3 rounded d-flex align-items-center justify-content-between">
-                                <p class="mb-0"><i class="ph-duotone ph-circle text-danger f-12"></i> Total Temuan</p>
-                                <h5 class="mb-0 ms-1">Kepaniteraan Hukum</h5>
-                            </div>
-                            <div class="bg-body mt-3 py-2 px-3 rounded d-flex align-items-center justify-content-between">
-                                <p class="mb-0"><i class="ph-duotone ph-circle text-danger f-12"></i> Total Temuan</p>
-                                <h5 class="mb-0 ms-1">Kepaniteraan Pidana</h5>
+                            <div class="dt-responsive table-responsive">
+                                <table id="simpletable" class="table table-striped table-bordered nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th width="1%">No</th>
+                                            <th>Temuan</th>
+                                            <th>Kondisi</th>
+                                            <th>Rekomendasi</th>
+                                            <th>Waktu Penyelesaian</th>
+                                            <th>Tanggal/Waktu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $no = 1;
+                                        @endphp
+                                        @foreach ($result['temuan'] as $temuan)
+                                            <tr>
+                                                <td>{{ $no }}</td>
+                                                <td>{{ $temuan->judul }}</td>
+                                                <td>{{ $temuan->kondisi }}</td>
+                                                <td>{{ $temuan->rekomendasi }}</td>
+                                                <td>{{ $temuan->waktu_penyelesaian }}</td>
+                                                <td>{{ $temuan->created_at }}</td>
+                                            </tr>
+                                            @php
+                                                $no++;
+                                            @endphp
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h5>
-                        Temuan Pengawasan Bidang Kepaniteraan Hukum
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="dt-responsive table-responsive">
-                        <table id="simpletable" class="table table-striped table-bordered nowrap">
-                            <thead>
-                                <tr>
-                                    <th width="1%">No</th>
-                                    <th>Temuan</th>
-                                    <th>Kondisi</th>
-                                    <th>Rekomendasi</th>
-                                    <th>Waktu Penyelesaian</th>
-                                    <th>Created At</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
+                    <a href="{{ route('monitoring.index') }}" class="btn btn-primary">
+                        <i class="fas fa-recycle"></i> Muat Ulang
+                    </a>
+                @else
+                    <div class="alert alert-warning" role="alert">
+                        <p class="m-0">
+                            Data yang kamu cari belum tersedia nih. Harap cek secara berkala ya
+                        </p>
                     </div>
-                </div>
-            </div>
+                    <a href="{{ route('monitoring.index') }}" class="btn btn-primary">
+                        <i class="fas fa-recycle"></i> Muat Ulang
+                    </a>
+                @endif
+
+            @endif
+
             <!-- [ Main Content ] end -->
         </div>
     </div>
-    @php
-        $data = [
-            'barChart' => ['unitKerja' => ['Kepaniteraan Hukum', 'Kepaniteraan Pidana'], 'value' => [10, 40, 50, 30]],
-            'lineChart' => ['tahun' => [2024, 2025], 'value' => [10, 40]],
-        ];
-    @endphp
-    <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>
-    {{-- <script src="{{ asset('assets/js/pages/w-chart.js') }}"></script> --}}
-    <script>
-        'use strict';
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                floatchart();
-            }, 500);
-        });
+    @if ($result != null && $result != 'Not Found')
+        <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>
+        <script>
+            'use strict';
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    floatchart();
+                }, 500);
+            });
 
-        function floatchart() {
+            function floatchart() {
 
-            (function() {
-                var options = {
-                    chart: {
-                        type: 'area',
-                        height: 230,
-                        toolbar: {
-                            show: false
-                        }
-                    },
-                    colors: ['#0d6efd'],
-                    fill: {
-                        type: 'gradient',
-                        gradient: {
-                            shadeIntensity: 1,
-                            type: 'vertical',
-                            inverseColors: false,
-                            opacityFrom: 0.5,
-                            opacityTo: 0
-                        }
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    stroke: {
-                        width: 1
-                    },
-                    plotOptions: {
-                        bar: {
-                            columnWidth: '45%',
-                            borderRadius: 4
-                        }
-                    },
-                    grid: {
-                        strokeDashArray: 4
-                    },
-                    series: [{
-                        data: [30, 60, 40, 70, 50, 90, 50, 55, 45, 60, 50, 65]
-                    }],
-                    xaxis: {
-                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
-                            'Dec'
-                        ],
-                        labels: {
-                            hideOverlappingLabels: true,
-                        },
-                        axisBorder: {
-                            show: false
-                        },
-                        axisTicks: {
-                            show: false
-                        }
-                    }
-                };
-                var chart = new ApexCharts(document.querySelector('#customer-rate-graph'), options);
-                chart.render();
-
-                // overview bar chart
-                var options_overview_bar = {
-                    chart: {
-                        type: 'bar',
-                        height: 150,
-                        sparkline: {
-                            enabled: true
-                        }
-                    },
-                    colors: ['#F44236', '#04A9F5', '#673ab7', '#1DE9B6', '#F4C22B', '#3EBFEA'],
-                    plotOptions: {
-                        bar: {
-                            borderRadius: 2,
-                            columnWidth: '80%',
-                            distributed: true
-                        }
-                    },
-                    series: [{
-                        data: {{ json_encode($data['barChart']['value']) }}
-                    }],
-                    xaxis: {
-                        crosshairs: {
-                            width: 1
-                        }
-                    },
-                    tooltip: {
-                        fixed: {
-                            enabled: false
-                        },
-                        x: {
-                            show: false
-                        },
-                        y: {
-                            title: {
-                                formatter: function(seriesName) {
-                                    return '';
-                                }
+                (function() {
+                    var options = {
+                        chart: {
+                            type: 'area',
+                            height: 250,
+                            toolbar: {
+                                show: false
                             }
                         },
-                        marker: {
-                            show: false
-                        }
-                    }
-                };
-                var chart_overview_bar = new ApexCharts(document.querySelector('#overview-bar-chart'),
-                    options_overview_bar);
-                chart_overview_bar.render();
-
-
-                document.querySelector('#chart-bar').addEventListener('click', function(e) {
-                    chart_reports.updateOptions({
-                        chart: {
-                            type: 'bar',
-                        },
+                        colors: ['#0d6efd'],
                         fill: {
-                            type: 'solid',
+                            type: 'gradient',
+                            gradient: {
+                                shadeIntensity: 1,
+                                type: 'vertical',
+                                inverseColors: false,
+                                opacityFrom: 0.5,
+                                opacityTo: 0
+                            }
                         },
-                    })
-                })
+                        dataLabels: {
+                            enabled: false,
+                            formatter: function(val) {
+                                return Math.round(val);
+                            }
+                        },
+                        stroke: {
+                            width: 1
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '45%',
+                                borderRadius: 4
+                            }
+                        },
+                        grid: {
+                            strokeDashArray: 4
+                        },
+                        series: [{
+                            data: {{ json_encode($result['barChart']) }}
+                        }],
+                        xaxis: {
+                            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+                                'Dec'
+                            ],
+                            labels: {
+                                hideOverlappingLabels: true,
+                            },
+                            axisBorder: {
+                                show: false
+                            },
+                            axisTicks: {
+                                show: false
+                            }
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: function(val) {
+                                    return Math.round(val);
+                                }
+                            }
+                        }
+                    };
+                    var chart = new ApexCharts(document.querySelector('#pengawasan-chart'), options);
+                    chart.render();
 
-            })();
+                })();
 
-        }
-    </script>
+            }
+        </script>
+    @endif
+
 @endsection

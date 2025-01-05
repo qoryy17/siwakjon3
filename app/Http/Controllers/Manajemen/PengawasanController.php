@@ -715,6 +715,7 @@ class PengawasanController extends Controller
 
         $formData = [
             'pengawasan_bidang_id' => Crypt::decrypt(htmlspecialchars($request->input('idWasbid'))),
+            'objek_pengawasan' => $pengawasan->objek_pengawasan,
             'judul' => $request->input('judul'),
             'kondisi' => $request->input('kondisi'),
             'kriteria' => $request->input('kriteria'),
