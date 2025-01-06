@@ -57,8 +57,9 @@
                                 mungkin saja terdapat kesalahan.
                             </p>
                             <a class="btn btn-primary d-inline-flex align-items-center mb-3"
-                                href="{{ url()->previous() }}"><i class="ph-duotone ph-house me-2"></i> Back to
-                                Home</a>
+                                href="{{ url()->previous() }}"><i class="ph-duotone ph-house me-2"></i>
+                                Kembali
+                            </a>
                         </div>
                     </div>
                 </div>
