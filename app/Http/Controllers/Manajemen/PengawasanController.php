@@ -232,7 +232,7 @@ class PengawasanController extends Controller
             }
             $success = 'Dokumen Rapat berhasil di simpan !';
             $error = 'Dokumen Rapat gagal di simpan !';
-            $activity = Auth::user()->name . 'Menambahkan dokumen pengawasan ' . $formDetailRapat['perihal'] . ', timestamp' . now();
+            $activity = Auth::user()->name . 'Menambahkan dokumen pengawasan ' . $formDetailRapat['perihal'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             try {
                 DB::beginTransaction();
@@ -269,7 +269,7 @@ class PengawasanController extends Controller
 
             $success = 'Dokumen Rapat berhasil di perbarui !';
             $error = 'Dokumen Rapat gagal di perbarui !';
-            $activity = Auth::user()->name . 'Memperbarui dokumen pengawasan dengan id ' . $request->input('id') . ', timestamp' . now();
+            $activity = Auth::user()->name . 'Memperbarui dokumen pengawasan dengan id ' . $request->input('id') . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -823,10 +823,10 @@ class PengawasanController extends Controller
                 Storage::disk('public')->delete($existEdoc->path_file_tlhp);
             }
             $save = $existEdoc->update($formData);
-            $activity = Auth::user()->name . ' Memperbarui edoc pengawasan ' . $rapat->perihal . ', timestamp' . now();
+            $activity = Auth::user()->name . ' Memperbarui edoc pengawasan ' . $rapat->perihal . ', timestamp ' . now();
         } else {
             $save = EdocWasbidModel::create($formData);
-            $activity = Auth::user()->name . ' Menambahkan edoc pengawasan ' . $rapat->perihal . ', timestamp' . now();
+            $activity = Auth::user()->name . ' Menambahkan edoc pengawasan ' . $rapat->perihal . ', timestamp ' . now();
         }
 
         if (!$save) {

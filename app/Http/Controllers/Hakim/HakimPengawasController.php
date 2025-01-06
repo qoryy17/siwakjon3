@@ -141,13 +141,13 @@ class HakimPengawasController extends Controller
             $save = HakimPengawasModel::create($formData);
             $success = 'Hakim Pengawas berhasil di simpan !';
             $error = 'Hakim Pengawas gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan hakim pengawas ' . $formData['pegawai_id'] . ', timestamp' . now();
+            $activity = Auth::user()->name . ' Menambahkan hakim pengawas ' . $formData['pegawai_id'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             $search = HakimPengawasModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Hakim Pengawas berhasil di perbarui !';
             $error = 'Hakim Pengawas gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui hakim pengawas ' . $formData['pegawai_id'] . ', timestamp' . now();
+            $activity = Auth::user()->name . ' Memperbarui hakim pengawas ' . $formData['pegawai_id'] . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }

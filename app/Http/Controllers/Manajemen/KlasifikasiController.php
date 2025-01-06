@@ -128,13 +128,13 @@ class KlasifikasiController extends Controller
             $save = KlasifikasiRapatModel::create($formData);
             $success = 'Klasifikasi Rapat berhasil di simpan !';
             $error = 'Klasifikasi Rapat gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan klasifikasi rapat ' . $formData['rapat'] . ', timestamp' . now();
+            $activity = Auth::user()->name . ' Menambahkan klasifikasi rapat ' . $formData['rapat'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             $search = KlasifikasiRapatModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Klasifikasi Rapat berhasil di perbarui !';
             $error = 'Klasifikasi Rapat gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui klasifikasi rapat dengan id ' . $request->input('id') . ', timestamp' . now();
+            $activity = Auth::user()->name . ' Memperbarui klasifikasi rapat dengan id ' . $request->input('id') . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -167,7 +167,7 @@ class KlasifikasiController extends Controller
                     'user_id' => Auth::user()->id,
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus klasifikasi rapat ' . $klasifikasiRapat->rapat . ', timestamp' . now()
+                    'activity' => Auth::user()->name . ' Menghapus klasifikasi rapat ' . $klasifikasiRapat->rapat . ', timestamp ' . now()
                 ]
             );
             $klasifikasiRapat->delete();
@@ -195,13 +195,13 @@ class KlasifikasiController extends Controller
             $save = KlasifikasiSuratModel::create($formData);
             $success = 'Klasifikasi Surat berhasil di simpan !';
             $error = 'Klasifikasi Surat gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan klasifikasi kode surat ' . $formData['kode_surat'] . ', timestamp' . now();
+            $activity = Auth::user()->name . ' Menambahkan klasifikasi kode surat ' . $formData['kode_surat'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             $search = KlasifikasiSuratModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Klasifikasi Surat berhasil di perbarui !';
             $error = 'Klasifikasi Surat gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui klasifikasi kode surat dengan id ' . $request->input('id') . ', timestamp' . now();
+            $activity = Auth::user()->name . ' Memperbarui klasifikasi kode surat dengan id ' . $request->input('id') . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -234,7 +234,7 @@ class KlasifikasiController extends Controller
                     'user_id' => Auth::user()->id,
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus klasifikasi kode surat ' . $klasifikasiSurat->kode_surat . ', timestamp' . now()
+                    'activity' => Auth::user()->name . ' Menghapus klasifikasi kode surat ' . $klasifikasiSurat->kode_surat . ', timestamp ' . now()
                 ]
             );
             $klasifikasiSurat->delete();
@@ -262,13 +262,13 @@ class KlasifikasiController extends Controller
             $save = KlasifikasiJabatanModel::create($formData);
             $success = 'Klasifikasi Jabatan berhasil di simpan !';
             $error = 'Klasifikasi Jabatan gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan klasifikasi jabatan id ' . $formData['jabatan'] . ', timestamp' . now();
+            $activity = Auth::user()->name . ' Menambahkan klasifikasi jabatan id ' . $formData['jabatan'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             $search = KlasifikasiJabatanModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Klasifikasi Jabatan berhasil di perbarui !';
             $error = 'Klasifikasi Jabatan gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui klasifikasi jabatan id ' . $request->input('id') . ', timestamp' . now();
+            $activity = Auth::user()->name . ' Memperbarui klasifikasi jabatan id ' . $request->input('id') . ', timestamp ' . now();
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -301,7 +301,7 @@ class KlasifikasiController extends Controller
                     'user_id' => Auth::user()->id,
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus klasifikasi jabatan id ' . $klasifikasiJabatan->jabatan . ', timestamp' . now()
+                    'activity' => Auth::user()->name . ' Menghapus klasifikasi jabatan id ' . $klasifikasiJabatan->jabatan . ', timestamp ' . now()
                 ]
             );
             $klasifikasiJabatan->delete();
@@ -361,7 +361,7 @@ class KlasifikasiController extends Controller
                 'user_id' => Auth::user()->id,
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Mensetting kode rapat timestamp' . now()
+                'activity' => Auth::user()->name . ' Mensetting kode rapat timestamp ' . now()
             ]
         );
 
