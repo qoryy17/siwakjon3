@@ -85,16 +85,23 @@
                         </span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('pengawasan.index') }}">
-                                Rapat Pengawasan
-                            </a>
-                        </li>
-                        <li class="pc-item">
-                            <a class="pc-link" href="{{ route('kunjungan.index') }}">
-                                Kunjungan Pengawasan
-                            </a>
-                        </li>
+                        @if (Auth::user()->roles === App\Enum\RolesEnum::ADMIN->value ||
+                                Auth::user()->roles === App\Enum\RolesEnum::SUPERADMIN->value ||
+                                \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::HAKIM->value ||
+                                \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::WAKIL->value ||
+                                \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::KETUA->value)
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('pengawasan.index') }}">
+                                    Rapat Pengawasan
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('kunjungan.index') }}">
+                                    Kunjungan Pengawasan
+                                </a>
+                            </li>
+                        @endif
+
                         <li class="pc-item">
                             <a class="pc-link" href="{{ route('pengawasan.daftar-hakim-pengawas') }}">
                                 Daftar Hakim Pengawas

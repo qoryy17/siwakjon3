@@ -20,9 +20,16 @@ class RejectNonHakimMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // This middleware accept for Hakim, Wakil Ketua, Ketua, Administrator and Superadmin
         $jabatan = ViewUser::jabatan();
 
-        if ($jabatan == JabatanEnum::HAKIM->value || Auth::user()->roles == RolesEnum::SUPERADMIN->value || Auth::user()->roles == RolesEnum::ADMIN->value) {
+        if (
+            $jabatan == JabatanEnum::HAKIM->value ||
+            $jabatan == JabatanEnum::KETUA->value ||
+            $jabatan == JabatanEnum::WAKIL->value ||
+            Auth::user()->roles == RolesEnum::SUPERADMIN->value
+            || Auth::user()->roles == RolesEnum::ADMIN->value
+        ) {
             return $next($request);
         }
         $route = RouteLink::homeString(Auth::user()->roles);

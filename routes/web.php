@@ -97,8 +97,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 });
 
 Route::middleware(AuthMiddleware::class)->group(function () {
-    // Only superadmin, administrator and hakim can access this route
-    // We must add ketua and wakil ketua to access this route
+    // Only superadmin, administrator and ketua, wakil ketua, hakim can access this route
     Route::middleware(RejectNonHakimMiddleware::class)->group(function () {
         Route::controller(PengawasanController::class)->group(function () {
             Route::get('/pengawasan-bidang/rapat-pengawasan', 'indexPengawasan')->name('pengawasan.index');
@@ -131,7 +130,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 });
 
 Route::middleware(AuthMiddleware::class)->group(function () {
-    // Only superadmin, administrator and hakim can access this route
+    // Only superadmin, administrator and ketua, wakil ketua, hakim can access this route
     Route::middleware(RejectNonHakimMiddleware::class)->group(function () {
         Route::controller(KunjunganController::class)->group(function () {
             Route::get('/pengawasan-bidang/kunjungan-pengawasan', 'indexKunjungan')->name('kunjungan.index');
