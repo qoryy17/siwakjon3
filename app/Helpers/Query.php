@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-use App\Models\Manajemen\PengawasanBidangModel;
 use App\Models\Pengaturan\UnitKerjaModel;
 
 class Query

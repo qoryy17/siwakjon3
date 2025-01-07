@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LicenseHelper;
 use App\Models\User;
 use App\Helpers\ViewUser;
 use App\Helpers\RouteLink;
@@ -18,7 +19,7 @@ use App\Http\Requests\Profil\ProfilRequest;
 use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Manajemen\KlasifikasiRapatModel;
 use App\Models\Manajemen\KlasifikasiJabatanModel;
-use Illuminate\Support\Facades\Crypt;
+use App\Providers\LicenseCheckServiceProvider;
 
 class HomeController extends Controller
 {
@@ -340,4 +341,5 @@ class HomeController extends Controller
 
         return redirect()->route('home.profil')->with('success', 'Profil berhasil di perbarui !');
     }
+
 }

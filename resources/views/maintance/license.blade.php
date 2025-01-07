@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- [Head] start -->
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -27,7 +28,6 @@
     <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
     <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}">
-
 </head>
 <!-- [Head] end -->
 <!-- [Body] Start -->
@@ -57,6 +57,7 @@
             }
         </script>
     @endif
+
     <!-- [ Pre-loader ] start -->
     <div class="loader-bg">
         <div class="loader-track">
@@ -65,47 +66,70 @@
     </div>
     <!-- [ Pre-loader ] End -->
 
+    <!-- [ Main Content ] start -->
     <div class="auth-main v1">
         <div class="auth-wrapper">
             <div class="auth-form">
-                <div class="card my-5">
-                    <div class="card-body">
-                        <div class="text-center">
-                            <img loading="lazy" style="max-width: 100px;" src="{{ asset('siwakjon2.png') }}"
-                                alt="images" class="img-fluid mb-3">
-                            <h4 class="f-w-500 mb-1">{{ env('APP_NAME') }}</h4>
-                            <p class="mb-3">
-                                {{ env('APP_DESC') }}
-                            </p>
-                        </div>
-                        <form action="{{ route('auth.signin') }}" method="POST">
-                            @csrf
-                            @method('POST')
-                            <div class="mb-3">
-                                <label for="email">Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="email" placeholder="Email..."
-                                    required value="{{ old('email') }}" name="email">
-                                @error('email')
-                                    <small class="text-danger mt-2">* {{ $message }}</small>
-                                @enderror
+                <div class="container">
+                    <div class="card-body soon-card">
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-lg-5 text-center">
+                                <img class="img-fluid" style="max-width: 300px;" src="{{ asset('siwakjon2.png') }}"
+                                    alt="img">
                             </div>
-                            <div class="mb-3">
-                                <label for="password">Password <span class="text-danger">*</span></label>
-                                <input type="password" class="form-control" id="password" placeholder="Password..."
-                                    required value="{{ old('password') }}" name="password">
-                                @error('password')
-                                    <small class="text-danger mt-2">* {{ $message }}</small>
-                                @enderror
+                            <div class="col-lg-7">
+                                <div class="text-center">
+                                    <h1 class="mt-2">{{ $title }}</h1>
+                                    @if ($status != 'Active')
+                                        <p class="mt-2 mb-4 text-muted f-16">
+                                            Untuk mengakses kembali aplikasi, silahkan aktivasi kembali lisensi dengan
+                                            serial number terbaru !
+                                        </p>
+                                    @endif
+                                </div>
+                                <div class="alert @if ($status == 'Active') alert-success @else alert-warning @endif"
+                                    role="alert">
+                                    {{ $message }}
+                                </div>
+
+                                <form action="{{ route('license.save') }}" method="POST">
+                                    <div class="row g-3 d-flex align-items-center">
+                                        @csrf
+                                        @method('POST')
+                                        <div class="col">
+                                            <label for="license">License Serial Number
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" id="license" name="license" required
+                                                autocomplete="off" class="form-control" placeholder="Serial Number..."
+                                                value="{{ $license->license }}"
+                                                @if ($status == 'Active') readonly @endif>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="d-grid mt-4">
+                                                @if ($status != 'Active')
+                                                    <button class="btn btn-primary d-flex align-items-center">
+                                                        <i class="ti ti-key me-2"></i> Aktivasi
+                                                    </button>
+                                                @else
+                                                    <a href="{{ route('signin') }}"
+                                                        class="btn btn-primary d-flex align-items-center">
+                                                        <i class="ti ti-login"></i> Login Aplikasi
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        @error('license')
+                                            <small class="text-danger mt-1">{{ $message }}</small>
+                                        @enderror
+                                        <p>
+                                            Butuh lisensi aktivasi aplikasi ? Silahkan hubungi {{ env('APP_AUTHOR') }}
+                                        </p>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary">Login</button>
-                            </div>
-                        </form>
-                        <div class="saprator my-1">
-                            <span>Belum punya akun ?</span>
-                        </div>
-                        <div class="text-center">
-                            Hubungi Superadmin <br> {{ env('APP_AUTHOR') }}
                         </div>
                     </div>
                 </div>
@@ -133,8 +157,8 @@
     <script src="{{ asset('assets/js/plugins/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/simplebar.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
-    <script src="{{ asset('assets/js/pcoded.js') }}"></script>
+    <script src="{{ asset('assets/js/fonts/custom-font.js') }} "></script>
+    <script src="{{ asset('assets/js/pcoded.js') }} "></script>
     <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
     <script>
         layout_change('light');
