@@ -36,6 +36,17 @@
                         </button>
                     @endif
 
+                    <a href="{{ asset('storage/private/Format Laporan Monev - Author AMPUH PN LBP.docx') }}" download
+                        class="btn btn-warning btn-sm">
+                        <i class="fas fa-file-word"></i>
+                        Unduh Template Laporan Monev
+                    </a>
+                    <a href="{{ asset('storage/private/Format Tindaklanjut - Author AMPUH PNLBP.docx') }}" download
+                        class="btn btn-warning btn-sm">
+                        <i class="fas fa-file-word"></i>
+                        Unduh Template Tindaklanjut Monev
+                    </a>
+
                     <a class="btn btn-secondary btn-sm" href="{{ route('monev.index') }}"><i class="fas fa-reply-all"></i>
                         Kembali</a>
                 </div>
