@@ -91,6 +91,8 @@
                                 </div>
                                 <div class="d-grid mt-4">
                                     <button type="submit" class="btn btn-primary">Cari Dokumen</button>
+                                    <a href="{{ route('signin') }}" class="btn btn-warning mt-2">Kembali Ke
+                                        Login</a>
                                 </div>
                             </form>
                         </div>
