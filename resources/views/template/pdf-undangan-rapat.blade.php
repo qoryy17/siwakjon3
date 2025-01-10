@@ -85,7 +85,7 @@
 
     <div class="body-content">
         <p style="text-align: right;">
-            Tanggal, {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->tanggal_rapat) }}
+            Tanggal, {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->created_at) }}
         </p>
 
         <table class="table-content" cellpadding="2">
