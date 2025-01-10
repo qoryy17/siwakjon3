@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\License\LicenseMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Controllers\HomeController;
@@ -10,7 +9,9 @@ use App\Http\Middleware\RejectUserMiddleware;
 use App\Http\Middleware\SuperadminMiddleware;
 use App\Http\Controllers\Arsip\MonevController;
 use App\Http\Controllers\Auth\SigninController;
+use App\Http\Controllers\VerificationController;
 use App\Http\Middleware\RejectNonHakimMiddleware;
+use App\Http\Middleware\License\LicenseMiddleware;
 use App\Http\Controllers\Manajemen\RapatController;
 use App\Http\Controllers\Pengaturan\LogsController;
 use App\Http\Controllers\Penggguna\JabatanController;
@@ -36,6 +37,10 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     });
 });
 
+Route::controller(VerificationController::class)->group(function () {
+    Route::get('/verification/{search?}', 'index')->name('verification');
+});
+
 Route::middleware(NonAuthMiddleware::class)->group(function () {
     Route::middleware(LicenseMiddleware::class)->group(function () {
         Route::controller(SigninController::class)->group(function () {
@@ -55,7 +60,6 @@ Route::controller(LicenseController::class)->group(function () {
     Route::get('/app/license', 'index')->name('license.index');
     Route::post('/app/license/save', 'saveLicense')->name('license.save');
 });
-
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::middleware(LicenseMiddleware::class)->group(function () {
