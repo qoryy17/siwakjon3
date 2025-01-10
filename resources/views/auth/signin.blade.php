@@ -102,10 +102,18 @@
                             </div>
                         </form>
                         <div class="saprator my-1">
+                            <span>Cek keaslian dokumen ?</span>
+                        </div>
+                        <div class="text-center d-grid">
+                            <a href="{{ route('verification') }}" class="btn btn-warning">
+                                Cari Dokumen
+                            </a>
+                        </div>
+                        <div class="saprator my-1">
                             <span>Belum punya akun ?</span>
                         </div>
                         <div class="text-center">
-                            Hubungi Superadmin <br> {{ env('APP_AUTHOR') }}
+                            Hubungi Superadmin {{ env('APP_AUTHOR') }}
                         </div>
                     </div>
                 </div>
