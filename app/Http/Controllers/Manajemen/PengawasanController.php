@@ -29,6 +29,7 @@ use App\Http\Requests\Manajemen\FormNotulaRequest;
 use App\Http\Requests\Manajemen\FormManajemenRapat;
 use App\Http\Requests\Manajemen\TemuanWasbidRequest;
 use App\Http\Requests\Manajemen\FormUndanganRapatRequest;
+use App\Models\Pengaturan\AplikasiModel;
 
 class PengawasanController extends Controller
 {
@@ -575,6 +576,7 @@ class PengawasanController extends Controller
             'rapat' => $searchRapat,
             'pengawasan' => $pengawasan,
             'temuan' => $temuan,
+            'aplikasi' => AplikasiModel::first(),
             'unitKerja' => UnitKerjaModel::where('aktif', 'Y')->orderBy('unit_kerja', 'asc')->get(),
         ];
 
