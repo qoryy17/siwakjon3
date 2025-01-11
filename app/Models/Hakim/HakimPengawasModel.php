@@ -25,7 +25,7 @@ class HakimPengawasModel extends Model
 
     public function pegawai(): BelongsTo
     {
-        return $this->belongsTo(PegawaiModel::class, 'id');
+        return $this->belongsTo(PegawaiModel::class);
     }
 
     public function unitKerja(): BelongsTo
