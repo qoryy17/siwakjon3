@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enum\RolesEnum;
 use App\Models\Manajemen\KlasifikasiRapatModel;
+use App\Models\Pengaturan\AplikasiModel;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Str;
@@ -65,6 +66,22 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ]
+        ]);
+
+        AplikasiModel::insert([
+            'lembaga' => 'Mahkamah Agung Republik Indonesia',
+            'badan_peradilan' => 'Direktorat Jenderal Badan Peradilan Umum',
+            'wilayah_hukum' => 'Pengadilan Tinggi Medan',
+            'kode_satker' => '400395',
+            'satuan_kerja' => 'Pengadilan Negeri Lubuk Pakam',
+            'alamat' => 'Jalan Jenderal Sudirman No. 58 Lubuk Pakam',
+            'provinsi' => 'Sumatera Utara',
+            'kota' => 'Kabupaten Deli Serdang',
+            'kode_pos' => '20512',
+            'telepon' => '000',
+            'email' => 'pnlubukpakam@yahoo.co.id',
+            'website' => 'www.pn-lubukpakam.go.id',
+            'license' => '-'
         ]);
     }
 }
