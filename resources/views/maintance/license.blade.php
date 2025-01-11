@@ -102,7 +102,7 @@
                                             </label>
                                             <input type="text" id="license" name="license" required
                                                 autocomplete="off" class="form-control" placeholder="Serial Number..."
-                                                value="{{ $license->license }}"
+                                                value="{{ $status ? $license->license : '' }}"
                                                 @if ($status == 'Active') readonly @endif>
                                         </div>
                                         <div class="col-auto">
