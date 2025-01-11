@@ -81,7 +81,8 @@ class DatabaseSeeder extends Seeder
             'telepon' => '000',
             'email' => 'pnlubukpakam@yahoo.co.id',
             'website' => 'www.pn-lubukpakam.go.id',
-            'license' => '-'
+            'license' => '-',
+            'logo' => '-',
         ]);
     }
 }
