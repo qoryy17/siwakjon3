@@ -11,7 +11,6 @@ Fitur Pada Aplikasi
 - Manajemen Arsip Laporan Monitoring dan Evaluasi
 - Manajemen Arsip Surat Keputusan
 - Monitoring Hasil Pengawasan Bidang
-- Monitoring Kelengkapan Dokumen Rapat
 
 ## Version
 Relase Version 3.0.0
