@@ -95,13 +95,17 @@ class ViewUser
     public static function pengawasTercepat()
     {
         $getEdoc = EdocWasbidModel::orderBy('created_at', 'asc')->limit(1)->first();
-        // Search rapat pengawasan
-        $pengawasan = PengawasanBidangModel::where('status', '=', 'Waiting')
-            ->whereMonth('created_at', date('m'))
-            ->whereYear('created_at', date('Y'))
-            ->where('id', '=', $getEdoc->pengawasan_bidang_id);
+        if ($getEdoc) {
+            // Search rapat pengawasan
+            $pengawasan = PengawasanBidangModel::where('status', '=', 'Waiting')
+                ->whereMonth('created_at', date('m'))
+                ->whereYear('created_at', date('Y'))
+                ->where('id', '=', $getEdoc->pengawasan_bidang_id);
 
-        return $pengawasan;
+            return $pengawasan;
+        } else {
+            return null;
+        }
     }
 
     public static function monev()

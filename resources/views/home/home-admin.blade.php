@@ -73,31 +73,33 @@
 
             <div class="row">
                 <div class="col-md-4 col-sm-12">
-                    @if ($pengawasTercepat->exists())
-                        @php
-                            $hakim = json_decode($pengawasTercepat->first()->hakim_pengawas);
-                        @endphp
-                        @foreach ($hakim as $pengawas)
-                            <div class="card">
-                                <div class="card-body position-relative">
-                                    <div class="text-center mt-3">
-                                        <div class="chat-avtar d-inline-flex mx-auto">
-                                            <img class="rounded-circle img-fluid wid-90 img-thumbnail"
-                                                src="{{ asset('assets/images/badge.png') }}" alt="Badge">
-                                            <i class="chat-badge bg-danger me-2 mb-2"></i>
+                    @if ($pengawasTercepat != null)
+                        @if ($pengawasTercepat->exists())
+                            @php
+                                $hakim = json_decode($pengawasTercepat->first()->hakim_pengawas);
+                            @endphp
+                            @foreach ($hakim as $pengawas)
+                                <div class="card">
+                                    <div class="card-body position-relative">
+                                        <div class="text-center mt-3">
+                                            <div class="chat-avtar d-inline-flex mx-auto">
+                                                <img class="rounded-circle img-fluid wid-90 img-thumbnail"
+                                                    src="{{ asset('assets/images/badge.png') }}" alt="Badge">
+                                                <i class="chat-badge bg-danger me-2 mb-2"></i>
+                                            </div>
+                                            <h5 class="mb-0">
+                                                {{ $pengawas->nama }} <br>
+                                                Hakim Pengawas
+                                                {{ $pengawasTercepat->first()->objek_pengawasan }}
+                                            </h5>
+                                            <p class="text-muted mt-1 text-sm m-0">Pengawasan Tercepat Bulan Ini 😍</p>
+                                            <small class="text-secondary">Waktu Penyelesaian :
+                                                {{ $pengawasTercepat->first()->created_at }}</small>
                                         </div>
-                                        <h5 class="mb-0">
-                                            {{ $pengawas->nama }} <br>
-                                            Hakim Pengawas
-                                            {{ $pengawasTercepat->first()->objek_pengawasan }}
-                                        </h5>
-                                        <p class="text-muted mt-1 text-sm m-0">Pengawasan Tercepat Bulan Ini 😍</p>
-                                        <small class="text-secondary">Waktu Penyelesaian :
-                                            {{ $pengawasTercepat->first()->created_at }}</small>
                                     </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        @endif
                     @else
                         <div class="card">
                             <div class="card-body">
