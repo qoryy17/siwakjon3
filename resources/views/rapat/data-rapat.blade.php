@@ -131,7 +131,7 @@
     </div>
     <form action="{{ route('rapat.form-undangan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}" method="GET">
         <div class="modal fade modal-animate" id="animateModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Pilih Klasifikasi</h5>
