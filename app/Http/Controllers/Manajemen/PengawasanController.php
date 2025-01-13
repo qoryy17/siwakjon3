@@ -123,7 +123,7 @@ class PengawasanController extends Controller
             }
 
             // Generate nomor dokumen rapat
-            $nomorDokumen = $indexIncrement . '/' . 'UND.W2-U4/' . $searchKodeSurat->kode_rapat_dinas . '/' . TimeSession::convertMonthToRoman() . '/' . date('Y');
+            $nomorDokumen = $indexIncrement . '/' . 'UND.W2-U4/' . $searchKodeSurat->kode_pengawasan . '/' . TimeSession::convertMonthToRoman() . '/' . date('Y');
 
             // Set value klasifikasi for form
             $klasifikasi = ['rapat' => Crypt::encrypt($klasifikasiRapat->id)];

@@ -51,7 +51,6 @@ class AplikasiController extends Controller
             'telepon' => htmlspecialchars($request->input('telepon')),
             'email' => htmlspecialchars($request->input('email')),
             'website' => htmlspecialchars($request->input('website')),
-            'license' => '-'
         ];
 
         $save = null;
@@ -116,6 +115,7 @@ class AplikasiController extends Controller
                 if (!$fileUpload) {
                     return redirect()->back()->with('error', 'Unggah logo gagal !')->withInput();
                 }
+                $formData['license'] = '-';
                 $formData['logo'] = $uploadPath;
             }
 
