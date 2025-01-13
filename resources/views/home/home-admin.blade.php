@@ -263,7 +263,7 @@
                                                                         <h6 style="line-height: 1.5; font-weight: normal;">
                                                                             {{ $pengembang->catatan }} <br>
                                                                             <span>Published:
-                                                                                { $pengembang->created_at }}
+                                                                                {{ $pengembang->created_at }}
                                                                             </span>
                                                                         </h6>
                                                                     </a>
