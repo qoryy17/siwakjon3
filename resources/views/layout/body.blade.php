@@ -27,7 +27,7 @@
 @endphp
 @if ($pegawai && $pegawai->foto != null)
     @php
-        $foto = asset($pegawai->foto);
+        $foto = asset('storage/' . $pegawai->foto);
     @endphp
 @else
     @php
