@@ -113,7 +113,7 @@
                 <tr style="text-align: center; text-transform: uppercase;">
                     <th width="1%">No</th>
                     <th>Nama Lengkap</th>
-                    <th>Bagian</th>
+                    <th>Jabatan/Bagian</th>
                     <th>Tanda Tangan</th>
                 </tr>
             </thead>
