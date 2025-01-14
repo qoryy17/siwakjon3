@@ -27,7 +27,8 @@
                     <small class="d-block mb-2">
                         Pengumpulan Arsip Laporan Monitoring dan Evaluasi Berserta Tindaklanjut
                     </small>
-                    @if (Auth::user()->roles == App\Enum\RolesEnum::ADMIN->value ||
+                    @if (Auth::user()->roles == App\Enum\RolesEnum::SUPERADMIN->value ||
+                            Auth::user()->roles == App\Enum\RolesEnum::ADMIN->value ||
                             App\Helpers\ViewUser::jabatan() == App\Enum\JabatanEnum::HAKIM->value)
                         <a href="{{ route('monev.formAgendaMonev', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
                             class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>

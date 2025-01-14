@@ -29,7 +29,8 @@
                     <small class="d-block mb-2">
                         Pengumpulan Arsip Laporan Monitoring dan Evaluasi Berserta Tindaklanjut
                     </small>
-                    @if (Auth::user()->roles == App\Enum\RolesEnum::ADMIN->value ||
+                    @if (Auth::user()->roles == App\Enum\RolesEnum::SUPERADMIN->value ||
+                            Auth::user()->roles == App\Enum\RolesEnum::ADMIN->value ||
                             App\Helpers\ViewUser::jabatan() == App\Enum\JabatanEnum::HAKIM->value)
                         <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModalAdd"
                             class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
@@ -111,7 +112,8 @@
                                         <td style="vertical-align: top;">{{ $item->created_at }}</td>
                                         <td style="vertical-align: top;">{{ $item->updated_at }}</td>
                                         <td style="vertical-align: top;">
-                                            @if (Auth::user()->roles == App\Enum\RolesEnum::ADMIN->value ||
+                                            @if (Auth::user()->roles == App\Enum\RolesEnum::SUPERADMIN->value ||
+                                                    Auth::user()->roles == App\Enum\RolesEnum::ADMIN->value ||
                                                     App\Helpers\ViewUser::jabatan() == App\Enum\JabatanEnum::HAKIM->value)
                                                 <a href="javascript:void(0);" data-bs-toggle="modal"
                                                     data-bs-target="#animateModal{{ $no }}"
