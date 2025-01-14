@@ -26,7 +26,9 @@
                     <h3>Rapat Pengawasan</h3>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <strong>Perhatian !</strong> Kepada para pengguna untuk dapat melengkapi dokumen rapat setelah
-                        membuat di sistem !
+                        membuat di sistem ! <br>
+                        <span class="text-danger fw-bold">Dilarang membuat rapat dengan tanggal mundur, karena terdeteksi
+                            oleh sistem aplikasi !</span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     @if (
