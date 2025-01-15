@@ -67,16 +67,19 @@
                                         )->first();
                                     @endphp
                                     <tr>
-                                        <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
-                                        <td style="vertical-align: top;" class="text-start">{{ $item->nomor_dokumen }}</td>
-                                        <td style="vertical-align: top;">{{ $item->detailRapat->perihal }}</td>
-                                        <td style="vertical-align: top;" class="text-start">
+                                        <td style="vertical-align: top; text-wrap: wrap;" class="text-start">
+                                            {{ $no }}</td>
+                                        <td style="vertical-align: top; text-wrap: wrap;" class="text-start">
+                                            {{ $item->nomor_dokumen }}</td>
+                                        <td style="vertical-align: top; text-wrap: wrap;">{{ $item->detailRapat->perihal }}
+                                        </td>
+                                        <td style="vertical-align: top; text-wrap: wrap;" class="text-start">
                                             {{ \App\Helpers\TimeSession::convertDateToIndonesian($item->detailRapat->tanggal_rapat) }}
                                         </td>
-                                        <td style="vertical-align: top;">
+                                        <td style="vertical-align: top; text-wrap: wrap;">
                                             {{ $item->klasifikasiRapat->rapat }}
                                         </td>
-                                        <td style="vertical-align: top;">
+                                        <td style="vertical-align: top; text-wrap: wrap;">
                                             @if ($edoc)
                                                 <a target="_blank" href="{{ asset('storage/' . $edoc->path_file_edoc) }}"
                                                     class="btn btn-sm btn-primary">
@@ -86,10 +89,10 @@
                                                 <span class="text-danger">Belum diunggah</span>
                                             @endif
                                         </td>
-                                        <td style="vertical-align: top;">{{ $dibuat->name }}</td>
-                                        <td style="vertical-align: top;">{{ $item->created_at }}</td>
-                                        <td style="vertical-align: top;">{{ $item->updated_at }}</td>
-                                        <td style="vertical-align: top;">
+                                        <td style="vertical-align: top; text-wrap: wrap;">{{ $dibuat->name }}</td>
+                                        <td style="vertical-align: top; text-wrap: wrap;">{{ $item->created_at }}</td>
+                                        <td style="vertical-align: top; text-wrap: wrap;">{{ $item->updated_at }}</td>
+                                        <td style="vertical-align: top; text-wrap: wrap;">
                                             <a href="{{ route('rapat.detail', ['id' => Crypt::encrypt($item->id)]) }}"
                                                 class="avtar avtar-xs btn-link-secondary">
                                                 <i class="ti ti-eye f-20"></i>
