@@ -154,14 +154,18 @@
                 <td style="width: 5%;vertical-align: top;">Acara</td>
                 <td style="width: 1%;vertical-align: top;">:</td>
                 <td style="vertical-align: top;line-height: 1.5;">
-                    {!! $rapat->detailRapat->acara !!}
+                    <span style="margin-right: 55px; text-align:justify;">
+                        {!! $rapat->detailRapat->acara !!}
+                    </span>
                 </td>
             </tr>
             <tr>
                 <td style="width: 5%;vertical-align: top;">Agenda</td>
                 <td style="width: 1%;vertical-align: top;">:</td>
                 <td style="vertical-align: top;line-height: 1.5;">
-                    {!! $rapat->detailRapat->agenda !!}
+                    <span style="margin-right: 55px; text-align:justify;">
+                        {!! $rapat->detailRapat->agenda !!}
+                    </span>
                 </td>
             </tr>
         </table>
