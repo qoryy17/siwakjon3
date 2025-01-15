@@ -74,10 +74,10 @@
                                         <td style="vertical-align: top;" class="text-start">
                                             {{ \App\Helpers\TimeSession::convertDateToIndonesian($item->detailRapat->tanggal_rapat) }}
                                         </td>
-                                        <td style="vertical-align: top; text-wrap: wrap;">
+                                        <td style="vertical-align: top;">
                                             {{ $item->klasifikasiRapat->rapat }}
                                         </td>
-                                        <td style="vertical-align: top; text-wrap: wrap;">
+                                        <td style="vertical-align: top;">
                                             @if ($edoc)
                                                 <a target="_blank" href="{{ asset('storage/' . $edoc->path_file_edoc) }}"
                                                     class="btn btn-sm btn-primary">
