@@ -140,7 +140,7 @@
                 <td style="width: 10%;vertical-align: top;">Pukul</td>
                 <td style="width: 1%;vertical-align: top;">:</td>
                 <td style="vertical-align: top;">
-                    {{ $rapat->detailRapat->jam_mulai }}
+                    {{ $rapat->detailRapat->jam_mulai }} WIB
                 </td>
             </tr>
             <tr>
