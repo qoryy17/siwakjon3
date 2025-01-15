@@ -160,7 +160,7 @@
         <!-- Dasar Pelaksanaan -->
         <h4 style="margin: 50px 0 0 0;">1.1 Dasar Pelaksanaan</h4>
         <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
-            <span style="margin-left: 25px;">{{ $title->dasar_hukum }}</span>
+            <span style="margin-left: 25px;">{!! $title->dasar_hukum !!}</span>
         </p>
 
         <!-- Ruang Lingkup Pengawasan -->
