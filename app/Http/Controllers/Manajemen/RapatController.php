@@ -105,8 +105,7 @@ class RapatController extends Controller
             }
 
             // Generate index nomor dokumen rapat
-            // $indexNumber = ManajemenRapatModel::orderBy('nomor_indeks', 'desc')->lockForUpdate()->first();
-            $indexNumber = ManajemenRapatModel::orderBy('nomor_indeks', 'desc')->first();
+            $indexNumber = ManajemenRapatModel::orderBy('nomor_indeks', 'desc')->lockForUpdate()->first();
             if (!$indexNumber) {
                 $counter = 0;
             } else {
