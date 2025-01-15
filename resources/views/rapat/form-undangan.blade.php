@@ -219,7 +219,7 @@
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="pejabatPenandatangan">Ditandatangin Oleh
+                            <label class="form-label" for="pejabatPenandatangan">Ditandatanganin Oleh
                                 <span class="text-danger">*</span>
                             </label>
                             <select class="form-control" data-trigger name="pejabatPenandatangan"
