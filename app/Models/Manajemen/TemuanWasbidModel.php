@@ -15,6 +15,7 @@ class TemuanWasbidModel extends Model
 
     protected $fillable = [
         'pengawasan_bidang_id',
+        'objek_pengawasan',
         'judul',
         'kondisi',
         'kriteria',
