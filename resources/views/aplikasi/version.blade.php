@@ -63,12 +63,6 @@
                                         Lubuk Pakam.
                                     </p>
                                 </li>
-                                <li class="list-group-item px-0">
-                                    <p class="mb-1 text-muted">Serial Number</p>
-                                    <p class="mb-0">
-                                        {{ Crypt::encrypt(date('d-m-Y')) }}
-                                    </p>
-                                </li>
                             </ul>
                         </div>
                     </div>
