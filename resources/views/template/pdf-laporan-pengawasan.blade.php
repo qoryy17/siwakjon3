@@ -103,12 +103,18 @@
             </h4>
         </div>
     </div>
+    <!-- Disable for sheet -->
+    <!--<div class="qrcode">
+        <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code {{ $qrCode }}">
+        <span style="display: block; font-size:10px; margin-top: 5px;">Generate By SIWAKJON
+            , Timestamp : {{ now() }}</span>
+    </div>-->
 
     <!-- Break page -->
     <div class="page-break"></div>
 
-    <!-- Pengatar -->
-    <div class="pengatar">
+    <!-- Pengantar -->
+    <div class="pengantar">
         <p style="text-align: right;">
             Tanggal, {{ \App\Helpers\TimeSession::convertDateToIndonesian(date('Y-m-d')) }}
         </p>
@@ -160,62 +166,58 @@
         <!-- Dasar Pelaksanaan -->
         <h4 style="margin: 50px 0 0 0;">1.1 Dasar Pelaksanaan</h4>
         <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
-            <span style="margin-left: 25px;">{!! $title->dasar_hukum !!}</span>
+            {!! $title->dasar_hukum !!}
         </p>
 
         <!-- Ruang Lingkup Pengawasan -->
         <h4 style="margin: 50px 0 0 0;">1.2 Ruang Lingkup Pengawasan</h4>
         <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
-            <span style="margin-left: 25px;">{{ $title->deskripsi_pengawasan }}</span>
+            {{ $title->deskripsi_pengawasan }}
         </p>
 
         <!-- Tujuan Pengawasan -->
         <h4 style="margin: 50px 0 0 0;">1.3 Tujuan Pengawasan</h4>
         <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
-            <span style="margin-left: 25px;">
-                Berikut ini tujuan dalam pengawasan antara lain adalah :
-                <ol style="margin: 0 0 0 10px; text-align: justify;">
-                    <li>Menjaga terselenggaranya manajemen peradilan dengan baik dan benar</li>
-                    <li>Menjaga terwujudnya tertib administrasi peradilan</li>
-                    <li>Menjaga pencapaian target yang telah ditetapkan sesuai dengan program kerja</li>
-                    <li>Menjaga citra lembaga peradilan yang bermartabat dan terhormat</li>
-                    <li>Menjaga citra aparat peradilan yang professional, bersih, dan berwibawa</li>
-                    <li>Meningkatkan kinerja pelayanan publik</li>
-                    <li>Meningkatkan disiplin dan prestasi kerja guna pencapaian pelaksanaan tugas yang optimal</li>
-                    <li>Mencegah terjadinya penyimpangan dan penyalahgunaan wewenang. Pengawasan rutin/ reguler
-                        dilaksanakan dengan tujuan</li>
-                    <li>Menopang kerangka manajemen peradilan yang baik</li>
-                    <li>Menciptakan kondisi yang mendukung kelancaran, kecepatan, dan ketepatan pelaksanaan tugas sesuai
-                        dengan tugas pokok dan fungsi peradilan</li>
-                    <li>Memberikan masukan berupa : data, fakta, pertimbangan, dan rekomendasi kepada atasan sebagai
-                        bahan untuk pengambilan keputusan</li>
-                    <li>Untuk memberikan pelayanan berkeadilan bagi masyarakat pada umumnya dan pengguna layanan
-                        pengadilan pada khususnya di {{ $aplikasi->satuan_kerja }}</li>
-                    <li>Sebagai Perpanjangan tangan Ketua Pengadilan Negeri Lubuk Pakam dalam mengawasi dan mengevaluasi
-                        fungsifungsi kinerja khususnya pada bagian Sub. Bagian Umum Dan Keuangan yang dilakukan secara
-                        optimal dan maksimal</li>
-                    <li>Memberikan masukan berupa temuan-temuan fakta permasalahan yang ada dilapangan, memberikan
-                        pertimbangan dan rekomendasi kepada pimpinan sebagai bahan perbaikan dan tindaklanjut dalam
-                        pengambilan keputusan</li>
-                    <li>Mendampingi terhadap perbaikan dari temuan - temuan Hakim Tinggi Pengawas Daerah
-                        {{ $aplikasi->wilayah_hukum }} dan Pengawas Eksternal lainnya baik dari
-                        {{ $aplikasi->badan_peradilan }} ataupun {{ $aplikasi->lembaga }}</li>
-                </ol>
-            </span>
+            Berikut ini tujuan dalam pengawasan antara lain adalah :
+        <ol style="margin: 0 0 0 10px; text-align: justify;">
+            <li>Menjaga terselenggaranya manajemen peradilan dengan baik dan benar</li>
+            <li>Menjaga terwujudnya tertib administrasi peradilan</li>
+            <li>Menjaga pencapaian target yang telah ditetapkan sesuai dengan program kerja</li>
+            <li>Menjaga citra lembaga peradilan yang bermartabat dan terhormat</li>
+            <li>Menjaga citra aparat peradilan yang professional, bersih, dan berwibawa</li>
+            <li>Meningkatkan kinerja pelayanan publik</li>
+            <li>Meningkatkan disiplin dan prestasi kerja guna pencapaian pelaksanaan tugas yang optimal</li>
+            <li>Mencegah terjadinya penyimpangan dan penyalahgunaan wewenang. Pengawasan rutin/ reguler
+                dilaksanakan dengan tujuan</li>
+            <li>Menopang kerangka manajemen peradilan yang baik</li>
+            <li>Menciptakan kondisi yang mendukung kelancaran, kecepatan, dan ketepatan pelaksanaan tugas sesuai
+                dengan tugas pokok dan fungsi peradilan</li>
+            <li>Memberikan masukan berupa : data, fakta, pertimbangan, dan rekomendasi kepada atasan sebagai
+                bahan untuk pengambilan keputusan</li>
+            <li>Untuk memberikan pelayanan berkeadilan bagi masyarakat pada umumnya dan pengguna layanan
+                pengadilan pada khususnya di {{ $aplikasi->satuan_kerja }}</li>
+            <li>Sebagai Perpanjangan tangan Ketua Pengadilan Negeri Lubuk Pakam dalam mengawasi dan mengevaluasi
+                fungsifungsi kinerja khususnya pada bagian Sub. Bagian Umum Dan Keuangan yang dilakukan secara
+                optimal dan maksimal</li>
+            <li>Memberikan masukan berupa temuan-temuan fakta permasalahan yang ada dilapangan, memberikan
+                pertimbangan dan rekomendasi kepada pimpinan sebagai bahan perbaikan dan tindaklanjut dalam
+                pengambilan keputusan</li>
+            <li>Mendampingi terhadap perbaikan dari temuan - temuan Hakim Tinggi Pengawas Daerah
+                {{ $aplikasi->wilayah_hukum }} dan Pengawas Eksternal lainnya baik dari
+                {{ $aplikasi->badan_peradilan }} ataupun {{ $aplikasi->lembaga }}</li>
+        </ol>
         </p>
 
         <!-- Metodologi Pengawasan -->
         <h4 style="margin: 50px 0 0 0;">1.4 Metodologi Pengawasan</h4>
         <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
-            <span style="margin-left: 25px;">
-                Adapun metodologi yang digunakan dalam pengawasan sebagai berikut :
-                <ol style="margin: 0 0 0 10px;">
-                    <li>Melakukan pemeriksaan lapangan dan konfirmasi</li>
-                    <li>Melakukan pemeriksaan dokumen</li>
-                    <li>Melakukan wawancara</li>
-                    <li>Melakukan observasi</li>
-                </ol>
-            </span>
+            Adapun metodologi yang digunakan dalam pengawasan sebagai berikut :
+        <ol style="margin: 0 0 0 10px;">
+            <li>Melakukan pemeriksaan lapangan dan konfirmasi</li>
+            <li>Melakukan pemeriksaan dokumen</li>
+            <li>Melakukan wawancara</li>
+            <li>Melakukan observasi</li>
+        </ol>
         </p>
     </div>
 
@@ -237,6 +239,9 @@
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
                 <span style="margin-left: 25px;">
                     <strong>Kondisi :</strong> {!! $item->temuanWasbid->kondisi !!}
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam hic vero quasi eligendi?
+                    Exercitationem, ea architecto? Cumque, laborum minima. Consequatur natus suscipit corporis deserunt
+                    dolor exercitationem sequi ea inventore tempora?
                 </span>
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
@@ -303,12 +308,6 @@
         @foreach ($pengawas as $hakim)
             <p style="margin: 50px 0 0 0;">{{ $hakim->nama }}</p>
         @endforeach
-    </div>
-
-    <div class="qrcode">
-        <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code {{ $qrCode }}">
-        <span style="display: block; font-size:10px; margin-top: 5px;">Generate By SIWAKJON
-            , Timestamp : {{ now() }}</span>
     </div>
 </body>
 
