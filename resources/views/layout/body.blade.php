@@ -473,7 +473,7 @@
         </div>
     </div>
 </form>
-<form action="{{ route('auth.signout99') }}" method="POST" id="formLogout">
+<form action="{{ route('auth.signout') }}" method="POST" id="formLogout">
     @method('POST')
     @csrf
 </form>
