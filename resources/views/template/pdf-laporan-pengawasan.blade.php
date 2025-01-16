@@ -235,7 +235,7 @@
             $no = 1;
         @endphp
         @foreach ($pengawasan as $item)
-            <h4 style="margin: 50px 0 0 0;">2.{{ $no }} {!! $item->temuanWasbid->judul !!}</h4>
+            <h4 style="margin: 50px 0 0 0; line-height: 1.5;">2.{{ $no }} {!! $item->temuanWasbid->judul !!}</h4>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
                 <span style="margin-left: 25px;">
                     <strong>Kondisi :</strong> {!! $item->temuanWasbid->kondisi !!}
