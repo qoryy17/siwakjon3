@@ -34,7 +34,8 @@ class PrintRapatController extends Controller
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'pegawai' => $pegawai,
-            'pejabatPengganti' => $pejabatPengganti
+            'pejabatPengganti' => $pejabatPengganti,
+            'url' => $url
         ];
         $pdf = PDF::loadView('template.pdf-undangan-rapat', $data);
         $pdf->setPaper('Folio', 'potrait');
@@ -51,7 +52,8 @@ class PrintRapatController extends Controller
             'aplikasi' => AplikasiModel::first(),
             'rapat' => $rapat,
             'qrCode' => $qrCode,
-            'peserta' => $peserta
+            'peserta' => $peserta,
+            'url' => $url
         ];
         $pdf = PDF::loadView('template.pdf-daftar-hadir-rapat', $data);
         $pdf->setPaper('Folio', 'potrait');
@@ -72,7 +74,8 @@ class PrintRapatController extends Controller
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'notulis' => $notulis,
-            'disahkan' => $disahkan
+            'disahkan' => $disahkan,
+            'url' => $url
         ];
         $pdf = PDF::loadView('template.pdf-notula-rapat', $data);
         $pdf->setPaper('Folio', 'potrait');
@@ -91,13 +94,11 @@ class PrintRapatController extends Controller
             'aplikasi' => AplikasiModel::first(),
             'rapat' => $rapat,
             'qrCode' => $qrCode,
-            'dokumentasi' => $dokumentasi
+            'dokumentasi' => $dokumentasi,
+            'url' => $url
         ];
         $pdf = PDF::loadView('template.pdf-dokumentasi-rapat', $data);
         $pdf->setPaper('Folio', 'potrait');
         return $pdf->stream('Dokumentasi ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
-
     }
-
-
 }

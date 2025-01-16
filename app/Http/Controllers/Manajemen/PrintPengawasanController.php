@@ -39,7 +39,8 @@ class PrintPengawasanController extends Controller
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'pegawai' => $pegawai,
-            'pejabatPengganti' => $pejabatPengganti
+            'pejabatPengganti' => $pejabatPengganti,
+            'url' => $url
         ];
         $pdf = PDF::loadView('template.pdf-undangan-rapat', $data);
         $pdf->setPaper('Folio', 'potrait');
@@ -56,7 +57,8 @@ class PrintPengawasanController extends Controller
             'aplikasi' => AplikasiModel::first(),
             'rapat' => $rapat,
             'qrCode' => $qrCode,
-            'peserta' => $peserta
+            'peserta' => $peserta,
+            'url' => $url
         ];
         $pdf = PDF::loadView('template.pdf-daftar-hadir-rapat', $data);
         $pdf->setPaper('Folio', 'potrait');
@@ -77,7 +79,8 @@ class PrintPengawasanController extends Controller
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'notulis' => $notulis,
-            'disahkan' => $disahkan
+            'disahkan' => $disahkan,
+            'url' => $url
         ];
         $pdf = PDF::loadView('template.pdf-notula-rapat', $data);
         $pdf->setPaper('Folio', 'potrait');
@@ -96,7 +99,8 @@ class PrintPengawasanController extends Controller
             'aplikasi' => AplikasiModel::first(),
             'rapat' => $rapat,
             'qrCode' => $qrCode,
-            'dokumentasi' => $dokumentasi
+            'dokumentasi' => $dokumentasi,
+            'url' => $url
         ];
         $pdf = PDF::loadView('template.pdf-dokumentasi-rapat', $data);
         $pdf->setPaper('Folio', 'potrait');
@@ -128,7 +132,8 @@ class PrintPengawasanController extends Controller
             'pengawasan' => $pengawasan->get(),
             'qrCode' => $qrCode,
             'title' => $pengawasan->first(),
-            'periode' => $setPeriode
+            'periode' => $setPeriode,
+            'url' => $url
         ];
 
         $pdf = PDF::loadView('template.pdf-laporan-pengawasan', $data);
