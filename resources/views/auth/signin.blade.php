@@ -121,7 +121,7 @@
             <div class="auth-sidefooter">
                 <div class="row">
                     <div class="col my-1">
-                        <p class="m-0">Made by {{ env('APP_AUTHOR') }}
+                        <p class="m-0">Development by {{ env('APP_AUTHOR') }}
                         </p>
                     </div>
                     <div class="col-auto my-1">

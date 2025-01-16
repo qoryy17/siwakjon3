@@ -473,7 +473,7 @@
         </div>
     </div>
 </form>
-<form action="{{ route('auth.signout') }}" method="POST" id="formLogout">
+<form action="{{ route('auth.signout99') }}" method="POST" id="formLogout">
     @method('POST')
     @csrf
 </form>
@@ -481,7 +481,7 @@
     <div class="footer-wrapper container-fluid">
         <div class="row">
             <div class="col-sm-6 my-1">
-                <p class="m-0">Made by {{ env('APP_AUTHOR') }} </p>
+                <p class="m-0">Development by {{ env('APP_AUTHOR') }} </p>
             </div>
             <div class="col-sm-6 ms-auto my-1">
                 <ul class="list-inline footer-link mb-0 justify-content-sm-end d-flex">
