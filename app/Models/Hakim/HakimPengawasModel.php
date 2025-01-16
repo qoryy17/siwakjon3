@@ -19,6 +19,7 @@ class HakimPengawasModel extends Model
         'pegawai_id',
         'unit_kerja_id',
         'aktif',
+        'ordering'
     ];
 
     public $timestamps = true;

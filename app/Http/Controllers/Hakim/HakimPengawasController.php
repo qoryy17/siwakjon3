@@ -66,7 +66,7 @@ class HakimPengawasController extends Controller
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
-        $hakim = HakimPengawasModel::with('pegawai')->with('unitKerja')->orderBy('sw_hakim_pengawas.created_at', 'desc')->get();
+        $hakim = HakimPengawasModel::with('pegawai')->with('unitKerja')->orderBy('ordering', 'asc')->get();
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -132,6 +132,7 @@ class HakimPengawasController extends Controller
             'pegawai_id' => htmlspecialchars($request->input('pegawai')),
             'unit_kerja_id' => htmlspecialchars($request->input('unitKerja')),
             'aktif' => htmlspecialchars($request->input('aktif')),
+            'ordering' => htmlspecialchars($request->input('ordering')),
         ];
 
         $paramIncoming = Crypt::decrypt($request->input('param'));

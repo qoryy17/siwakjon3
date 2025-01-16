@@ -89,6 +89,16 @@
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="ordering">Ordering
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" id="ordering" name="ordering" class="form-control" required
+                                placeholder="Ordering..." value="{{ $hakim ? $hakim->ordering : old('ordering') }}">
+                            @error('ordering')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
+                        </div>
                         <div class="mt-1">
                             <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i>
                                 Simpan
