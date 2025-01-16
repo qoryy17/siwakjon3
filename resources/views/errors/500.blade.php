@@ -55,6 +55,10 @@
                             <p class="mt-2 mb-4 text-muted f-20">
                                 Sepertinya terdapat kesalahan pada sisi server kami, Silahkan hubungi
                                 {{ env('APP_NAME') }} ya, untuk dapat ditangani langsung !.
+
+                            </p>
+                            <p class="text-danger">
+                                {{ $exception->getMessage() }}
                             </p>
                             <a class="btn btn-primary d-inline-flex align-items-center mb-3"
                                 href="{{ url()->previous() }}"><i class="ph-duotone ph-house me-2"></i>
