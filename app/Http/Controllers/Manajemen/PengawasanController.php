@@ -233,7 +233,7 @@ class PengawasanController extends Controller
             }
             $success = 'Dokumen Rapat berhasil di simpan !';
             $error = 'Dokumen Rapat gagal di simpan !';
-            $activity = Auth::user()->name . 'Menambahkan dokumen pengawasan ' . $formDetailRapat['perihal'] . ', timestamp ' . now();
+            $activity = Auth::user()->name . ' Menambahkan dokumen pengawasan ' . $formDetailRapat['perihal'] . ', timestamp ' . now();
         } elseif ($paramIncoming == 'update') {
             try {
                 DB::beginTransaction();
