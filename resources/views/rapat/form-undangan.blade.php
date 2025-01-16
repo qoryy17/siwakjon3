@@ -166,7 +166,7 @@
                             <label class="form-label" for="agenda">Agenda
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="agenda" id="agenda" class="form-control" required placeholder="Agenda...">{{ $rapat ? $rapat->detailRapat->agenda : old('agenda') }}</textarea>
+                            <textarea name="agenda" id="agenda" class="form-control" required placeholder="Agenda...">{{ str_replace('<br />', '', $rapat ? $rapat->detailRapat->agenda : old('agenda')) }}</textarea>
                             @error('agenda')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
