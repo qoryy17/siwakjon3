@@ -601,7 +601,7 @@ class PengawasanController extends Controller
                 'pegawai' => function ($query) {
                     $query->orderBy('nip', 'desc');
                 }
-            ])->where('unit_kerja_id', '=', $unitKerja);
+            ])->where('unit_kerja_id', '=', $unitKerja)->orderBy('ordering', 'asc');
 
             if ($hakim->exists()) {
                 foreach ($hakim->get() as $kimwas) {

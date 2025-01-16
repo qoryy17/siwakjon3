@@ -135,6 +135,13 @@ class HakimPengawasController extends Controller
             'ordering' => htmlspecialchars($request->input('ordering')),
         ];
 
+
+        // Is Hakim ?
+        $hakim = PegawaiModel::with('jabatan')->findOrFail($formData['pegawai_id']);
+        if ($hakim && $hakim->jabatan->jabatan != 'Hakim') {
+            return redirect()->back()->with('error', 'Hanya jabatan hakim yang di perbolehkan sebagai pengawas !');
+        }
+
         $paramIncoming = Crypt::decrypt($request->input('param'));
         $save = null;
 

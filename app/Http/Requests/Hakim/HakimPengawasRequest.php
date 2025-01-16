@@ -24,7 +24,8 @@ class HakimPengawasRequest extends FormRequest
         return [
             'pegawai' => 'required|string|max:255',
             'unitKerja' => 'required|string|max:255',
-            'aktif' => 'required|string'
+            'aktif' => 'required|string',
+            'ordering' => 'required|string|numeric',
         ];
     }
 
@@ -39,6 +40,9 @@ class HakimPengawasRequest extends FormRequest
             'unitKerja.max' => 'Unit Kerja maksimal 255 karakter !',
             'aktif.required' => 'Status Aktif harus di isi !',
             'aktif.string' => 'Status Aktif harus berupa karakter valid !',
+            'ordering.required' => 'Ordering harus di isi !',
+            'ordering.string' => 'Ordering harus berupa karakter valid !',
+            'ordering.numeric' => 'Ordering harus berupa karakter angka !',
         ];
     }
 }
