@@ -239,9 +239,6 @@
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
                 <span style="margin-left: 25px;">
                     <strong>Kondisi :</strong> {!! $item->temuanWasbid->kondisi !!}
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam hic vero quasi eligendi?
-                    Exercitationem, ea architecto? Cumque, laborum minima. Consequatur natus suscipit corporis deserunt
-                    dolor exercitationem sequi ea inventore tempora?
                 </span>
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
