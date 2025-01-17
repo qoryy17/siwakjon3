@@ -194,6 +194,13 @@ class PengawasanController extends Controller
 
         $uniqueKodeRapat = Str::uuid();
 
+        // Denial backward meeting date
+        $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->format('d-m-Y');
+        $nowDate = date('d-m-Y');
+        if ($inputDate < $nowDate) {
+            return redirect()->back()->with('error', 'Tidak dapat membuat rapat tanggal mundur !');
+        }
+
         if ($paramIncoming == 'save') {
             // Get index number from nomor dokumen
             $indexNumber = explode('/', htmlspecialchars($request->input('nomorDokumen')));
