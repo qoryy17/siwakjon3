@@ -110,12 +110,14 @@
                                         @endphp
                                         @foreach ($result['temuan'] as $temuan)
                                             <tr>
-                                                <td>{{ $no }}</td>
-                                                <td>{{ $temuan->judul }}</td>
-                                                <td>{{ $temuan->kondisi }}</td>
-                                                <td>{{ $temuan->rekomendasi }}</td>
-                                                <td>{{ $temuan->waktu_penyelesaian }}</td>
-                                                <td>{{ $temuan->created_at }}</td>
+                                                <td style="vertical-align: top;">{{ $no }}</td>
+                                                <td style="vertical-align: top;">{{ $temuan->judul }}</td>
+                                                <td style="text-wrap: wrap; vertical-align: top;">{{ $temuan->kondisi }}
+                                                </td>
+                                                <td style="text-wrap: wrap; vertical-align: top;">
+                                                    {{ $temuan->rekomendasi }}</td>
+                                                <td style="vertical-align: top;">{{ $temuan->waktu_penyelesaian }}</td>
+                                                <td style="vertical-align: top;">{{ $temuan->created_at }}</td>
                                             </tr>
                                             @php
                                                 $no++;
