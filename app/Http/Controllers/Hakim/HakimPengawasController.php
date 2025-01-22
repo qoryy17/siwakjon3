@@ -35,9 +35,7 @@ class HakimPengawasController extends Controller
             $hakim = $this->getHakimPengawas($request->input('search'));
         } else {
             $hakim = HakimPengawasModel::with('pegawai')->with('unitKerja')
-                ->whereHas('pegawai', function ($query) {
-                    $query->orderBy('nip', 'desc');
-                })->where('aktif', '=', 'Y');
+                ->where('aktif', '=', 'Y')->orderBy('ordering', 'asc');
         }
 
         $data = [
@@ -54,9 +52,8 @@ class HakimPengawasController extends Controller
         $hakim = HakimPengawasModel::with('pegawai')->with('unitKerja')
             ->whereHas('pegawai', function ($query) use ($keyword) {
                 $query->where('nip', 'like', "%$keyword%")
-                    ->orWhere('nama', 'like', "%$keyword%")
-                    ->orderBy('nip', 'desc');
-            })->where('aktif', '=', 'Y');
+                    ->orWhere('nama', 'like', "%$keyword%");
+            })->where('aktif', '=', 'Y')->orderBy('ordering', 'asc');
 
         return $hakim;
     }
