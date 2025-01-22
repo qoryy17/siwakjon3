@@ -81,12 +81,12 @@
                                 <div class="flex-grow-1 ms-3">
                                     <div class="d-inline-flex align-items-center mb-2">
                                         <h6 class="mb-0">
-                                            <u>{{ $version->exists() ? $version->first()->patch_version : '' }}</u>
+                                            <u>{{ $singleVersion->exists() ? $singleVersion->first()->patch_version : '' }}</u>
                                         </h6>
                                         <span class="badge bg-light-success ms-2">Latest</span>
                                     </div>
                                     <p class="mb-0 text-muted">Published
-                                        {{ $version->exists() ? $version->first()->created_at : '' }}</p>
+                                        {{ $singleVersion->exists() ? $singleVersion->first()->created_at : '' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -172,7 +172,6 @@
                                                             </div>
                                                         </li>
                                                     @endforeach
-                                                @else
                                                 @endif
                                             </ul>
                                         </div>

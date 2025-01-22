@@ -129,7 +129,8 @@ class HomeController extends Controller
             'title' => env('APP_NAME') . ' | Version',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
-            'version' => VersionModel::orderBy('created_at', 'desc')
+            'version' => VersionModel::orderBy('created_at', 'desc'),
+            'singleVersion' => VersionModel::orderBy('created_at', 'desc')
         ];
 
         return view('aplikasi.version', $data);
