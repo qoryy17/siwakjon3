@@ -131,4 +131,18 @@
             <!-- [ Main Content ] end -->
         </div>
     </div>
+    <!-- Modal Notification -->
+    <div id="modalNotification" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalNotificationTitle"
+        aria-hidden="true">
+        <x-modal.modal-notif-pengawasan />
+    </div>
+    <!-- End Modal Notification -->
+    <script>
+        window.onload = function() {
+            let modal = new bootstrap.Modal(document.getElementById('modalNotification'), {
+                keyboard: false
+            });
+            modal.show();
+        }
+    </script>
 @endsection
