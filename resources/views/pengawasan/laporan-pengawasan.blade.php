@@ -890,6 +890,8 @@
                             pada halaman detail pengawasan</li>
                     </ol>
                     </p>
+                    <hr>
+                    Kamu dapat melihat Dasar Hukum dengan mengklik tombol <strong>Dasar Hukum</strong>
 
                 </div>
                 <div class="modal-footer">
@@ -898,6 +900,15 @@
             </div>
         </div>
     </div>
+    <script>
+        window.onload = function() {
+            let modal = new bootstrap.Modal(document.getElementById('animateModalTips'), {
+                keyboard: false
+            });
+            modal.show();
+        }
+    </script>
+    <!-- End for tutorial tips -->
     <script>
         var animateModalTips = document.getElementById('animateModalTips');
         animateModalTips.addEventListener('show.bs.modal', function(event) {
