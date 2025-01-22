@@ -71,7 +71,7 @@ class ViewUser
 
     public static function agendaRapat()
     {
-        return ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'));
+        return ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->orderBy('created_at', 'desc')->limit(5);
     }
 
     public static function countTotalRapatUser()
