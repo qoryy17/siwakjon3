@@ -54,8 +54,17 @@
 
         .qrcode {
             position: fixed;
-            left: 0%;
+            right: 0%;
             top: 95%;
+        }
+
+        .url {
+            position: fixed;
+            left: 0%;
+            top: 101%;
+            font-size: 10px;
+            text-align: right;
+            float: right;
         }
     </style>
 </head>
@@ -131,9 +140,8 @@
     </div>
     <div class="qrcode">
         <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code {{ $qrCode }}">
-        <span style="display: block; font-size:10px; margin-top: 5px;">{{ $url }}
-            , Timestamp : {{ now() }}</span>
     </div>
+    <span class="url">{{ $url }}, Timestamp : {{ now() }}</span>
 </body>
 
 </html>
