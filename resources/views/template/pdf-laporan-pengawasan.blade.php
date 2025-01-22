@@ -235,35 +235,35 @@
             $no = 1;
         @endphp
         @foreach ($pengawasan as $item)
-            <h4 style="margin: 50px 0 0 0; line-height: 1.5;">2.{{ $no }} {!! $item->temuanWasbid->judul !!}</h4>
+            <h4 style="margin: 50px 0 0 0; line-height: 1.5;">2.{{ $no }} {!! $item->judul !!}</h4>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
                 <span style="margin-left: 25px;">
-                    <strong>Kondisi :</strong> {!! $item->temuanWasbid->kondisi !!}
+                    <strong>Kondisi :</strong> {!! $item->kondisi !!}
                 </span>
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
                 <span style="margin-left: 25px;">
-                    <strong>Kriteria :</strong> {!! $item->temuanWasbid->kriteria !!}
+                    <strong>Kriteria :</strong> {!! $item->kriteria !!}
                 </span>
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
                 <span style="margin-left: 25px;">
-                    <strong>Sebab :</strong> {!! $item->temuanWasbid->sebab !!}
+                    <strong>Sebab :</strong> {!! $item->sebab !!}
                 </span>
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
                 <span style="margin-left: 25px;">
-                    <strong>Akibat :</strong> {!! $item->temuanWasbid->akibat !!}
+                    <strong>Akibat :</strong> {!! $item->akibat !!}
                 </span>
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
                 <span style="margin-left: 25px;">
-                    <strong>Rekomendasi :</strong> {!! $item->temuanWasbid->rekomendasi !!}
+                    <strong>Rekomendasi :</strong> {!! $item->rekomendasi !!}
                 </span>
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
                 <span style="margin-left: 25px;">
-                    <strong>Waktu Penyelesaian :</strong> {{ $item->temuanWasbid->waktu_penyelesaian }}
+                    <strong>Waktu Penyelesaian :</strong> {{ $item->waktu_penyelesaian }}
                 </span>
             </p>
             @php

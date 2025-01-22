@@ -17,6 +17,7 @@ use App\Models\Pengguna\PejabatPenggantiModel;
 use App\Models\Manajemen\DokumentasiRapatModel;
 use App\Models\Manajemen\KunjunganPengawasanModel;
 use App\Models\Manajemen\PengawasanBidangModel;
+use App\Models\Manajemen\TemuanWasbidModel;
 
 class PrintPengawasanController extends Controller
 {
@@ -118,6 +119,8 @@ class PrintPengawasanController extends Controller
             return redirect()->back()->with('error', 'Pengawasan tidak ditemukan !');
         }
 
+        $temuan = TemuanWasbidModel::where('pengawasan_bidang_id', '=', $pengawasan->first()->id)->orderBy('created_at', 'asc')->get();
+
         $tanggalRapat = Carbon::parse($rapat->detailRapat->tanggal_rapat);
         $minMonth = 1;
         $newDate = $tanggalRapat->subMonths($minMonth);
@@ -129,7 +132,7 @@ class PrintPengawasanController extends Controller
         $data = [
             'aplikasi' => AplikasiModel::first(),
             'rapat' => $rapat,
-            'pengawasan' => $pengawasan->get(),
+            'pengawasan' => $temuan,
             'qrCode' => $qrCode,
             'title' => $pengawasan->first(),
             'periode' => $setPeriode,
@@ -139,6 +142,7 @@ class PrintPengawasanController extends Controller
         $pdf = PDF::loadView('template.pdf-laporan-pengawasan', $data);
         $pdf->setPaper('Folio', 'potrait');
         return $pdf->stream('Laporan Pengawasan Bidang ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+
     }
 
     public function printKunjunganPengawasan(Request $request)
