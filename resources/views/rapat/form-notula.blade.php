@@ -60,7 +60,7 @@
                             <label class="form-label" for="pembahasan">Pembahasan
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="pembahasan" id="pembahasan" class="form-control" required placeholder="Pembahasan...">{{ $rapat->detailRapat->pembahasan ? $rapat->detailRapat->pembahasan : old('pembahasan') }}</textarea>
+                            <textarea name="pembahasan" id="pembahasan" class="form-control" required placeholder="Pembahasan...">{{ str_replace('<br />', '', $rapat->detailRapat->pembahasan ? $rapat->detailRapat->pembahasan : old('pembahasan')) }}</textarea>
                             @error('pembahasan')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -69,7 +69,7 @@
                             <label class="form-label" for="pimpinanRapat">Pimpinan Rapat
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="pimpinanRapat" id="pimpinanRapat" class="form-control" required placeholder="Pimpinan Rapat...">{{ $rapat->detailRapat->pimpinan_rapat ? $rapat->detailRapat->pimpinan_rapat : old('pimpinanRapat') }}</textarea>
+                            <textarea name="pimpinanRapat" id="pimpinanRapat" class="form-control" required placeholder="Pimpinan Rapat...">{{ str_replace('<br />', '', $rapat->detailRapat->pimpinan_rapat ? $rapat->detailRapat->pimpinan_rapat : old('pimpinanRapat')) }}</textarea>
                             @error('pimpinanRapat')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -100,14 +100,14 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="catatan">Catatan <span class="text-danger">*</span></label>
-                            <textarea name="catatan" id="catatan" class="form-control" placeholder="Catatan...">{{ $rapat->detailRapat->catatan ? $rapat->detailRapat->catatan : old('catatan') }}</textarea>
+                            <textarea name="catatan" id="catatan" class="form-control" placeholder="Catatan...">{{ str_replace('<br />', '', $rapat->detailRapat->catatan ? $rapat->detailRapat->catatan : old('catatan')) }}</textarea>
                             @error('catatan')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="kesimpulan">Kesimpulan <span class="text-danger">*</span></label>
-                            <textarea name="kesimpulan" id="kesimpulan" class="form-control" placeholder="Kesimpulan...">{{ $rapat->detailRapat->kesimpulan ? $rapat->detailRapat->kesimpulan : old('kesimpulan') }}</textarea>
+                            <textarea name="kesimpulan" id="kesimpulan" class="form-control" placeholder="Kesimpulan...">{{ str_replace('<br />', '', $rapat->detailRapat->kesimpulan ? $rapat->detailRapat->kesimpulan : old('kesimpulan')) }}</textarea>
                             @error('kesimpulan')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror

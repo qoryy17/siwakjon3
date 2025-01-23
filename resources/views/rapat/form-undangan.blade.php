@@ -196,7 +196,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="pc_demo1">Keterangan <span
                                     class="text-danger">*</span></label>
-                            <textarea name="keterangan" id="pc_demo1" class="form-control">{{ $rapat ? $rapat->detailRapat->keterangan : 'Mengingat pentingnya rapat tersebut, dimohon agar Bapak/Ibu dapat menyiapkan agenda yang menjadi tanggung jawabnya dan dapat hadir tepat pada waktunya.' }}</textarea>
+                            <textarea name="keterangan" id="pc_demo1" class="form-control">{{ str_replace('<br />', '', $rapat ? $rapat->detailRapat->keterangan : 'Mengingat pentingnya rapat tersebut, dimohon agar Bapak/Ibu dapat menyiapkan agenda yang menjadi tanggung jawabnya dan dapat hadir tepat pada waktunya.') }}</textarea>
                             @error('keterangan')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
