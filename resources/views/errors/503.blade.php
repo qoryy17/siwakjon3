@@ -3,7 +3,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <title>505 Internal Server Error</title>
+    <title>504 Service Server</title>
     <!-- [Meta] -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
@@ -51,19 +51,11 @@
                                 alt="img">
                         </div>
                         <div class="text-center">
-                            <h1 class="mt-2">Oops! Error 500</h1>
-                            <p class="mt-2 mb-4 text-muted f-20">
-                                Sepertinya terdapat kesalahan pada sisi server kami, Silahkan hubungi
-                                {{ env('APP_AUTHOR') }} ya, untuk dapat ditangani langsung !.
-
+                            <h1 class="mt-2">Oops! Error 503, This Website Is Maintance</h1>
+                            <p class="mt-2 mb-4 text-muted f-16">
+                                {{ $exception->getMessage() }}, Silahkan hubungi
+                                {{ env('APP_AUTHOR') }} ya, untuk informasi lebih lanjut !
                             </p>
-                            <p class="text-danger">
-                                {{ $exception->getMessage() }}
-                            </p>
-                            <a class="btn btn-primary d-inline-flex align-items-center mb-3"
-                                href="{{ url()->previous() }}"><i class="ph-duotone ph-house me-2"></i>
-                                Kembali
-                            </a>
                         </div>
                     </div>
                 </div>

@@ -60,11 +60,9 @@
 
         .url {
             position: fixed;
-            left: 0%;
+            right: 0%;
             top: 101%;
             font-size: 10px;
-            text-align: right;
-            float: right;
         }
     </style>
 </head>
