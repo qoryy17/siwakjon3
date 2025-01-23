@@ -64,10 +64,16 @@
                                 @foreach ($rapat as $item)
                                     @php
                                         $dibuat = \App\Models\User::find($item->dibuat);
-                                        $edoc = App\Models\Manajemen\EdocWasbidModel::where(
-                                            'pengawasan_bidang_id',
+                                        $wasbid = \App\Models\Manajemen\PengawasanBidangModel::where(
+                                            'detail_rapat_id',
                                             $item->detailRapat->id,
                                         )->first();
+
+                                        if ($wasbid) {
+                                            $edoc = \App\Models\Manajemen\EdocWasbidModel::where('pengawasan_bidang_id', $wasbid->id)->first();
+                                        }else {
+                                            $edoc = null;
+                                        }
                                     @endphp
                                     <tr>
                                         <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
