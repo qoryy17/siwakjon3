@@ -63,6 +63,19 @@
                                         Lubuk Pakam.
                                     </p>
                                 </li>
+                                <li class="list-group-item px-0">
+                                    <p class="mb-1 text-muted">Kebijakan</p>
+                                    <p class="mb-0" style="text-align: justify;">
+                                        <ol>
+                                            <li>Setiap pengguna dalam membuat dokumen rapat harus menginput data yang valid.</li>
+                                            <li>Setiap pengguna tidak diperkenankan menginput data rapat dengan tanggal mundur.</li>
+                                            <li>Setiap pengguna dalam hal mengupload edoc file rapat harus sesuai dengan apa yang diinput dalam aplikasi.</li>
+                                            <li>Setiap pengguna dalam membuat dokumen rapat pengawasan, wajib mengisi kunjungan pengawasan.</li>
+                                            <li>Setiap pengguna dalam membuat dokumen rapat terkait monitoring dan evaluasi, wajib mengisi agenda monev pada aplikasi.</li>
+                                            <li>Apabila pengguna melanggar ketentuan dalam kebijakan aplikasi ini maka akan akun pengguna akan disuspend.</li>
+                                        </ol>
+                                    </p>
+                                </li>
                             </ul>
                         </div>
                     </div>
