@@ -104,7 +104,7 @@
                                 <option value="1"
                                     @if (old('active') == '1') selected @elseif ($pengguna && $pengguna->active == '1') selected @endif>
                                     Aktif</option>
-                                <option value="T"
+                                <option value="0"
                                     @if (old('active') == '0') selected @elseif ($pengguna && $pengguna->active == '0') selected @endif>
                                     Non Aktif</option>
                             </select>
