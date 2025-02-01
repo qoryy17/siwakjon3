@@ -38,12 +38,12 @@
                         </button>
                     @endif
 
-                    <a href="{{ asset('storage/private/Format Laporan Monev - Author AMPUH PN LBP.docx') }}" download
+                    <a href="{{ asset('Format Laporan Monev - Author AMPUH PN LBP.docx') }}" download
                         class="btn btn-warning btn-sm">
                         <i class="fas fa-file-word"></i>
                         Unduh Template Laporan Monev
                     </a>
-                    <a href="{{ asset('storage/private/Format Tindaklanjut - Author AMPUH PNLBP.docx') }}" download
+                    <a href="{{ asset('Format Tindaklanjut - Author AMPUH PNLBP.docx') }}" download
                         class="btn btn-warning btn-sm">
                         <i class="fas fa-file-word"></i>
                         Unduh Template Tindaklanjut Monev
@@ -320,7 +320,9 @@
             <!-- [ Main Content ] end -->
         </div>
     </div>
-    @if (Auth::user()->roles != App\Enum\RolesEnum::USER->value)
+    @if (Auth::user()->roles == App\Enum\RolesEnum::SUPERADMIN->value ||
+            Auth::user()->roles == App\Enum\RolesEnum::ADMIN->value ||
+            App\Helpers\ViewUser::jabatan() == App\Enum\JabatanEnum::HAKIM->value)
         <form action="{{ route('monev.simpan-monev') }}" method="POST">
             <div class="modal fade modal-animate" id="animateModalAdd" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
