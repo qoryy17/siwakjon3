@@ -374,7 +374,7 @@
                                                 id="idKunjungan" placeholder="ID Kunjungan..."
                                                 value="{{ Crypt::encrypt($kunjungan->id) }}" readonly required>
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="mb-3" hidden>
                                             <label class="form-label" for="idAgenda">ID Agenda
                                                 <span class="text-danger">*</span>
                                             </label>
