@@ -192,7 +192,7 @@ class RapatController extends Controller
         $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->format('d-m-Y');
         $nowDate = date('d-m-Y');
         if ($inputDate < $nowDate) {
-            return redirect()->back()->with('error', 'Tidak dapat membuat rapat tanggal mundur !');
+            return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !');
         }
 
         if ($paramIncoming == 'save') {
