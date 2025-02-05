@@ -53,6 +53,7 @@ class LogsController extends Controller
         $deleteLogs = LogsModel::whereBetween('created_at', [$tanggalAwal, $tanggalAkhir]);
 
         if ($deleteLogs->exists()) {
+            $deleteLogs->delete();
             return redirect()->route('aplikasi.logs')->with('success', 'Logs berhasil di hapus !');
         }
         return redirect()->route('aplikasi.logs')->with('error', 'Logs tidak di temukan !');
