@@ -308,6 +308,7 @@ class PengawasanController extends Controller
         // Checking data manajemen rapat on database
         $rapat = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->id));
         if ($rapat) {
+
             // Delete detail rapat
             $detailRapat = DetailRapatModel::where('manajemen_rapat_id', '=', $rapat->id)->first();
             if ($detailRapat) {
@@ -327,25 +328,26 @@ class PengawasanController extends Controller
             // Delete pengawasan bidang
             $pengawasan = PengawasanBidangModel::where('detail_rapat_id', '=', $detailRapat->id)->first();
             if ($pengawasan) {
-                $pengawasan->delete();
-            }
 
-            // Delete temuan pengawasan bidang
-            $temuan = TemuanWasbidModel::where('pengawasan_bidang_id', '=', $pengawasan->id)->first();
-            if ($temuan) {
-                $temuan->delete();
-            }
-
-            // Delete file edoc tlhp
-            $edoc = EdocWasbidModel::where('pengawasan_bidang_id', '=', $pengawasan->id)->first();
-            if ($edoc) {
-                // Delete file edoc pdf
-                if (Storage::disk('public')->exists($edoc->path_file_tlhp)) {
-                    Storage::disk('public')->delete($edoc->path_file_tlhp);
+                // Delete temuan pengawasan bidang
+                $temuan = TemuanWasbidModel::where('pengawasan_bidang_id', '=', $pengawasan->id)->first();
+                if ($temuan) {
+                    $temuan->delete();
                 }
-                $edoc->delete();
-            }
 
+                // Delete file edoc tlhp
+                $edoc = EdocWasbidModel::where('pengawasan_bidang_id', '=', $pengawasan->id)->first();
+                if ($edoc) {
+                    // Delete file edoc pdf
+                    if (Storage::disk('public')->exists($edoc->path_file_tlhp)) {
+                        Storage::disk('public')->delete($edoc->path_file_tlhp);
+                    }
+                    $edoc->delete();
+                }
+
+                $pengawasan->delete();
+
+            }
             // Saving logs activity
             LogsModel::create(
                 [
