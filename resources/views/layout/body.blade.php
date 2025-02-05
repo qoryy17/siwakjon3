@@ -24,6 +24,7 @@
 @endif
 @php
     $pegawai = \App\Helpers\ViewUser::pegawai();
+    $app = \App\Models\Pengaturan\VersionModel::latest()->first();
 @endphp
 @if ($pegawai && $pegawai->foto != null)
     @php
@@ -48,7 +49,9 @@
             <a href="{{ $routeHome }}" class="b-brand text-primary">
                 <!-- ========   Change your logo from here   ============ -->
                 <img src="{{ asset('siwakjon2.png') }}" alt="logo" style="max-width: 50px;" />
-                <span class="badge bg-success rounded-pill ms-2 theme-version">SIWAKJON Version 3.0.0</span>
+                <span class="badge bg-success rounded-pill ms-2 theme-version">SIWAKJON
+                    {{ $app ? 'Version ' . $app->patch_version : '' }}
+                </span>
             </a>
         </div>
         <div class="navbar-content">
