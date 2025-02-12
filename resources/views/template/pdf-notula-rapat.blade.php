@@ -182,21 +182,21 @@
     </div>
     <div class="pembahasan">
         <h4>Pembahasan Rapat</h4>
-        <p>
+        <p style="text-align: justify; line-height: 1.5;">
             {!! $rapat->detailRapat->pembahasan !!}
         </p>
     </div>
 
     <div class="catatan">
         <h4>Catatan Rapat</h4>
-        <p>
+        <p style="text-align: justify; line-height: 1.5;">
             {!! $rapat->detailRapat->catatan !!}
         </p>
     </div>
 
     <div class="kesimpulan">
         <h4>Kesimpulan Rapat</h4>
-        <p>
+        <p style="text-align: justify; line-height: 1.5;">
             {!! $rapat->detailRapat->kesimpulan !!}
         </p>
     </div>
