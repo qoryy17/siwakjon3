@@ -128,7 +128,7 @@
                                 href="{{ route('rapat.print-undangan', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                 <i class="fas fa-file-pdf"></i> Undangan
                             </a>
-                            <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModal"
+                            <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateDaftarHadirModal"
                                 class="btn btn-warning btn-sm"><i class="fas fa-file-pdf"></i>
                                 Daftar Hadir
                             </button>
@@ -245,7 +245,7 @@
     </div>
     <form target="_blank" action="{{ route('rapat.print-daftar-hadir', ['id' => Crypt::encrypt($rapat->id)]) }}"
         method="GET">
-        <div class="modal fade modal-animate" id="animateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade modal-animate" id="animateDaftarHadirModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
