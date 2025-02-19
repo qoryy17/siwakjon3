@@ -154,7 +154,7 @@
                 <td style="width: 5%;vertical-align: top;">Tempat</td>
                 <td style="width: 1%;vertical-align: top;">:</td>
                 <td style="vertical-align: top;line-height: 1.5;">
-                    {{ $rapat->detailRapat->tempat }}
+                    {!! $rapat->detailRapat->tempat !!}
                 </td>
             </tr>
             <tr>
