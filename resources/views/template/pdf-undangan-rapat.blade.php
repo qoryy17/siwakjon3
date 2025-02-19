@@ -120,12 +120,12 @@
                 <td style="width: 10%;vertical-align:top;text-align:right;">Yth.</td>
                 <td style="width: 1%;vertical-align:top;"></td>
                 <td style="vertical-align:top;line-height: 1.5;text-align:justify;"><br> Kepada <br>
-                    {{ $rapat->detailRapat->peserta }}</td>
+                    {!! $rapat->detailRapat->peserta !!}</td>
             </tr>
         </table>
         <p style="text-align: justify;line-height: 1.5;">
             Dengan Hormat, <br>
-            Mengharapkan kehadiran Bapak/Ibu {{ $rapat->detailRapat->peserta }} {{ $aplikasi->satuan_kerja }} untuk
+            Mengharapkan kehadiran Bapak/Ibu {!! $rapat->detailRapat->peserta !!} {{ $aplikasi->satuan_kerja }} untuk
             mengikuti <strong>"{{ $rapat->detailRapat->perihal }}"</strong> yang akan diselenggarakan pada :
         </p>
         <table class="table-agenda" cellpadding="2">
