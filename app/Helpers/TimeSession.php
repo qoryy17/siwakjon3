@@ -7,7 +7,7 @@ class TimeSession
 {
     public static function istime()
     {
-        $time = new DateTime();
+        $time = \Carbon\Carbon::now();
         $hour = $time->format('H');
 
         if ($hour >= 5 && $hour < 12) {

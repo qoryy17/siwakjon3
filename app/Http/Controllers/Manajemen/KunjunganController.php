@@ -173,9 +173,11 @@ class KunjunganController extends Controller
         $kunjungan = KunjunganPengawasanModel::findOrFail(Crypt::decrypt($request->id));
         if ($kunjungan) {
 
-            // Delete file edoc pdf
-            if (Storage::disk('public')->exists($kunjungan->path_file_edoc)) {
-                Storage::disk('public')->delete($kunjungan->path_file_edoc);
+            if ($kunjungan->path_file_edoc != null) {
+                // Delete file edoc pdf
+                if (Storage::disk('public')->exists($kunjungan->path_file_edoc)) {
+                    Storage::disk('public')->delete($kunjungan->path_file_edoc);
+                }
             }
 
             $detailKunjungan = DetailKunjunganModel::where('kunjungan_pengawasan_id', '=', $kunjungan->id)->first();
