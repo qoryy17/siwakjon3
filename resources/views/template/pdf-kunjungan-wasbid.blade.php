@@ -112,9 +112,6 @@
             <tr>
                 <td colspan="2">
                     {!! $detailKunjungan->pembahasan !!}
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim omnis libero necessitatibus ad
-                    veritatis similique harum maiores perferendis temporibus qui labore deserunt debitis, quisquam
-                    placeat laboriosam rerum fugit quos id.
                 </td>
             </tr>
         </table>
