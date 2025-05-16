@@ -49,15 +49,9 @@
                                     $no = 1;
                                 @endphp
                                 @foreach ($pengguna as $item)
-                                    @if ($item->active == 1)
-                                        @php
-                                            $keterangan = 'Aktif';
-                                        @endphp
-                                    @else
-                                        @php
-                                            $keterangan = 'Non Aktif';
-                                        @endphp
-                                    @endif
+                                    @php
+                                        $keterangan = $item->active == 1 ? 'Aktif' : 'Non Aktif';
+                                    @endphp
                                     <tr>
                                         <td class="text-start">{{ $no }}</td>
                                         <td>{{ $item->name }}</td>

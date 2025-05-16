@@ -26,6 +26,17 @@
             <!-- [ breadcrumb ] end -->
 
             <!-- [ Main Content ] start -->
+            <div class="alert alert-warning shadow-md" role="alert">
+                <p class="mb-0">
+                    Sehubungan dengan adanya <b>perbaikan, pembaharuan dan penyesuain</b> terhadap {{ env('APP_NAME') }}
+                    oleh
+                    Developer selama rentang waktu 2 bulan terhitung mulai dari 1 Juni 2025 sampai dengan 31 Juli 2025,
+                    maka bagi pengguna yang memiliki saran masukan dapat langsung mengirimkan email ke
+                    <a class="text-muted fw-bold" href="mailto:qorichairawan17@gmail.com">qorichairawan17@gmail.com</a>
+                    <br>
+                    Batas akhir penerimaan saran masukan adalah <b>31 Mei 2025</b>
+                </p>
+            </div>
             <div class="row">
                 <div class="col-md-4 col-sm-6">
                     <div class="card statistics-card-1 overflow-hidden ">

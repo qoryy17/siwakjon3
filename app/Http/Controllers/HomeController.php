@@ -281,6 +281,9 @@ class HomeController extends Controller
         $searchAkun = User::findOrFail(Auth::user()->id);
 
         $save = $searchAkun->update($formData);
+        if (!$save) {
+            return redirect()->back()->with('error', 'Password gagal diperbarui !');
+        }
 
         Auth::logout();
         $request->session()->regenerate();
