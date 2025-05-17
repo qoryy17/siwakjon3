@@ -32,11 +32,11 @@
     <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
     <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}">
-    {{-- 
+    {{--
     <link rel="stylesheet" href="{{ asset('assets/css/uikit.css') }}"> --}}
 </head>
 <!-- [Head] end -->
 <!-- [Body] Start -->
 
 <body data-pc-preset="preset-8" data-pc-sidebar-theme="light" data-pc-sidebar-caption="true" data-pc-direction="ltr"
-    data-pc-theme="light">
+    data-pc-theme="light" style="background-color: #fff;">

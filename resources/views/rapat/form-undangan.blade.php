@@ -128,7 +128,8 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="sifat" name="sifat" class="form-control" required
-                                placeholder="Sifat..." value="{{ $rapat ? $rapat->detailRapat->sifat : old('sifat') }}">
+                                placeholder="Penting/Biasa/Terbatas/Rahasia..."
+                                value="{{ $rapat ? $rapat->detailRapat->sifat : old('sifat') }}">
                             @error('sifat')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -148,7 +149,8 @@
                             <label class="form-label" for="perihal">Perihal
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="perihal" id="perihal" class="form-control" required placeholder="Perihal...">{{ $rapat ? $rapat->detailRapat->perihal : old('perihal') }}</textarea>
+                            <textarea name="perihal" id="perihal" class="form-control" required
+                                placeholder="Monitoring dan Evaluasi Periode Triwulan III...">{{ $rapat ? $rapat->detailRapat->perihal : old('perihal') }}</textarea>
                             @error('perihal')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -157,7 +159,8 @@
                             <label class="form-label" for="acara">Acara
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="acara" id="acara" class="form-control" required placeholder="Acara...">{{ $rapat ? $rapat->detailRapat->acara : old('acara') }}</textarea>
+                            <textarea name="acara" id="acara" class="form-control" required
+                                placeholder="Monitoring dan Evaluasi Periode Triwulan III Pada Kepaniteraan Perdata...">{{ $rapat ? $rapat->detailRapat->acara : old('acara') }}</textarea>
                             @error('acara')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -166,7 +169,8 @@
                             <label class="form-label" for="agenda">Agenda
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea name="agenda" id="agenda" class="form-control" required placeholder="Agenda...">{{ str_replace('<br />', '', $rapat ? $rapat->detailRapat->agenda : old('agenda')) }}</textarea>
+                            <textarea name="agenda" id="agenda" class="form-control" required
+                                placeholder="Pembinaan dan Pengawasan/Monitoring dan Evaluasi/Uji Petik Kesesuaian Administrasi...">{{ str_replace('<br />', '', $rapat ? $rapat->detailRapat->agenda : old('agenda')) }}</textarea>
                             @error('agenda')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -176,7 +180,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="peserta" name="peserta" class="form-control" required
-                                placeholder="Peserta..."
+                                placeholder="Panitera/Panitera Muda/Seluruh Staf Kepaniteraan Perdata..."
                                 value="{{ $rapat ? $rapat->detailRapat->peserta : old('peserta') }}">
                             @error('peserta')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
@@ -187,7 +191,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="tempat" name="tempat" class="form-control" required
-                                placeholder="Tempat..."
+                                placeholder="Ruang Media Center..."
                                 value="{{ $rapat ? $rapat->detailRapat->tempat : old('tempat') }}">
                             @error('tempat')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
@@ -213,7 +217,11 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <small class="text-danger">* Kosongkan jika tidak ada</small>
+                            <small class="text-danger">
+                                * Kosongkan jika tidak ada </br> * Apabila penandatangan rapat bukan
+                                pejabat/jabatan struktural (Cth: Hakim Pengawas/Koordinator, dll) maka pilih pejabat
+                                pengganti
+                            </small>
                             @error('pejabatPengganti')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror

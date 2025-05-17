@@ -40,15 +40,15 @@
                             <input type="text" class="form-control" name="param" readonly value="{{ $paramOutgoing }}">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="pegawai">Pegawai
+                            <label class="form-label" for="pegawai">Hakim Pengawas
                                 <span class="text-danger">*</span>
                             </label>
                             <select class="form-control" data-trigger name="pegawai" id="pegawai" required>
-                                <option value="">Pilih Pegawai</option>
-                                @foreach ($pegawai as $itemPegawai)
-                                    <option value="{{ $itemPegawai->id }}"
-                                        @if (old('pegawai') == $itemPegawai->id) selected  @elseif ($hakim && $hakim->pegawai_id == $itemPegawai->id) selected @endif>
-                                        {{ $itemPegawai->nama }}</option>
+                                <option value="">Pilih Hakim</option>
+                                @foreach ($hakimPengawas as $itemKimWas)
+                                    <option value="{{ $itemKimWas->id }}"
+                                        @if (old('pegawai') == $itemKimWas->id) selected  @elseif ($hakim && $hakim->pegawai_id == $itemKimWas->id) selected @endif>
+                                        {{ $itemKimWas->nama }}</option>
                                 @endforeach
                             </select>
                             @error('pegawai')

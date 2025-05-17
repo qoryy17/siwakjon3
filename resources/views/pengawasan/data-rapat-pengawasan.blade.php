@@ -24,13 +24,6 @@
             <div class="card">
                 <div class="card-header">
                     <h3>Rapat Pengawasan</h3>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Perhatian !</strong> Kepada para pengguna untuk dapat melengkapi dokumen rapat setelah
-                        membuat di sistem ! <br>
-                        <span class="text-danger fw-bold">Dilarang membuat rapat dengan tanggal mundur, karena terdeteksi
-                            oleh sistem aplikasi !</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
                     @if (
                         \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::HAKIM->value ||
                             Auth::user()->roles == 'Superadmin' ||
@@ -40,6 +33,7 @@
                             <i class="ph-duotone ph-file-plus"></i> Tambah
                         </a>
                     @endif
+                    @include('rapat.alert-notif-rapat')
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
@@ -70,8 +64,11 @@
                                         )->first();
 
                                         if ($wasbid) {
-                                            $edoc = \App\Models\Manajemen\EdocWasbidModel::where('pengawasan_bidang_id', $wasbid->id)->first();
-                                        }else {
+                                            $edoc = \App\Models\Manajemen\EdocWasbidModel::where(
+                                                'pengawasan_bidang_id',
+                                                $wasbid->id,
+                                            )->first();
+                                        } else {
                                             $edoc = null;
                                         }
                                     @endphp

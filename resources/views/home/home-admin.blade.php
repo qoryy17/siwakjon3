@@ -37,7 +37,9 @@
                                 <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $countRapatBulan }}</h3>
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
-                            <p class="text-muted text-sm mt-3">Periode Desember</p>
+                            <p class="text-muted text-sm mt-3 m-0">Periode
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -51,7 +53,9 @@
                                 <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $countRapatWasbid }}</h3>
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
-                            <p class="text-muted text-sm mt-3">Periode Desember</p>
+                            <p class="text-muted text-sm mt-3 m-0">Periode
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -65,7 +69,9 @@
                                 <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $countMonev }}</h3>
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
-                            <p class="text-muted text-sm mt-3">Periode Desember</p>
+                            <p class="text-muted text-sm mt-3 m-0">Periode
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                            </p>
                         </div>
                     </div>
                 </div>

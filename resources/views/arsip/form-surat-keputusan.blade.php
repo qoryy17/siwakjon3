@@ -66,7 +66,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" name="tanggalTerbit" id="tanggalTerbit"
-                                placeholder="Select date" readonly required
+                                placeholder="Pilih Tanggal Terbit" readonly required
                                 value="{{ $arsipSK ? Carbon\Carbon::createFromFormat('Y-m-d', $arsipSK->tanggal_terbit)->format('m/d/Y') : old('tanggalTerbit') }}">
                             @error('tanggalTerbit')
                                 <small class="text-danger mt-1">* {{ $message }}</small>

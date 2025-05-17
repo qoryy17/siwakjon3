@@ -42,7 +42,6 @@
                             <thead>
                                 <tr>
                                     <th width="1%">No</th>
-                                    <th>Nomor Agenda</th>
                                     <th>Agenda</th>
                                     <th>Unit Kerja</th>
                                     <th>Aktif</th>
@@ -63,8 +62,10 @@
                                     @endphp
                                     <tr>
                                         <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
-                                        <td style="vertical-align: top;">{{ $item->nomor_agenda }}</td>
-                                        <td style="vertical-align: top;">{{ $item->nama_agenda }}</td>
+                                        <td style="vertical-align: top;">
+                                            {{ $item->nama_agenda }} <br>
+                                            Nomor : {{ $item->nomor_agenda }}
+                                        </td>
                                         <td style="vertical-align: top;">{{ $item->unit_kerja }}</td>
                                         <td style="vertical-align: top;">{{ $item->aktif }}</td>
                                         <td style="vertical-align: top;">{{ $dibuat->name }}</td>

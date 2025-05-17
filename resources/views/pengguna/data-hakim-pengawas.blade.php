@@ -53,7 +53,7 @@
                                         <td class="text-start">{{ $item->pegawai->nama }}</td>
                                         <td>{{ $item->unitKerja->unit_kerja }}</td>
                                         <td>{{ $item->aktif }}</td>
-                                        <td>{{ $item->ordering }}</td>
+                                        <td class="text-center">{{ $item->ordering }}</td>
                                         <td>{{ $item->created_at }}</td>
                                         <td>{{ $item->updated_at }}</td>
                                         <td>

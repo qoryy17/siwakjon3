@@ -113,10 +113,12 @@ class HakimPengawasController extends Controller
             'formTitle' => $formTitle . ' Hakim Pengawas',
             'paramOutgoing' => Crypt::encrypt($paramOutgoing),
             'hakim' => $searchHakim,
-            'pegawai' => PegawaiModel::where('aktif', '=', 'Y')->orderBy('nip', 'desc')->get(),
+            'hakimPengawas' => PegawaiModel::with('jabatan')->where('aktif', '=', 'Y')
+                ->whereHas('jabatan', function ($query) {
+                    $query->where('jabatan', '=', 'Hakim');
+                })->orderBy('nip', 'desc')->get(),
             'unitKerja' => UnitKerjaModel::where('aktif', '=', 'Y')->orderBy('unit_kerja', 'asc')->get()
         ];
-
         return view('pengguna.form-hakim-pengawas', $data);
     }
 
