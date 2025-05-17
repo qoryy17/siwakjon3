@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Penggguna;
 use App\Models\User;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Pengguna\PegawaiModel;
@@ -127,7 +125,7 @@ class PenggunaController extends Controller
             $save = User::create($formData);
             $success = 'Akun Pengguna berhasil di simpan !';
             $error = 'Akun Pengguna gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan pengguna : ' . $formData['name'] . ', timestamp ' . now();
+            $activity = 'Menambahkan pengguna : ' . $formData['name'];
         } elseif ($paramIncoming == 'update') {
             $formData = [
                 'name' => $pegawai->nama,
@@ -174,7 +172,7 @@ class PenggunaController extends Controller
             $save = $search->update($formData);
             $success = 'Akun Pengguna berhasil di perbarui !';
             $error = 'Akun Pengguna gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui pengguna dengan id ' . $request->input('id') . ', timestamp ' . now();
+            $activity = 'Memperbarui pengguna dengan id ' . $request->input('id');
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -184,15 +182,7 @@ class PenggunaController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
-
+        \App\Services\LogsService::saveLogs($activity);
         return redirect()->route('pengguna.akun')->with('success', $success);
     }
 
@@ -207,14 +197,8 @@ class PenggunaController extends Controller
             }
 
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus pengguna ' . $pegawai->nama . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus pegawai : ' . $pegawai->nama;
+            \App\Services\LogsService::saveLogs($activity);
 
             $pegawai->delete();
             return redirect()->route('pengguna.akun')->with('success', 'Akun Pengguna berhasil di hapus !');

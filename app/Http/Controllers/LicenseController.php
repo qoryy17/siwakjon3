@@ -19,7 +19,10 @@ class LicenseController extends Controller
         // Run validate
         $request->validate(
             ['license' => 'required|string'],
-            ['license.required' => 'Lisensi serial number harus di isi !', 'Lisensi serial number harus berupa karakter valid !']
+            [
+                'license.required' => 'Lisensi serial number harus di isi !',
+                'license.string' => 'Lisensi serial number harus berupa karakter valid !'
+            ]
         );
 
         $license = $request->input('license');

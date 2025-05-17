@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Hakim;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
@@ -148,13 +147,13 @@ class HakimPengawasController extends Controller
             $save = HakimPengawasModel::create($formData);
             $success = 'Hakim Pengawas berhasil di simpan !';
             $error = 'Hakim Pengawas gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan hakim pengawas ' . $formData['pegawai_id'] . ', timestamp ' . now();
+            $activity = 'Menambahkan hakim pengawas : ' . $hakim->nama;
         } elseif ($paramIncoming == 'update') {
             $search = HakimPengawasModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Hakim Pengawas berhasil di perbarui !';
             $error = 'Hakim Pengawas gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui hakim pengawas ' . $formData['pegawai_id'] . ', timestamp ' . now();
+            $activity = 'Memperbarui hakim pengawas : ' . $hakim->nama;
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -164,14 +163,7 @@ class HakimPengawasController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('pengguna.hakim-pengawas')->with('success', $success);
     }
@@ -182,14 +174,8 @@ class HakimPengawasController extends Controller
         $hakim = HakimPengawasModel::findOrFail(Crypt::decrypt($request->id));
         if ($hakim) {
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus hakim pengawas dengan id ' . $hakim->id . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus hakim pengawas dengan pegawai id : ' . $hakim->pegawai_id;
+            \App\Services\LogsService::saveLogs($activity);
             $hakim->delete();
             return redirect()->route('pengguna.hakim-pengawas')->with('success', 'Hakim Pengawas berhasil di hapus !');
         }

@@ -9,7 +9,6 @@ use App\Helpers\TimeSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
@@ -237,7 +236,7 @@ class RapatController extends Controller
             }
             $success = 'Dokumen Rapat berhasil di simpan !';
             $error = 'Dokumen Rapat gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan rapat ' . $formDetailRapat['perihal'] . ', timestamp ' . now();
+            $activity = 'Menambahkan rapat perihal : ' . $formDetailRapat['perihal'];
         } elseif ($paramIncoming == 'update') {
             try {
                 DB::beginTransaction();
@@ -278,7 +277,7 @@ class RapatController extends Controller
 
             $success = 'Dokumen Rapat berhasil di perbarui !';
             $error = 'Dokumen Rapat gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui rapat dengan id ' . $request->input('id') . ', timestamp ' . now();
+            $activity = 'Memperbarui rapat perihal ' . $formDetailRapat['perihal'];
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -292,14 +291,7 @@ class RapatController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('rapat.index')->with('success', $success);
     }
@@ -333,14 +325,8 @@ class RapatController extends Controller
             }
 
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus dokumen rapat ' . $detailRapat->perihal . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus rapat perihal : ' . $rapat->detailRapat->perihal;
+            \App\Services\LogsService::saveLogs($activity);
 
             // After all data delete, remove data rapat on manajemen rapat
             $rapat->delete();
@@ -348,6 +334,7 @@ class RapatController extends Controller
         }
         return redirect()->route('rapat.index')->with('error', 'Rapat gagal di hapus !');
     }
+
     public function formNotula(Request $request)
     {
         // Get data rapat
@@ -415,14 +402,8 @@ class RapatController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Menyimpan notula rapat ' . $notula->perihal . ', timestamp ' . now()
-            ]
-        );
+        $activity = 'Menyimpan notula rapat perihal : ' . $notula->perihal;
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('rapat.detail', ['id' => $request->input('id')])->with('success', 'Notula berhasil di simpan !');
     }
@@ -499,41 +480,28 @@ class RapatController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Menyimpan dokumentasi rapat ' . $dokumentasi->perihal . ', timestamp ' . now()
-            ]
-        );
+        $activity = 'Menyimpan dokumentasi rapat perihal : ' . $dokumentasi->perihal;
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('rapat.form-dokumentasi', ['id' => $request->input('id')])->with('success', 'Dokumentasi berhasil di simpan !');
     }
 
     public function deleteDokumentasi(Request $request): RedirectResponse
     {
-        $dokumentasi = DokumentasiRapatModel::findOrFail(Crypt::decrypt($request->id));
-        $detailRapat = DetailRapatModel::findOrFail($dokumentasi->detail_rapat_id);
+        $dokumentasi = DokumentasiRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
         if ($dokumentasi) {
             // Delete old file pdf
             if (Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
                 Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
             }
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus dokumentasi rapat ' . $detailRapat->perihal . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus dokumentasi rapat perihal : ' . $dokumentasi->detailRapat->perihal;
+            \App\Services\LogsService::saveLogs($activity);
             $dokumentasi->delete();
             return redirect()->back()->with('success', 'Dokumentasi berhasil di hapus !');
         }
 
-        return redirect()->route('rapat.form-dokumentasi', ['id' => Crypt::encrypt($detailRapat->manajemen_rapat_id)])->with('error', 'Dokumentasi gagal di hapus !');
+        return redirect()->route('rapat.form-dokumentasi', ['id' => Crypt::encrypt($dokumentasi->detailRapat->manajemen_rapat_id)])->with('error', 'Dokumentasi gagal di hapus !');
     }
 
     public function saveEdoc(Request $request): RedirectResponse
@@ -580,10 +548,10 @@ class RapatController extends Controller
                 Storage::disk('public')->delete($existEdoc->path_file_edoc);
             }
             $save = $existEdoc->update($formData);
-            $activity = Auth::user()->name . ' Memperbarui edoc file rapat ' . $edocRapat->perihal . ', timestamp ' . now();
+            $activity = 'Memperbarui edoc file rapat :' . $edocRapat->perihal;
         } else {
             $save = EdocRapatModel::create($formData);
-            $activity = Auth::user()->name . ' Mengunggah edoc file rapat ' . $edocRapat->perihal . ', timestamp ' . now();
+            $activity = 'Mengunggah edoc file rapat :' . $edocRapat->perihal;
         }
 
         if (!$save) {
@@ -591,14 +559,7 @@ class RapatController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('rapat.detail', ['id' => $request->input('id')])->with('success', 'File Edoc berhasil di simpan !');
     }
@@ -663,13 +624,13 @@ class RapatController extends Controller
                 'klasifikasi_rapat_id' => htmlspecialchars(Crypt::decrypt($request->input('klasifikasi'))),
             ];
 
-            $activity = Auth::user()->name . ' Mengubah klasifikasi rapat : ' . $searchRapat->detailRapat->perihal . ' menjadi Rapat ' . $klasifikasiRapat->rapat . ', dengan nomor dokumen lama ' . $searchRapat->nomor_dokumen . ' menjadi ' . $implodeNomorDokumen . ', timestamp ' . now();
+            $activity = 'Mengubah klasifikasi rapat : ' . $searchRapat->detailRapat->perihal . ' menjadi Rapat ' . $klasifikasiRapat->rapat . ', dengan nomor dokumen lama ' . $searchRapat->nomor_dokumen . ' menjadi ' . $implodeNomorDokumen;
         } else {
             $formData = [
                 'klasifikasi_rapat_id' => htmlspecialchars(Crypt::decrypt($request->input('klasifikasi'))),
             ];
 
-            $activity = Auth::user()->name . ' Mengubah klasifikasi rapat : ' . $searchRapat->detailRapat->perihal . ' menjadi Rapat ' . $klasifikasiRapat->rapat . ', timestamp ' . now();
+            $activity = 'Mengubah klasifikasi rapat : ' . $searchRapat->detailRapat->perihal . ' menjadi Rapat ' . $klasifikasiRapat->rapat;
         }
 
         // Save change data on database
@@ -680,14 +641,7 @@ class RapatController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->back()->with('success', 'Set Rapat Dinas/Pengawasan berhasil di simpan !');
     }

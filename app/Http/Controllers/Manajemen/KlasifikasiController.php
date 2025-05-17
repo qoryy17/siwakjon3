@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Manajemen;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
@@ -128,13 +127,13 @@ class KlasifikasiController extends Controller
             $save = KlasifikasiRapatModel::create($formData);
             $success = 'Klasifikasi Rapat berhasil di simpan !';
             $error = 'Klasifikasi Rapat gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan klasifikasi rapat ' . $formData['rapat'] . ', timestamp ' . now();
+            $activity = 'Menambahkan klasifikasi rapat : ' . $formData['rapat'];
         } elseif ($paramIncoming == 'update') {
             $search = KlasifikasiRapatModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Klasifikasi Rapat berhasil di perbarui !';
             $error = 'Klasifikasi Rapat gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui klasifikasi rapat dengan id ' . $request->input('id') . ', timestamp ' . now();
+            $activity = 'Memperbarui klasifikasi rapat : ' . $formData['rapat'];
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -144,14 +143,7 @@ class KlasifikasiController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('klasifikasi.index', ['param' => 'rapat'])->with('success', $success);
     }
@@ -162,14 +154,8 @@ class KlasifikasiController extends Controller
         $klasifikasiRapat = KlasifikasiRapatModel::findOrFail(Crypt::decrypt($request->id));
         if ($klasifikasiRapat) {
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus klasifikasi rapat ' . $klasifikasiRapat->rapat . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus klasifikasi rapat : ' . $klasifikasiRapat->rapat;
+            \App\Services\LogsService::saveLogs($activity);
             $klasifikasiRapat->delete();
             return redirect()->route('klasifikasi.index', ['param' => 'rapat'])->with('success', 'Klasifikasi Rapat berhasil di hapus !');
         }
@@ -195,13 +181,13 @@ class KlasifikasiController extends Controller
             $save = KlasifikasiSuratModel::create($formData);
             $success = 'Klasifikasi Surat berhasil di simpan !';
             $error = 'Klasifikasi Surat gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan klasifikasi kode surat ' . $formData['kode_surat'] . ', timestamp ' . now();
+            $activity = 'Menambahkan klasifikasi kode surat : ' . $formData['kode_surat'];
         } elseif ($paramIncoming == 'update') {
             $search = KlasifikasiSuratModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Klasifikasi Surat berhasil di perbarui !';
             $error = 'Klasifikasi Surat gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui klasifikasi kode surat dengan id ' . $request->input('id') . ', timestamp ' . now();
+            $activity = 'Memperbarui klasifikasi kode surat : ' . $formData['kode_surat'];
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -211,14 +197,7 @@ class KlasifikasiController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('klasifikasi.index', ['param' => 'surat'])->with('success', $success);
     }
@@ -229,14 +208,8 @@ class KlasifikasiController extends Controller
         $klasifikasiSurat = KlasifikasiSuratModel::findOrFail(Crypt::decrypt($request->id));
         if ($klasifikasiSurat) {
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus klasifikasi kode surat ' . $klasifikasiSurat->kode_surat . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus klasifikasi kode surat : ' . $klasifikasiSurat->kode_surat;
+            \App\Services\LogsService::saveLogs($activity);
             $klasifikasiSurat->delete();
             return redirect()->route('klasifikasi.index', ['param' => 'surat'])->with('success', 'Klasifikasi Surat berhasil di hapus !');
         }
@@ -262,13 +235,13 @@ class KlasifikasiController extends Controller
             $save = KlasifikasiJabatanModel::create($formData);
             $success = 'Klasifikasi Jabatan berhasil di simpan !';
             $error = 'Klasifikasi Jabatan gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan klasifikasi jabatan id ' . $formData['jabatan'] . ', timestamp ' . now();
+            $activity = 'Menambahkan klasifikasi jabatan : ' . $formData['jabatan'];
         } elseif ($paramIncoming == 'update') {
-            $search = KlasifikasiJabatanModel::findOrFail(Crypt::decrypt($request->input('id')));
+            $search = KlasifikasiJabatanModel::findOrFail(Crypt::decrypt($request->input(':')));
             $save = $search->update($formData);
             $success = 'Klasifikasi Jabatan berhasil di perbarui !';
             $error = 'Klasifikasi Jabatan gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui klasifikasi jabatan id ' . $request->input('id') . ', timestamp ' . now();
+            $activity = 'Memperbarui klasifikasi jabatan : ' . $formData['jabatan'];
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -278,14 +251,7 @@ class KlasifikasiController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('klasifikasi.index', ['param' => 'jabatan'])->with('success', $success);
     }
@@ -296,14 +262,8 @@ class KlasifikasiController extends Controller
         $klasifikasiJabatan = KlasifikasiJabatanModel::findOrFail(Crypt::decrypt($request->id));
         if ($klasifikasiJabatan) {
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus klasifikasi jabatan id ' . $klasifikasiJabatan->jabatan . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus klasifikasi jabatan : ' . $klasifikasiJabatan->jabatan;
+            \App\Services\LogsService::saveLogs($activity);
             $klasifikasiJabatan->delete();
             return redirect()->route('klasifikasi.index', ['param' => 'jabatan'])->with('success', 'Klasifikasi Jabatan berhasil di hapus !');
         }
@@ -356,14 +316,8 @@ class KlasifikasiController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Mensetting kode rapat timestamp ' . now()
-            ]
-        );
+        $activity = 'Mensetting kode rapat';
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('klasifikasi.set-kode')->with('success', 'Set Kode Rapat berhasil !');
     }

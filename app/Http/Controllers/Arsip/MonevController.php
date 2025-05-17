@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Arsip\ArsipMonevModel;
 use Illuminate\Http\RedirectResponse;
@@ -111,13 +110,13 @@ class MonevController extends Controller
             $save = AgendaMonevModel::create($formData);
             $success = 'Agenda Monev berhasil di simpan !';
             $error = 'Agenda Monev gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan agenda monev ' . $formData['nama_agenda'] . ', timestamp ' . now();
+            $activity = 'Menambahkan agenda monev : ' . $formData['nama_agenda'];
         } elseif ($paramIncoming == 'update') {
             $search = AgendaMonevModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Agenda Monev berhasil di perbarui !';
             $error = 'Agenda Monev gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui agenda monev ' . $search->nama_agenda . ', timestamp ' . now();
+            $activity = 'Memperbarui agenda monev : ' . $search->nama_agenda;
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -127,14 +126,7 @@ class MonevController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('monev.index')->with('success', $success);
     }
@@ -145,14 +137,8 @@ class MonevController extends Controller
         $agendaMonev = AgendaMonevModel::findOrFail(Crypt::decrypt($request->id));
         if ($agendaMonev) {
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus agenda monev ' . $agendaMonev->nama_agenda . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus agenda monev : ' . $agendaMonev->nama_agenda;
+            \App\Services\LogsService::saveLogs($activity);
             $agendaMonev->delete();
             return redirect()->route('monev.index')->with('success', 'Agenda Monev berhasil di hapus !');
         }
@@ -216,14 +202,8 @@ class MonevController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Menambahkan laporan monev ' . $formData['judul_monev'] . ', timestamp ' . now()
-            ]
-        );
+        $activity = 'Menambahkan laporan monev dengan judul : ' . $formData['judul_monev'];
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($formData['agenda_monev_id'])])->with('success', 'Monev berhasil di simpan !');
     }
@@ -262,14 +242,8 @@ class MonevController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Memperbarui laporan monev ' . $search->judul_monev . ', timestamp ' . now()
-            ]
-        );
+        $activity = 'Memperbarui laporan monev dengan judul : ' . $formData['judul_monev'];
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($formData['agenda_monev_id'])])->with('success', 'Monev berhasil di perbarui !');
     }
@@ -280,14 +254,8 @@ class MonevController extends Controller
         $arsipMonev = ArsipMonevModel::findOrFail(Crypt::decrypt($request->id));
         if ($arsipMonev) {
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus laporan monev ' . $arsipMonev->judul_monev . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus laporan monev dengan judul : ' . $arsipMonev->judul_monev;
+            \App\Services\LogsService::saveLogs($activity);
             $arsipMonev->delete();
             return redirect()->route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($arsipMonev->agenda_monev_id)])->with('success', 'Monev berhasil di hapus !');
         }
@@ -328,34 +296,19 @@ class MonevController extends Controller
                 if (Storage::disk('public')->exists($search->path_monev)) {
                     Storage::disk('public')->delete($search->path_monev);
                 }
-
-                // File pdf upload process
-                $fileMonev = $request->file('fileMonev');
-                $fileHashname = $fileMonev->hashName();
-                $uploadPath = $directory . $fileHashname;
-                $fileUpload = $fileMonev->storeAs($directory, $fileHashname, 'public');
-
-                // If file pdf has failed to upload
-                if (!$fileUpload) {
-                    return redirect()->back()->with('error', 'Unggah file gagal !')->withInput();
-                }
-
-                $formData['path_monev'] = $uploadPath;
-            } else {
-
-                // File pdf upload process
-                $fileMonev = $request->file('fileMonev');
-                $fileHashname = $fileMonev->hashName();
-                $uploadPath = $directory . $fileHashname;
-                $fileUpload = $fileMonev->storeAs($directory, $fileHashname, 'public');
-
-                // If file pdf has failed to upload
-                if (!$fileUpload) {
-                    return redirect()->back()->with('error', 'Unggah file gagal !')->withInput();
-                }
-
-                $formData['path_monev'] = $uploadPath;
             }
+            // File pdf upload process
+            $fileMonev = $request->file('fileMonev');
+            $fileHashname = $fileMonev->hashName();
+            $uploadPath = $directory . $fileHashname;
+            $fileUpload = $fileMonev->storeAs($directory, $fileHashname, 'public');
+
+            // If file pdf has failed to upload
+            if (!$fileUpload) {
+                return redirect()->back()->with('error', 'Unggah file gagal !')->withInput();
+            }
+
+            $formData['path_monev'] = $uploadPath;
 
             // Checking status unggah according to the current time
             if (Carbon::parse(now())->toDateString() > $search->tanggal_monev) {
@@ -382,14 +335,8 @@ class MonevController extends Controller
             return redirect()->back()->with('error', 'Laporan monev gagal diunggah !');
         }
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Mengunggah laporan monev ' . $search->judul_monev . ', timestamp ' . now()
-            ]
-        );
+        $activity = 'Mengunggah laporan monev dengan judul : ' . $search->judul_monev;
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($formData['agenda_monev_id'])])->with('success', 'Laporan monev berhasil diunggah !');
     }
@@ -417,11 +364,12 @@ class MonevController extends Controller
     public function formPeriodeMonev(Request $request)
     {
         // Checking received from request
-        if (Crypt::decrypt($request->param) == 'add') {
+        $param = Crypt::decrypt($request->param);
+        if ($param == 'add') {
             $paramOutgoing = 'save';
             $formTitle = 'Tambah';
             $searchPeriodeMonev = null;
-        } elseif (Crypt::decrypt($request->param) == 'edit') {
+        } elseif ($param == 'edit') {
             $paramOutgoing = 'update';
             $formTitle = 'Edit';
             $searchPeriodeMonev = PeriodeMonevModel::findOrFail(Crypt::decrypt($request->id));
@@ -468,13 +416,13 @@ class MonevController extends Controller
             $save = PeriodeMonevModel::create($formData);
             $success = 'Periode Monev berhasil di simpan !';
             $error = 'Periode Monev gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan periode monev ' . $formData['periode'] . ', timestamp ' . now();
+            $activity = 'Menambahkan periode monev : ' . $formData['periode'];
         } elseif ($paramIncoming == 'update') {
             $search = PeriodeMonevModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Periode Monev berhasil di perbarui !';
             $error = 'Periode Monev gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui periode monev dengan id ' . $request->input('id') . ', timestamp ' . now();
+            $activity = 'Memperbarui periode monev : ' . $formData['periode'];
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -484,14 +432,7 @@ class MonevController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('monev.periode')->with('success', $success);
     }
@@ -502,14 +443,8 @@ class MonevController extends Controller
         $periodeMonev = PeriodeMonevModel::findOrFail(Crypt::decrypt($request->id));
         if ($periodeMonev) {
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus periode monev ' . $periodeMonev->periode . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus periode monev : ' . $periodeMonev->periode;
+            \App\Services\LogsService::saveLogs($activity);
             $periodeMonev->delete();
             return redirect()->route('monev.periode')->with('success', 'Periode Monev berhasil di hapus !');
         }

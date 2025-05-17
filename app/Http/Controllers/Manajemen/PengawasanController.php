@@ -9,7 +9,6 @@ use App\Helpers\TimeSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Http\RedirectResponse;
@@ -240,7 +239,7 @@ class PengawasanController extends Controller
             }
             $success = 'Dokumen Rapat berhasil di simpan !';
             $error = 'Dokumen Rapat gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan dokumen pengawasan ' . $formDetailRapat['perihal'] . ', timestamp ' . now();
+            $activity = 'Menambahkan dokumen pengawasan perihal : ' . $formDetailRapat['perihal'];
         } elseif ($paramIncoming == 'update') {
             try {
                 DB::beginTransaction();
@@ -277,7 +276,7 @@ class PengawasanController extends Controller
 
             $success = 'Dokumen Rapat berhasil di perbarui !';
             $error = 'Dokumen Rapat gagal di perbarui !';
-            $activity = Auth::user()->name . 'Memperbarui dokumen pengawasan dengan id ' . $request->input('id') . ', timestamp ' . now();
+            $activity = 'Memperbarui dokumen pengawasan perihal : ' . $formDetailRapat['perihal'];
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -291,14 +290,7 @@ class PengawasanController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('pengawasan.index')->with('success', $success);
     }
@@ -349,14 +341,8 @@ class PengawasanController extends Controller
 
             }
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus dokumen pengawasan ' . $detailRapat->perihal . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus dokumen pengawasan ' . $detailRapat->perihal;
+            \App\Services\LogsService::saveLogs($activity);
 
             // After all data delete, remove data rapat on manajemen rapat
             $rapat->delete();
@@ -431,14 +417,8 @@ class PengawasanController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Menyimpan notula pengawasan ' . $notula->perihal . ', timestamp' . now()
-            ]
-        );
+        $activity = 'Menyimpan notula rapat perihal ' . $notula->perihal;
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('pengawasan.detail', ['id' => $request->input('id')])->with('success', 'Notula berhasil di simpan !');
     }
@@ -515,14 +495,8 @@ class PengawasanController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Menyimpan dokumentasi pengawasan ' . $dokumentasi->perihal . ', timestamp' . now()
-            ]
-        );
+        $activity = 'Menyimpan dokumentasi rapat perihal ' . $dokumentasi->perihal;
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('pengawasan.form-dokumentasi', ['id' => $request->input('id')])->with('success', 'Dokumentasi berhasil di simpan !');
     }
@@ -537,14 +511,8 @@ class PengawasanController extends Controller
                 Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
             }
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus dokumentasi rapat ' . $detailRapat->perihal . ', timestamp' . now()
-                ]
-            );
+            $activity = 'Menyimpan notula rapat perihal ' . $detailRapat->perihal;
+            \App\Services\LogsService::saveLogs($activity);
             $dokumentasi->delete();
             return redirect()->back()->with('success', 'Dokumentasi berhasil di hapus !');
         }
@@ -656,12 +624,12 @@ class PengawasanController extends Controller
                 $save = $pengawasan->update($formData);
                 $success = 'Laporan berhasil di perbarui !';
                 $error = 'Laporan gagal di perbarui !';
-                $activity = Auth::user()->name . ' Menambahkan laporan pengawasan ' . $rapat->detailRapat->perihal . ', timestamp' . now();
+                $activity = 'Menambahkan laporan pengawasan perihal : ' . $rapat->detailRapat->perihal;
             } else {
                 $save = PengawasanBidangModel::create($formData);
                 $success = 'Laporan berhasil di simpan !';
                 $error = 'Laporan gagal di simpan !';
-                $activity = Auth::user()->name . ' Memperbarui laporan pengawasan ' . $rapat->detailRapat->perihal . ', timestamp' . now();
+                $activity = 'Memperbarui laporan pengawasan perihal : ' . $rapat->detailRapat->perihal;
             }
 
         } elseif ($paramIncoming == 'update') {
@@ -689,7 +657,7 @@ class PengawasanController extends Controller
             $save = $pengawasan->update($formData);
             $success = 'Kesimpulan dan Rekomendasi berhasil di simpan !';
             $error = 'Kesimpulan dan Rekomendasi gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan kesimpulan dan rekomendasi laporan pengawasan ' . $rapat->detailRapat->perihal . ', timestamp' . now();
+            $activity = 'Menambahkan kesimpulan dan rekomendasi laporan pengawasan perihal : ' . $rapat->detailRapat->perihal;
 
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
@@ -700,14 +668,7 @@ class PengawasanController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('pengawasan.laporan', ['id' => $request->input('id')])->with('success', $success);
     }
@@ -742,13 +703,13 @@ class PengawasanController extends Controller
             $save = TemuanWasbidModel::create($formData);
             $success = 'Temuan berhasil di simpan !';
             $error = 'Temuan gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan temuan ' . $pengawasan->kode_pengawasan . ', timestamp' . now();
+            $activity = 'Menambahkan temuan pada ' . $pengawasan->objek_pengawasan;
         } elseif ($paramIncoming == 'update') {
             $searchTemuan = TemuanWasbidModel::findOrFail(Crypt::decrypt($request->input('idTemuan')));
             $save = $searchTemuan->update($formData);
             $success = 'Temuan berhasil di perbarui';
             $error = 'Temuan gagal di perbarui';
-            $activity = Auth::user()->name . ' Memperbarui temuan ' . $pengawasan->kode_pengawasan . ', timestamp' . now();
+            $activity = 'Memperbarui temuan pada ' . $pengawasan->objek_pengawasan;
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -758,14 +719,7 @@ class PengawasanController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('pengawasan.laporan', ['id' => htmlspecialchars($request->input('id'))])->with('success', $success);
     }
@@ -775,14 +729,8 @@ class PengawasanController extends Controller
         $temuan = TemuanWasbidModel::findOrFail(Crypt::decrypt($request->id));
         if ($temuan) {
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . ' Menghapus temuan' . $temuan->judul . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus temuan : ' . $temuan->judul;
+            \App\Services\LogsService::saveLogs($activity);
             $temuan->delete();
             return redirect()->back()->with('success', 'Temuan berhasil di hapus !');
         }
@@ -834,10 +782,10 @@ class PengawasanController extends Controller
                 Storage::disk('public')->delete($existEdoc->path_file_tlhp);
             }
             $save = $existEdoc->update($formData);
-            $activity = Auth::user()->name . ' Memperbarui edoc pengawasan ' . $rapat->perihal . ', timestamp ' . now();
+            $activity = 'Memperbarui edoc pengawasan perihal : ' . $rapat->perihal;
         } else {
             $save = EdocWasbidModel::create($formData);
-            $activity = Auth::user()->name . ' Menambahkan edoc pengawasan ' . $rapat->perihal . ', timestamp ' . now();
+            $activity = 'Menambahkan edoc pengawasan perihal : ' . $rapat->perihal;
         }
 
         if (!$save) {
@@ -845,14 +793,7 @@ class PengawasanController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('pengawasan.detail', ['id' => $request->input('id')])->with('success', 'File Edoc berhasil di simpan !');
     }

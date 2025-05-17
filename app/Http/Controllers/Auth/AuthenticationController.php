@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
@@ -46,14 +45,8 @@ class AuthenticationController extends Controller
         $request->session()->regenerate();
         $intended = RouteLink::homeIntended(Auth::user()->roles);
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Telah login pada sistem aplikasi, timestamp ' . now()
-            ]
-        );
+        $activity = 'Melakukan login dengan email : ' . $credentials['email'];
+        \App\Services\LogsService::saveLogs($activity);
         return redirect()->intended($intended);
     }
 

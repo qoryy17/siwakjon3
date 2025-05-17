@@ -10,7 +10,6 @@ use App\Models\Pengguna\JabatanModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Requests\Pengaturan\JabatanRequest;
-use App\Models\Pengaturan\LogsModel;
 
 class JabatanController extends Controller
 {
@@ -89,13 +88,13 @@ class JabatanController extends Controller
             $save = JabatanModel::create($formData);
             $success = 'Jabatan berhasil di simpan !';
             $error = 'Jabatan gagal di simpan !';
-            $activity = Auth::user()->name . ' Menambahkan jabatan ' . $formData['jabatan'] . ', timestamp ' . now();
+            $activity = 'Menambahkan jabatan : ' . $formData['jabatan'];
         } elseif ($paramIncoming == 'update') {
             $search = JabatanModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Jabatan berhasil di perbarui !';
             $error = 'Jabatan gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui jabatan dengan id ' . $request->input('id') . ', timestamp ' . now();
+            $activity = 'Memperbarui jabatan : ' . $formData['jabatan'];
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
@@ -105,14 +104,7 @@ class JabatanController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('jabatan.index')->with('success', $success);
     }
@@ -123,14 +115,8 @@ class JabatanController extends Controller
         $jabatan = JabatanModel::findOrFail(Crypt::decrypt($request->id));
         if ($jabatan) {
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . 'Menghapus jabatan ' . $jabatan->jabatan . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus jabatan : ' . $jabatan->jabatan;
+            \App\Services\LogsService::saveLogs($activity);
             $jabatan->delete();
             return redirect()->route('jabatan.index')->with('success', 'Jabatan berhasil di hapus !');
         }

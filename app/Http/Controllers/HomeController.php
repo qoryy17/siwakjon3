@@ -332,14 +332,8 @@ class HomeController extends Controller
         $user = User::findOrFail(Auth::user()->id);
         $user->update(['email' => htmlspecialchars($request->input('email'))]);
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => Auth::user()->name . ' Memperbarui profil pengguna, timestamp ' . now()
-            ]
-        );
+        $activity = 'Mengubah profil';
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('home.profil')->with('success', 'Profil berhasil di perbarui !');
     }

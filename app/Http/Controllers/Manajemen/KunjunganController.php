@@ -6,9 +6,7 @@ use Carbon\Carbon;
 use App\Helpers\RouteLink;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
@@ -133,10 +131,12 @@ class KunjunganController extends Controller
             'unit_kerja_id' => htmlspecialchars($request->input('unitKerja')),
         ];
 
+        $unitKerja = UnitKerjaModel::findOrFail($formData['unit_kerja_id']);
+
         if ($paramIncoming == 'save') {
             $formData['dibuat'] = Auth::user()->id;
             $save = KunjunganPengawasanModel::create($formData);
-            $activity = Auth::user()->name . ' Menambahkan kunjungan ' . $formData['kode_kunjungan'] . ', timestamp ' . now();
+            $activity = 'Menambahkan kunjungan unit kerja : ' . $unitKerja->unit_kerja;
             $success = 'Kunjungan berhasil di simpan !';
             $error = 'Kunjungan gagal di simpan !';
             $routeBack = redirect()->route('kunjungan.index')->with('success', $success);
@@ -145,21 +145,14 @@ class KunjunganController extends Controller
             $save = $search->update($formData);
             $success = 'Kunjungan berhasil di perbarui !';
             $error = 'Kunjungan gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui kunjungan ' . $formData['kode_kunjungan'] . ', timestamp ' . now();
+            $activity = 'Memperbarui kunjungan unit kerja : ' . $unitKerja->unit_kerja;
             $routeBack = redirect()->route('kunjungan.detail', ['id' => $request->input('id')])->with('success', $success);
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         if (!$save) {
             return redirect()->back()->with('error', $error);
@@ -185,14 +178,8 @@ class KunjunganController extends Controller
                 $detailKunjungan->delete();
             }
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . 'Menghapus kunjungan ' . $kunjungan->kode_kunjungan . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus kunjungan kode kunjungan : ' . $kunjungan->kode_kunjungan;
+            \App\Services\LogsService::saveLogs($activity);
 
             $kunjungan->delete();
             return redirect()->route('kunjungan.index')->with('success', 'Kunjungan berhasil di hapus !');
@@ -220,7 +207,7 @@ class KunjunganController extends Controller
 
         if ($paramIncoming == 'save') {
             $save = DetailKunjunganModel::create($formData);
-            $activity = Auth::user()->name . ' Menambahkan agenda kunjungan ' . $formData['agenda'] . ', timestamp ' . now();
+            $activity = 'Menambahkan agenda kunjungan  ' . $formData['agenda'];
             $success = 'Agenda Kunjungan berhasil di simpan !';
             $error = 'Agenda Kunjungan gagal di simpan !';
         } elseif ($paramIncoming == 'update') {
@@ -228,20 +215,13 @@ class KunjunganController extends Controller
             $save = $search->update($formData);
             $success = 'Agenda Kunjungan berhasil di perbarui !';
             $error = 'Agenda Kunjungan gagal di perbarui !';
-            $activity = Auth::user()->name . ' Memperbarui agenda kunjungan dengan id ' . $request->input('id') . ', timestamp ' . now();
+            $activity = 'Memperbarui agenda kunjungan : ' . $formData['agenda'];
         } else {
             return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         if (!$save) {
             return redirect()->back()->with('error', $error);
@@ -255,14 +235,8 @@ class KunjunganController extends Controller
         $detailKunjungan = DetailKunjunganModel::findOrFail(Crypt::decrypt($request->id));
         if ($detailKunjungan) {
             // Saving logs activity
-            LogsModel::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'activity' => Auth::user()->name . 'Menghapus agenda kunjungan ' . $detailKunjungan->agenda . ', timestamp ' . now()
-                ]
-            );
+            $activity = 'Menghapus agenda kunjungan : ' . $detailKunjungan->agenda;
+            \App\Services\LogsService::saveLogs($activity);
             $detailKunjungan->delete();
             return redirect()->route('kunjungan.detail', ['id' => Crypt::encrypt($detailKunjungan->kunjungan_pengawasan_id)])->with('success', 'Agenda Kunjungan berhasil di hapus !');
         }
@@ -312,9 +286,9 @@ class KunjunganController extends Controller
             if (Storage::disk('public')->exists($existEdoc->path_file_edoc)) {
                 Storage::disk('public')->delete($existEdoc->path_file_edoc);
             }
-            $activity = Auth::user()->name . ' Memperbarui edoc kunjungan pengawasan ' . $existEdoc->unitKerja->unit_kerja . ', timestamp ' . now();
+            $activity = 'Memperbarui edoc kunjungan pengawasan ' . $existEdoc->unitKerja->unit_kerja;
         } else {
-            $activity = Auth::user()->name . ' Menambahkan edoc kunjungan pengawasan ' . $existEdoc->unitKerja->unit_kerja . ', timestamp ' . now();
+            $activity = 'Menambahkan edoc kunjungan pengawasan ' . $existEdoc->unitKerja->unit_kerja;
         }
 
         $save = $existEdoc->update($formData);
@@ -324,14 +298,7 @@ class KunjunganController extends Controller
         }
 
         // Saving logs activity
-        LogsModel::create(
-            [
-                'user_id' => Auth::user()->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'activity' => $activity
-            ]
-        );
+        \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('kunjungan.detail', ['id' => $request->input('id')])->with('success', 'File Edoc berhasil di simpan !');
     }
