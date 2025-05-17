@@ -195,9 +195,9 @@ class PengawasanController extends Controller
         $uniqueKodeRapat = Str::uuid();
 
         // Denial backward meeting date
-        $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->format('d-m-Y');
-        $nowDate = date('d-m-Y');
-        if ($inputDate < $nowDate) {
+        $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->startOfDay();
+        $nowDate = Carbon::now()->startOfDay();
+        if ($inputDate->lt($nowDate)) {
             return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !');
         }
 
