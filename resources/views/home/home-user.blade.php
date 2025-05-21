@@ -354,10 +354,13 @@
     </div>
     <script>
         window.onload = function() {
-            let modal = new bootstrap.Modal(document.getElementById('modalNotification'), {
-                keyboard: false
-            });
-            modal.show();
+            if (!localStorage.getItem('modalNotificationShown')) {
+                let modal = new bootstrap.Modal(document.getElementById('modalNotification'), {
+                    keyboard: false
+                });
+                modal.show();
+                localStorage.setItem('modalNotificationShown', 'true');
+            }
         }
     </script>
 @endsection

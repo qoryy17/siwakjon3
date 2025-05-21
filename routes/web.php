@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Controllers\HomeController;
 use App\Http\Middleware\NonAuthMiddleware;
+use App\Http\Controllers\LicenseController;
 use App\Http\Middleware\RejectUserMiddleware;
 use App\Http\Middleware\SuperadminMiddleware;
 use App\Http\Controllers\Arsip\MonevController;
@@ -51,7 +52,7 @@ Route::prefix('auth')->middleware(LicenseMiddleware::class)
         Route::post('/signout', 'logout')->name('auth.signout');
     });
 
-Route::prefix('app')->controller(LicenseMiddleware::class)->group(function () {
+Route::prefix('app')->controller(LicenseController::class)->group(function () {
     Route::get('/license', 'index')->name('license.index');
     Route::post('/license/save', 'saveLicense')->name('license.save');
 });
@@ -157,6 +158,7 @@ Route::prefix('pengawasan-bidang/print')->middleware([AuthMiddleware::class, Lic
         Route::get('/laporan/{id}', 'printLaporanPengawasan')->name('pengawasan.print-laporan');
         Route::get('/kunjungan/{id}', 'printKunjunganPengawasan')->name('kunjungan.print-kunjungan');
     });
+
 
 Route::middleware([AuthMiddleware::class, LicenseMiddleware::class])
     ->controller(HakimPengawasController::class)->group(function () {

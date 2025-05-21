@@ -121,10 +121,10 @@
                                 <li class="pc-item">
                                     <a class="pc-link" href="{{ route('pengguna.akun') }}">Akun</a>
                                 </li>
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('pengguna.pegawai') }}">Pegawai</a>
+                                </li>
                             @endif
-                            <li class="pc-item">
-                                <a class="pc-link" href="{{ route('pengguna.pegawai') }}">Pegawai</a>
-                            </li>
                             <li class="pc-item">
                                 <a class="pc-link" href="{{ route('pengguna.hakim-pengawas') }}">Hakim Pengawas</a>
                             </li>

@@ -1,15 +1,4 @@
 @include('layout.header')
-@if (session('success') || session('error'))
-    <script>
-        window.onload = function() {
-            Swal.fire({
-                icon: "{{ session('success') ? 'success' : 'error' }}",
-                title: "Notifikasi",
-                text: "{{ session('success') ?? session('error') }}"
-            });
-        }
-    </script>
-@endif
 @php
     $pegawai = \App\Helpers\ViewUser::pegawai();
     $app = \App\Models\Pengaturan\VersionModel::latest()->first();
@@ -206,6 +195,17 @@
         </div>
     </div>
 </footer>
+@if (session()->has('success') || session()->has('error'))
+    <script>
+        window.onload = function() {
+            Swal.fire({
+                icon: "{{ session()->has('success') ? 'success' : 'error' }}",
+                title: "Notifikasi",
+                text: "{{ session('success') ?? session('error') }}"
+            });
+        }
+    </script>
+@endif
 <script>
     function signOut() {
         let formLogout = document.getElementById('formLogout');
