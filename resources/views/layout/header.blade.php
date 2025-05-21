@@ -10,10 +10,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <x-meta-component />
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- [Favicon] icon -->
     <link rel="icon" href="{{ asset('siwakjon2.png') }}" type="image/png" />
     <!-- [Google Font : Public Sans] icon -->
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <!-- [Page specific CSS] start -->
     <link href="{{ asset('assets/css/plugins/animate.min.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/simplemde.min.css') }}">
