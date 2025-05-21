@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Arsip\AgendaMonevModel;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Arsip\ArsipMonevModel;
@@ -119,6 +120,6 @@ class ViewUser
 
     public static function monev()
     {
-        return ArsipMonevModel::orderBy('created_at', 'desc')->limit(3);
+        return AgendaMonevModel::orderBy('created_at', 'desc')->limit(3);
     }
 }

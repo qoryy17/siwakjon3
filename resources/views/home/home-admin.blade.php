@@ -124,7 +124,7 @@
                         <div class="card-body px-0 py-2">
                             <ul class="list-group list-group-flush">
                                 @if ($monev->exists())
-                                    @foreach ($monev as $itemMonev)
+                                    @foreach ($monev->get() as $itemMonev)
                                         @php
                                             $dibuat = \App\Models\User::findOrFail($itemMonev->dibuat);
                                         @endphp
