@@ -210,14 +210,13 @@ class RapatController extends Controller
 
         $uniqueKodeRapat = Str::uuid();
 
-        // Denial backward meeting date
-        $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->startOfDay();
-        $nowDate = Carbon::now()->startOfDay();
-        if ($inputDate->lt($nowDate)) {
-            return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !');
-        }
-
         if ($paramIncoming == 'save') {
+            // Denial backward meeting date
+            $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->startOfDay();
+            $nowDate = Carbon::now()->startOfDay();
+            if ($inputDate->lt($nowDate)) {
+                return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !');
+            }
             // Get index number from nomor dokumen
             $indexNumber = explode('/', htmlspecialchars($request->input('nomorDokumen')));
             try {
@@ -263,6 +262,13 @@ class RapatController extends Controller
             $error = 'Dokumen Rapat gagal di simpan !';
             $activity = 'Menambahkan rapat perihal : ' . $formDetailRapat['perihal'];
         } elseif ($paramIncoming == 'update') {
+            $search = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->input('id')));
+            // Denial backward meeting date
+            $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->startOfDay();
+            $oldDate = Carbon::createFromFormat('Y-m-d', $search->detailRapat->tanggal_rapat)->startOfDay();
+            if ($inputDate->lt($oldDate)) {
+                return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !');
+            }
             try {
                 DB::beginTransaction();
                 $formData = [
@@ -273,7 +279,7 @@ class RapatController extends Controller
                     $formData['pejabat_pengganti_id'] = htmlspecialchars($request->input('pejabatPengganti'));
                 }
 
-                $search = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->input('id')));
+                // Update manajemen rapat on database
                 $save = $search->update($formData);
 
                 // After manajemen rapat saving on database update detail rapat

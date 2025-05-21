@@ -193,14 +193,14 @@ class PengawasanController extends Controller
 
         $uniqueKodeRapat = Str::uuid();
 
-        // Denial backward meeting date
-        $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->startOfDay();
-        $nowDate = Carbon::now()->startOfDay();
-        if ($inputDate->lt($nowDate)) {
-            return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !');
-        }
-
         if ($paramIncoming == 'save') {
+            // Denial backward meeting date
+            $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->startOfDay();
+            $nowDate = Carbon::now()->startOfDay();
+            if ($inputDate->lt($nowDate)) {
+                return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !');
+            }
+
             // Get index number from nomor dokumen
             $indexNumber = explode('/', htmlspecialchars($request->input('nomorDokumen')));
             try {
@@ -241,13 +241,20 @@ class PengawasanController extends Controller
             $error = 'Dokumen Rapat gagal di simpan !';
             $activity = 'Menambahkan dokumen pengawasan perihal : ' . $formDetailRapat['perihal'];
         } elseif ($paramIncoming == 'update') {
+            $search = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->input('id')));
+            // Denial backward meeting date
+            $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->startOfDay();
+            $oldDate = Carbon::createFromFormat('Y-m-d', $search->detailRapat->tanggal_rapat)->startOfDay();
+            if ($inputDate->lt($oldDate)) {
+                return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !');
+            }
             try {
                 DB::beginTransaction();
                 $formData = [
                     'pejabat_penandatangan' => htmlspecialchars($request->input('pejabatPenandatangan')),
                 ];
 
-                $search = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->input('id')));
+                // Update manajemen rapat on database
                 $save = $search->update($formData);
 
                 // After manajemen rapat saving on database update detail rapat
