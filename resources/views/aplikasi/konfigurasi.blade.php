@@ -100,6 +100,16 @@
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="skWasbid">SK KPN Tentang Pengawasan Bidang</label>
+                            <input type="text" class="form-control"
+                                placeholder="Surat Keputusan KPN Tentang Pengawasan Bidang..." id="skWasbid"
+                                name="skWasbid" required
+                                value="{{ $konfigurasi ? $konfigurasi->sk_wasbid : old('skWasbid') }}">
+                            @error('skWasbid')
+                                <small class="text-danger mt-1">* {{ $message }}</small>
+                            @enderror
+                        </div>
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
                                 <div class="mb-3">

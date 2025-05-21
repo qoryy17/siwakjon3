@@ -24,6 +24,15 @@ class ViewUser
         return $pegawai;
     }
 
+    public static function pengguna($id = null)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return null;
+        }
+        return $user->name;
+    }
+
     public static function jabatan()
     {
         $pegawai = PegawaiModel::find(Auth::user()->pegawai_id);

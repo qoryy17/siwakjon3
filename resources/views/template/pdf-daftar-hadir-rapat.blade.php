@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- [Favicon] icon -->
-    <link rel="icon" href="{{ public_path('siwakjon2.png') }}" type="image/png" />
+    <link rel="icon" href="{{ asset('siwakjon2.png') }}" type="image/png" />
     <title>
         Daftar Hadir {{ $rapat->detailRapat->perihal }}
         {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->tanggal_rapat) }}
@@ -55,13 +55,13 @@
         .qrcode {
             position: fixed;
             right: 0%;
-            top: 95%;
+            top: 93%;
         }
 
         .url {
             position: fixed;
             right: 0%;
-            top: 101%;
+            top: 99%;
             font-size: 10px;
         }
     </style>

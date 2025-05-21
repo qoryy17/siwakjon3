@@ -45,6 +45,7 @@ class AplikasiController extends Controller
             'kode_satker' => htmlspecialchars($request->input('kodeSatker')),
             'satuan_kerja' => htmlspecialchars($request->input('satuanKerja')),
             'alamat' => htmlspecialchars($request->input('alamat')),
+            'sk_wasbid' => htmlspecialchars($request->input('skWasbid')),
             'provinsi' => htmlspecialchars($request->input('provinsi')),
             'kota' => htmlspecialchars($request->input('kota')),
             'kode_pos' => htmlspecialchars($request->input('kodePos')),

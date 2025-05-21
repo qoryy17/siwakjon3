@@ -24,7 +24,7 @@
                     </a>
                 </li>
                 <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">
+                    <a href="javascript:void(0);" class="pc-link">
                         <span class="pc-micon"> <i class="ph-duotone ph-files"></i></span>
                         <span class="pc-mtext">Manajemen Rapat</span>
                         <span class="pc-arrow">
@@ -36,7 +36,7 @@
                     </ul>
                 </li>
                 <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">
+                    <a href="javascript:void(0);" class="pc-link">
                         <span class="pc-micon"> <i class="ph-duotone ph-files"></i></span>
                         <span class="pc-mtext">Pengawasan Bidang</span>
                         <span class="pc-arrow">
@@ -74,7 +74,7 @@
                     </ul>
                 </li>
                 <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">
+                    <a href="javascript:void(0);" class="pc-link">
                         <span class="pc-micon"> <i class="ph-duotone ph-file-pdf"></i></span>
                         <span class="pc-mtext">Manajemen Monev</span>
                         <span class="pc-arrow">
@@ -94,7 +94,7 @@
                     </ul>
                 </li>
                 <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">
+                    <a href="javascript:void(0);" class="pc-link">
                         <span class="pc-micon"> <i class="ph-duotone ph-archive-box"></i></span>
                         <span class="pc-mtext">Manajemen Arsip</span>
                         <span class="pc-arrow">
@@ -109,7 +109,7 @@
                 </li>
                 @if (Auth::user()->roles != \App\Enum\RolesEnum::USER->value)
                     <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
+                        <a href="javascript:void(0);" class="pc-link">
                             <span class="pc-micon"> <i class="ph-duotone ph-user-circle"></i></span>
                             <span class="pc-mtext">Manajemen Pengguna</span>
                             <span class="pc-arrow">
@@ -136,7 +136,7 @@
                         <label>Pengaturan</label>
                     </li>
                     <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
+                        <a href="javascript:void(0);" class="pc-link">
                             <span class="pc-micon"> <i class="ph-duotone ph-gear-six"></i></span>
                             <span class="pc-mtext">Manajemen Pengaturan</span>
                             <span class="pc-arrow">

@@ -87,6 +87,7 @@ Route::prefix('manajemen-rapat/rapat-dinas')->middleware([AuthMiddleware::class,
         Route::delete('/dokumentasi/hapus', 'deleteDokumentasi')->name('rapat.hapus-dokumentasi');
         Route::post('/edoc/simpan', 'saveEdoc')->name('rapat.simpan-edoc');
 
+        Route::get('/cari-klasifikasi-rapat', 'searchKlasifikasiRapat')->name('rapat.cari-klasifikasi-rapat');
     });
 
 Route::prefix('manajemen-rapat/print')->middleware([AuthMiddleware::class, LicenseMiddleware::class])

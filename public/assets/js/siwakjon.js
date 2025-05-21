@@ -22,7 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
         element: document.querySelector("#pc_demo1"),
     });
 
-    const d_week = new Datepicker(document.querySelector("#releaseDate"), {
-        buttonClass: "btn",
-    });
+    if (document.querySelector("#releaseDate")) {
+        const d_week = new Datepicker(document.querySelector("#releaseDate"), {
+            buttonClass: "btn",
+        });
+    }
 })();

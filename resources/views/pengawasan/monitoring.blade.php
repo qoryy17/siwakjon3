@@ -22,8 +22,7 @@
             <!-- [ breadcrumb ] end -->
 
             <!-- [ Main Content ] start -->
-
-            <div class="card bg-primary">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1 me-3">

@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('kode_satker');
             $table->string('satuan_kerja');
             $table->text('alamat');
+            $table->text('sk_wasbid')->nullable();
             $table->string('provinsi');
             $table->string('kota');
             $table->string('kode_pos');

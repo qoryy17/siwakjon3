@@ -85,9 +85,9 @@
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="notulen">Notulen <span class="text-danger">*</span></label>
+                            <label class="form-label" for="notulen">Notulis <span class="text-danger">*</span></label>
                             <select class="form-control" data-trigger name="notulen" id="notulen" required>
-                                <option value="">Pilih Notulen</option>
+                                <option value="">Pilih Notulis</option>
                                 @foreach ($pegawai as $notulen)
                                     <option value="{{ $notulen->id }}"
                                         @if (old('notulan') == $notulen->id) selected @elseif ($rapat->detailRapat->notulen == $notulen->id) selected @endif>
@@ -100,14 +100,16 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="catatan">Catatan <span class="text-danger">*</span></label>
-                            <textarea name="catatan" id="catatan" class="form-control" placeholder="Catatan...">{{ str_replace('<br />', '', $rapat->detailRapat->catatan ? $rapat->detailRapat->catatan : old('catatan')) }}</textarea>
+                            <textarea name="catatan" id="catatan" class="form-control" placeholder="Catatan..." rows="5">{!! $rapat->detailRapat->catatan ? $rapat->detailRapat->catatan : old('catatan') !!}</textarea>
+                            <small class="text-danger mt-1">*Tekan tombol Shift + Enter untuk baris baru</small>
                             @error('catatan')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="kesimpulan">Kesimpulan <span class="text-danger">*</span></label>
-                            <textarea name="kesimpulan" id="kesimpulan" class="form-control" placeholder="Kesimpulan...">{{ str_replace('<br />', '', $rapat->detailRapat->kesimpulan ? $rapat->detailRapat->kesimpulan : old('kesimpulan')) }}</textarea>
+                            <textarea name="kesimpulan" id="kesimpulan" class="form-control" placeholder="Kesimpulan...">{!! $rapat->detailRapat->kesimpulan ? $rapat->detailRapat->kesimpulan : old('kesimpulan') !!}</textarea>
+                            <small class="text-danger mt-1">*Tekan tombol Shift + Enter untuk baris baru</small>
                             @error('kesimpulan')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
                             @enderror
@@ -117,7 +119,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <select class="form-control" data-trigger name="disahkan" id="disahkan">
-                                <option value="">Pilih Pejabat/Pegawai</option>
+                                <option value="">Pilih Hakim Pengawas</option>
                                 @foreach ($pegawai as $disahkan)
                                     <option value="{{ $disahkan->id }}"
                                         @if (old('notulan') == $disahkan->id) selected @elseif ($rapat->detailRapat->disahkan == $disahkan->id) selected @endif>
@@ -142,18 +144,36 @@
     </div>
     <!-- Time picker -->
     <script src="{{ asset('assets/js/plugins/flatpickr.min.js') }}"></script>
-    <!-- [Page Specific JS] start -->
-    <script src="{{ asset('assets/js/plugins/simplemde.min.js') }}"></script>
+    <!-- Ckeditor js -->
+    <script src="{{ asset('assets/js/plugins/ckeditor/classic/ckeditor.js') }}"></script>
     <script>
         (function() {
-            new SimpleMDE({
-                element: document.querySelector("#catatan"),
+            ClassicEditor.create(document.querySelector('#catatan'), {
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                        'insertTable', '|', 'mediaEmbed',
+                        'undo', 'redo'
+                    ]
+                },
+                removePlugins: ['ImageUpload', 'EasyImage', 'CKFinderUploadAdapter', 'CKFinder']
+            }).catch((error) => {
+                console.error(error);
             });
-
-            new SimpleMDE({
-                element: document.querySelector("#kesimpulan"),
+            ClassicEditor.create(document.querySelector('#kesimpulan'), {
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                        'insertTable', '|', 'mediaEmbed',
+                        'undo', 'redo'
+                    ]
+                },
+                removePlugins: ['ImageUpload', 'EasyImage', 'CKFinderUploadAdapter', 'CKFinder']
+            }).catch((error) => {
+                console.error(error);
             });
-
         })();
         document.querySelector('#jamSelesai').flatpickr({
             enableTime: true,

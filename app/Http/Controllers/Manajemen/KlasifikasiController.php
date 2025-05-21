@@ -237,7 +237,7 @@ class KlasifikasiController extends Controller
             $error = 'Klasifikasi Jabatan gagal di simpan !';
             $activity = 'Menambahkan klasifikasi jabatan : ' . $formData['jabatan'];
         } elseif ($paramIncoming == 'update') {
-            $search = KlasifikasiJabatanModel::findOrFail(Crypt::decrypt($request->input(':')));
+            $search = KlasifikasiJabatanModel::findOrFail(Crypt::decrypt($request->input('id')));
             $save = $search->update($formData);
             $success = 'Klasifikasi Jabatan berhasil di perbarui !';
             $error = 'Klasifikasi Jabatan gagal di perbarui !';

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Manajemen;
 
-use PDF;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Facades\Pdf;
 use App\Http\Controllers\Controller;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Support\Facades\Crypt;
@@ -29,17 +29,20 @@ class PrintRapatController extends Controller
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
         $pegawai = PegawaiModel::with('jabatan')->findOrFail($rapat->pejabat_penandatangan);
+
+        $aplikasi = AplikasiModel::first();
+        $kotaSurat = explode("/", $aplikasi->kota)[0];
         $data = [
             'aplikasi' => AplikasiModel::first(),
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'pegawai' => $pegawai,
+            'kotaSurat' => $kotaSurat,
             'pejabatPengganti' => $pejabatPengganti,
             'url' => $url
         ];
-        $pdf = PDF::loadView('template.pdf-undangan-rapat', $data);
-        $pdf->setPaper('Folio', 'potrait');
-        return $pdf->stream('Undangan Rapat ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+        return Pdf::view('template.pdf-undangan-rapat', $data)
+            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
     }
     public function printDaftarHadirRapat(Request $request)
     {
@@ -55,9 +58,8 @@ class PrintRapatController extends Controller
             'peserta' => $peserta,
             'url' => $url
         ];
-        $pdf = PDF::loadView('template.pdf-daftar-hadir-rapat', $data);
-        $pdf->setPaper('Folio', 'potrait');
-        return $pdf->stream('Daftar Hadir Rapat ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+        return Pdf::view('template.pdf-daftar-hadir-rapat', $data)
+            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
     }
 
     public function printNotulaRapat(Request $request)
@@ -77,9 +79,8 @@ class PrintRapatController extends Controller
             'disahkan' => $disahkan,
             'url' => $url
         ];
-        $pdf = PDF::loadView('template.pdf-notula-rapat', $data);
-        $pdf->setPaper('Folio', 'potrait');
-        return $pdf->stream('Notula ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+        return Pdf::view('template.pdf-notula-rapat', $data)
+            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
     }
 
     public function printDokumentasiRapat(Request $request)
@@ -97,8 +98,7 @@ class PrintRapatController extends Controller
             'dokumentasi' => $dokumentasi,
             'url' => $url
         ];
-        $pdf = PDF::loadView('template.pdf-dokumentasi-rapat', $data);
-        $pdf->setPaper('Folio', 'potrait');
-        return $pdf->stream('Dokumentasi ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+        return Pdf::view('template.pdf-dokumentasi-rapat', $data)
+            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
     }
 }

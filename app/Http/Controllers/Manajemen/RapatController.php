@@ -85,6 +85,15 @@ class RapatController extends Controller
         return view('rapat.detail-rapat', $data);
     }
 
+    public function searchKlasifikasiRapat(Request $request)
+    {
+        $result = KlasifikasiRapatModel::find($request->id);
+        if (!$result) {
+            return response()->json(['error' => 'Klasifikasi Rapat tidak ditemukan !']);
+        }
+        return response()->json($result->rapat);
+    }
+
     public function formUndangan(Request $request)
     {
         // Checking received from request
@@ -96,6 +105,27 @@ class RapatController extends Controller
 
             // Search klasifikasi rapat on database
             $klasifikasiRapat = KlasifikasiRapatModel::findOrFail($request->input('klasifikasiRapat'));
+
+            // Jika rapat adalah Lainnya maka penomoran kode klasifikasi surat menjadi fleksibel
+            if ($klasifikasiRapat->rapat == 'Lainnya') {
+                $request->validate([
+                    'klasifikasiSurat' => 'required|string',
+                ], [
+                    'klasifikasiSurat.required' => 'Kode Klasifikasi Surat wajib di isi !',
+                    'klasifikasiSurat.string' => 'Kode Klasifikasi Surat harus berupa karakter valid !',
+                ]);
+
+                $kodeSurat = htmlspecialchars($request->input('klasifikasiSurat'));
+
+            } else {
+                // Get Set Kode Surat on database
+                $searchKodeSurat = SetKodeRapatModel::first();
+                if (!$searchKodeSurat) {
+                    return redirect()->back()->with('error', 'Kode Surat belum di atur !');
+                }
+
+                $kodeSurat = $searchKodeSurat->kode_rapat_dinas;
+            }
 
             // Search klasifikasi jabatan on database
             $klasifikasiJabatan = KlasifikasiJabatanModel::findOrFail($request->input('klasifikasiJabatan'));
@@ -112,14 +142,8 @@ class RapatController extends Controller
             }
             $indexIncrement = intval($counter) + 1;
 
-            // Get Set Kode Surat on database
-            $searchKodeSurat = SetKodeRapatModel::first();
-            if (!$searchKodeSurat) {
-                return redirect()->back()->with('error', 'Kode Surat belum di set !');
-            }
-
             // Generate nomor dokumen rapat
-            $nomorDokumen = $indexIncrement . '/' . $klasifikasiJabatan->kode_jabatan . '.' . 'W2-U4/' . $searchKodeSurat->kode_rapat_dinas . '/' . TimeSession::convertMonthToRoman() . '/' . date('Y');
+            $nomorDokumen = $indexIncrement . '/' . $klasifikasiJabatan->kode_jabatan . '.' . 'W2-U4/' . $kodeSurat . '/' . TimeSession::convertMonthToRoman() . '/' . date('Y');
 
             // Set value klasifikasi for form
             $klasifikasi = ['rapat' => Crypt::encrypt($klasifikasiRapat->id), 'jabatan' => $klasifikasiJabatan->jabatan];
@@ -172,7 +196,6 @@ class RapatController extends Controller
         ];
 
         return view('rapat.form-undangan', $data);
-
     }
 
     public function saveRapat(FormManajemenRapat $request, FormUndanganRapatRequest $requestRapat): RedirectResponse
@@ -207,8 +230,10 @@ class RapatController extends Controller
                     'dibuat' => Auth::user()->id,
                     'pejabat_penandatangan' => htmlspecialchars($request->input('pejabatPenandatangan')),
                 ];
-                if (htmlspecialchars($request->input('pejabatPengganti'))) {
-                    $formData['pejabat_pengganti_id'] = htmlspecialchars($request->input('pejabatPengganti'));
+
+                $pejabatPengganti = htmlspecialchars($request->input('pejabatPengganti'));
+                if ($pejabatPengganti && $pejabatPengganti != 'Tanpa Pejabat Pengganti') {
+                    $formData['pejabat_pengganti_id'] = $pejabatPengganti;
                 }
 
                 $save = ManajemenRapatModel::create($formData);
@@ -380,8 +405,8 @@ class RapatController extends Controller
             'pimpinan_rapat' => nl2br(htmlspecialchars($request->input('pimpinanRapat'))),
             'moderator' => htmlspecialchars($request->input('moderator')),
             'notulen' => htmlspecialchars($request->input('notulen')),
-            'catatan' => nl2br(htmlspecialchars($request->input('catatan'))),
-            'kesimpulan' => nl2br(htmlspecialchars($request->input('kesimpulan'))),
+            'catatan' => $request->input('catatan'),
+            'kesimpulan' => $request->input('kesimpulan'),
             'disahkan' => htmlspecialchars($request->input('disahkan')),
         ];
 
@@ -405,7 +430,7 @@ class RapatController extends Controller
         $activity = 'Menyimpan notula rapat perihal : ' . $notula->perihal;
         \App\Services\LogsService::saveLogs($activity);
 
-        return redirect()->route('rapat.detail', ['id' => $request->input('id')])->with('success', 'Notula berhasil di simpan !');
+        return redirect()->back()->with('success', 'Notula berhasil di simpan !');
     }
 
     public function formDokumentasi(Request $request)

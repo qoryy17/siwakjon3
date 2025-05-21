@@ -396,8 +396,8 @@ class PengawasanController extends Controller
             'pimpinan_rapat' => nl2br(htmlspecialchars($request->input('pimpinanRapat'))),
             'moderator' => htmlspecialchars($request->input('moderator')),
             'notulen' => htmlspecialchars($request->input('notulen')),
-            'catatan' => nl2br(htmlspecialchars($request->input('catatan'))),
-            'kesimpulan' => nl2br(htmlspecialchars($request->input('kesimpulan'))),
+            'catatan' => $request->input('catatan'),
+            'kesimpulan' => $request->input('kesimpulan'),
             'disahkan' => htmlspecialchars($request->input('disahkan')),
         ];
         try {
@@ -420,7 +420,7 @@ class PengawasanController extends Controller
         $activity = 'Menyimpan notula rapat perihal ' . $notula->perihal;
         \App\Services\LogsService::saveLogs($activity);
 
-        return redirect()->route('pengawasan.detail', ['id' => $request->input('id')])->with('success', 'Notula berhasil di simpan !');
+        return redirect()->back()->with('success', 'Notula berhasil di simpan !');
     }
 
     public function formDokumentasi(Request $request)
@@ -649,8 +649,8 @@ class PengawasanController extends Controller
             );
 
             $formData = [
-                'kesimpulan' => htmlspecialchars($request->input('kesimpulan')),
-                'rekomendasi' => htmlspecialchars($request->input('rekomendasi')),
+                'kesimpulan' => $request->input('kesimpulan'),
+                'rekomendasi' => $request->input('rekomendasi'),
             ];
 
             $pengawasan = PengawasanBidangModel::where('detail_rapat_id', '=', $rapat->detailRapat->id);

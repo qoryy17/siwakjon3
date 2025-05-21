@@ -19,6 +19,7 @@ class AplikasiModel extends Model
         'kode_satker',
         'satuan_kerja',
         'alamat',
+        'sk_wasbid',
         'provinsi',
         'kota',
         'kode_pos',

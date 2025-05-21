@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- [Favicon] icon -->
-    <link rel="icon" href="{{ public_path('siwakjon2.png') }}" type="image/png" />
+    <link rel="icon" href="{{ asset('siwakjon2.png') }}" type="image/png" />
     <title>
         Laporan Pengawasan {{ $title->objek_pengawasan }}
         {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->tanggal_rapat) }}
@@ -27,6 +27,11 @@
             text-transform: uppercase;
             text-align: center;
             margin-top: 70px;
+            line-height: 1.5;
+        }
+
+        .cover-sk {
+            text-align: center;
         }
 
         .cover-logo {
@@ -77,8 +82,11 @@
     <!-- Cover -->
     <div class="cover">
         <h3 class="cover-title">
-            LAPORAN PENGAWASAN BIDANG {{ $title->objek_pengawasan }} <br>
+            LAPORAN PENGAWASAN BIDANG <br>{{ $title->objek_pengawasan }} <br>
             {{ $aplikasi->satuan_kerja }}
+        </h3>
+        <h3 class="cover-sk">
+            NOMOR SK : {{ $aplikasi->sk_wasbid }}
         </h3>
         <div class="cover-logo">
             <img src="{{ public_path('storage/' . $aplikasi->logo) }}" alt="" class="logo">
@@ -86,7 +94,7 @@
 
         <!-- Identity Pengawas -->
         <div class="cover-pengawas">
-            <h4>Oleh Tim Pengawas :</h4>
+            <h4>OLEH TIM PENGAWAS :</h4>
             @php
                 $pengawas = json_decode($title->hakim_pengawas);
             @endphp
@@ -99,7 +107,7 @@
         <div class="cover-periode">
             <h4>
                 {{ $aplikasi->satuan_kerja }} <br>
-                PERIODE {{ $periode }}
+                PERIODE {{ $periode }} TAHUN {{ $tahun->year }}
             </h4>
         </div>
     </div>
@@ -108,7 +116,7 @@
         <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code {{ $qrCode }}">
         <span style="display: block; font-size:10px; margin-top: 5px;">Generate By SIWAKJON
             , Timestamp : {{ now() }}</span>
-    </div>-->
+    </div>
 
     <!-- Break page -->
     <div class="page-break"></div>
@@ -116,7 +124,7 @@
     <!-- Pengantar -->
     <div class="pengantar">
         <p style="text-align: right;">
-            Tanggal, {{ \App\Helpers\TimeSession::convertDateToIndonesian(date('Y-m-d')) }}
+            {{ $kotaSurat }}, {{ \App\Helpers\TimeSession::convertDateToIndonesian(date('Y-m-d')) }}
         </p>
         <p style="text-align: left; line-height: 1.5;">
             Kepata Yth : <br>
@@ -128,11 +136,11 @@
         </p>
 
         <p style="text-align: justify; line-height: 1.5;">
-
             Dengan Hormat,
-            Bersama dengan surat ini Kami beritahukan kepada Wakil Ketua, bahwa Kami selaku Hakim Pengawas Bidang
-            {{ $title->objek_pengawasan }} pada {{ $aplikasi->satuan_kerja }} telah melakukan pengawasan pada tanggal
-            Tanggal, {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->tanggal_rapat) }} untuk
+            Bersama dengan surat ini Kami beritahukan kepada Wakil Ketua selaku Koordinator Pengawasan, bahwa Kami
+            selaku Hakim Pengawas Bidang
+            {{ $title->objek_pengawasan }} pada {{ $aplikasi->satuan_kerja }} telah melakukan pengawasan pada tanggal,
+            {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->tanggal_rapat) }} untuk
             periode bulan {{ $periode }} tahun {{ $tahun->year }}, dan bersama ini kami serahkan Laporan Hasil
             Pengawasan
             tersebut kepada Wakil Ketua.
@@ -159,27 +167,25 @@
 
     <!-- Bab I Pendahuluan -->
     <div class="pendahuluan">
-        <h3 style="text-align: center; text-transform: uppercase;">
+        <h3 style="text-align: center; text-transform: uppercase; line-height: 1.5;">
             BAB I <br>
             PENDAHULUAN
         </h3>
         <!-- Dasar Pelaksanaan -->
-        <h4 style="margin: 50px 0 0 0;">1.1 Dasar Pelaksanaan</h4>
+        <h4 style="margin: 50px 0 0 0;">1.1 Dasar Pelaksanaan Pengawasan</h4>
         <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
             {!! $title->dasar_hukum !!}
         </p>
 
         <!-- Ruang Lingkup Pengawasan -->
-        <h4 style="margin: 50px 0 0 0;">1.2 Ruang Lingkup Pengawasan</h4>
-        <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
-            {{ $title->deskripsi_pengawasan }}
-        </p>
+        <h4 style="margin: 20px 0 0 0;">1.2 Ruang Lingkup Pengawasan</h4>
+        {!! $title->deskripsi_pengawasan !!}
 
         <!-- Tujuan Pengawasan -->
-        <h4 style="margin: 50px 0 0 0;">1.3 Tujuan Pengawasan</h4>
+        <h4 style="margin: 20px 0 0 0;">1.3 Tujuan Pengawasan</h4>
         <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
             Berikut ini tujuan dalam pengawasan antara lain adalah :
-        <ol style="margin: 0 0 0 10px; text-align: justify;">
+        <ol style="margin: 0;padding: 0 0 0 25px; text-align: justify;">
             <li>Menjaga terselenggaranya manajemen peradilan dengan baik dan benar</li>
             <li>Menjaga terwujudnya tertib administrasi peradilan</li>
             <li>Menjaga pencapaian target yang telah ditetapkan sesuai dengan program kerja</li>
@@ -188,7 +194,7 @@
             <li>Meningkatkan kinerja pelayanan publik</li>
             <li>Meningkatkan disiplin dan prestasi kerja guna pencapaian pelaksanaan tugas yang optimal</li>
             <li>Mencegah terjadinya penyimpangan dan penyalahgunaan wewenang. Pengawasan rutin/ reguler
-                dilaksanakan dengan tujuan</li>
+                dilaksanakan dengan tujuan terciptanya pelaksanaan tugas berdasarkan kode etik.</li>
             <li>Menopang kerangka manajemen peradilan yang baik</li>
             <li>Menciptakan kondisi yang mendukung kelancaran, kecepatan, dan ketepatan pelaksanaan tugas sesuai
                 dengan tugas pokok dan fungsi peradilan</li>
@@ -212,7 +218,7 @@
         <h4 style="margin: 50px 0 0 0;">1.4 Metodologi Pengawasan</h4>
         <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
             Adapun metodologi yang digunakan dalam pengawasan sebagai berikut :
-        <ol style="margin: 0 0 0 10px;">
+        <ol style="margin: 0;padding: 0 0 0 25px; text-align: justify;">
             <li>Melakukan pemeriksaan lapangan dan konfirmasi</li>
             <li>Melakukan pemeriksaan dokumen</li>
             <li>Melakukan wawancara</li>
@@ -235,36 +241,25 @@
             $no = 1;
         @endphp
         @foreach ($pengawasan as $item)
-            <h4 style="margin: 50px 0 0 0; line-height: 1.5;">2.{{ $no }} {!! $item->judul !!}</h4>
+            <h4 style="margin: 50px 0 0 0;">2.{{ $no++ }} Temuan Pemeriksaan</h4>
+            <strong>{!! $item->judul !!}</strong>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
-                <span style="margin-left: 25px;">
-                    <strong>Kondisi :</strong> {!! $item->kondisi !!}
-                </span>
+                <strong>Kondisi :</strong> {!! $item->kondisi !!}
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
-                <span style="margin-left: 25px;">
-                    <strong>Kriteria :</strong> {!! $item->kriteria !!}
-                </span>
+                <strong>Kriteria :</strong> {!! $item->kriteria !!}
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
-                <span style="margin-left: 25px;">
-                    <strong>Sebab :</strong> {!! $item->sebab !!}
-                </span>
+                <strong>Sebab :</strong> {!! $item->sebab !!}
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
-                <span style="margin-left: 25px;">
-                    <strong>Akibat :</strong> {!! $item->akibat !!}
-                </span>
+                <strong>Akibat :</strong> {!! $item->akibat !!}
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
-                <span style="margin-left: 25px;">
-                    <strong>Rekomendasi :</strong> {!! $item->rekomendasi !!}
-                </span>
+                <strong>Rekomendasi :</strong> {!! $item->rekomendasi !!}
             </p>
             <p style="margin: 10px 0 0 0; padding: 0; text-align: justify; line-height: 1.5;">
-                <span style="margin-left: 25px;">
-                    <strong>Waktu Penyelesaian :</strong> {{ $item->waktu_penyelesaian }}
-                </span>
+                <strong>Waktu Penyelesaian :</strong> {{ $item->waktu_penyelesaian }}
             </p>
             @php
                 $no++;
@@ -281,20 +276,18 @@
             BAB III <br>
             KESIMPULAN DAN REKOMENDASI
         </h3>
-        <h4 style="margin: 50px 0 0 0;">3.1 Kesimpulan</h4>
-        <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
-            <span style="margin-left: 25px;">
-                {!! $title->kesimpulan !!}
-            </span>
+        <h4 style="margin: 20px 0 0 0;">3.1 Kesimpulan</h4>
+        <span style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">{!! $title->kesimpulan !!}</span>
+        <h4 style="margin: 20px 0 0 0;">3.2 Rekomendasi</h4>
+        <span style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">{!! $title->rekomendasi !!}</span>
+
+        <p style="margin: 20px 0 0 0; line-height: 1.5; text-align: justify;">
+            Demikianlah Laporan Hasil Pengawasan ini dibuat dan ditandatangani oleh Tim Pengawas Bidang
+            {{ $title->objek_pengawasan }} pada {{ $aplikasi->satuan_kerja }} dengan sebenarnya dan sesuai pada saat
+            proses pengawasan ini dilakukan.
         </p>
-        <h4 style="margin: 50px 0 0 0;">3.2 Rekomendasi</h4>
-        <p style="margin: 0; padding: 0; text-align: justify; line-height: 1.5;">
-            <span style="margin-left: 25px;">
-                {!! $title->rekomendasi !!}
-            </span>
-        </p>
-        <p style="margin-top: 100px;">
-            Lubuk Pakam, {{ \App\Helpers\TimeSession::convertDateToIndonesian(date('Y-m-d')) }} <br>
+        <p style="margin-top: 25px;">
+            {{ $kotaSurat }}, {{ \App\Helpers\TimeSession::convertDateToIndonesian(date('Y-m-d')) }} <br>
             Hormat Kami, <br>
             <strong>Hakim Pengawas Bidang {{ $title->objek_pengawasan }}</strong>
         </p>

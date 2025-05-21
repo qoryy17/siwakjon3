@@ -80,10 +80,20 @@
                             </div>
                         </li>
                         <li class="list-group-item px-0">
-                            <p class="mb-1 text-muted">Acara</p>
-                            <p class="mb-0" style="text-align: justify;">
-                                {!! $rapat->detailRapat->acara !!}
-                            </p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-1 text-muted">Acara</p>
+                                    <p class="mb-0" style="text-align: justify;">
+                                        {!! $rapat->detailRapat->acara !!}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1 text-muted">Dibuat Oleh</p>
+                                    <p class="mb-0" style="text-align: justify;">
+                                        {{ \App\Helpers\ViewUser::pengguna($rapat->dibuat) }}
+                                    </p>
+                                </div>
+                            </div>
                         </li>
                         <li class="list-group-item px-0">
                             <p class="mb-1 text-muted">Agenda</p>
@@ -128,8 +138,9 @@
                                 href="{{ route('rapat.print-undangan', ['id' => Crypt::encrypt($rapat->id)]) }}">
                                 <i class="fas fa-file-pdf"></i> Undangan
                             </a>
-                            <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateDaftarHadirModal"
-                                class="btn btn-warning btn-sm"><i class="fas fa-file-pdf"></i>
+                            <button data-pc-animate="fade-in-scale" data-bs-toggle="modal"
+                                data-bs-target="#animateDaftarHadirModal" class="btn btn-warning btn-sm"><i
+                                    class="fas fa-file-pdf"></i>
                                 Daftar Hadir
                             </button>
                             @if ($rapat->detailRapat->notulen != null)

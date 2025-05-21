@@ -198,8 +198,9 @@
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="pc_demo1">Keterangan <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="pc_demo1">Keterangan
+                                <span class="text-danger">*</span>
+                            </label>
                             <textarea name="keterangan" id="pc_demo1" class="form-control">{{ str_replace('<br />', '', $rapat ? $rapat->detailRapat->keterangan : 'Mengingat pentingnya rapat tersebut, dimohon agar Bapak/Ibu dapat menyiapkan agenda yang menjadi tanggung jawabnya dan dapat hadir tepat pada waktunya.') }}</textarea>
                             @error('keterangan')
                                 <small class="text-danger mt-1">* {{ $message }}</small>
@@ -209,7 +210,7 @@
                             <label class="form-label" for="pejabatPengganti">Pejabat Pengganti</label>
                             <select class="form-control" data-trigger name="pejabatPengganti" id="pejabatPengganti">
                                 <option value="">Pilih Pejabat/Pegawai</option>
-                                <option value="null">Tanpa Pejabat/Pegawai</option>
+                                {{-- <option value="">Tanpa Pejabat/Pegawai</option> --}}
                                 @foreach ($pejabatPengganti as $itemPejabat)
                                     <option value="{{ $itemPejabat->id }}"
                                         @if (old('pejabatPengganti') == $itemPejabat->id) selected @elseif($rapat && $rapat->pejabat_pengganti_id == $itemPejabat->id) selected @endif>
@@ -227,7 +228,7 @@
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="pejabatPenandatangan">Ditandatanganin Oleh
+                            <label class="form-label" for="pejabatPenandatangan">Ditandatangani Oleh
                                 <span class="text-danger">*</span>
                             </label>
                             <select class="form-control" data-trigger name="pejabatPenandatangan"
@@ -257,8 +258,8 @@
                         </div>
                     </form>
                 </div>
+                <!-- [ Main Content ] end -->
             </div>
-            <!-- [ Main Content ] end -->
         </div>
     </div>
     <!-- Date picker -->

@@ -33,7 +33,7 @@
                         <div class="col">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="ti ti-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Cari Hakim Pengawas..."
+                                <input type="text" class="form-control" placeholder="Cari Dengan NIP Atau Nama..."
                                     name="search">
                             </div>
                         </div>
@@ -69,12 +69,13 @@
                 <div class="alert alert-warning" role="alert">
                     <p class="m-0">
                         Hakim Pengawas belum tersedia, Saat ini mungkin saja hakim pengawas belum ditambahkan oleh
-                        Superadmin ataupun Administrator. <br>
+                        Superadmin ataupun Administrator. Atau <br>
+                        Pencarian belum ketemu nih, coba periksa kembali kata kunci pencarian kamu. <br><br>
                         Harap untuk mengecek kembali secara berkala <strong>Daftar Hakim Pengawas</strong>
                     </p>
                 </div>
                 <a href="{{ route('pengawasan.daftar-hakim-pengawas') }}" class="btn btn-primary">
-                    <i class="fas fa-recycle"></i> Muat Ulang
+                    <i class="fab fa-sistrix"></i> Cari Ulang
                 </a>
             @endif
 

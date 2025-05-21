@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Manajemen;
 
-use PDF;
 use Carbon\Carbon;
 use App\Helpers\TimeSession;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Facades\Pdf;
 use App\Http\Controllers\Controller;
-use App\Models\Manajemen\DetailKunjunganModel;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Pengaturan\AplikasiModel;
+use App\Models\Manajemen\TemuanWasbidModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Manajemen\ManajemenRapatModel;
+use App\Models\Manajemen\DetailKunjunganModel;
 use App\Models\Pengguna\PejabatPenggantiModel;
 use App\Models\Manajemen\DokumentasiRapatModel;
-use App\Models\Manajemen\KunjunganPengawasanModel;
 use App\Models\Manajemen\PengawasanBidangModel;
-use App\Models\Manajemen\TemuanWasbidModel;
+use App\Models\Manajemen\KunjunganPengawasanModel;
 
 class PrintPengawasanController extends Controller
 {
@@ -35,17 +35,20 @@ class PrintPengawasanController extends Controller
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
         $pegawai = PegawaiModel::with('jabatan')->findOrFail($rapat->pejabat_penandatangan);
+
+        $aplikasi = AplikasiModel::first();
+        $kotaSurat = explode("/", $aplikasi->kota)[0];
         $data = [
             'aplikasi' => AplikasiModel::first(),
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'pegawai' => $pegawai,
+            'kotaSurat' => $kotaSurat,
             'pejabatPengganti' => $pejabatPengganti,
             'url' => $url
         ];
-        $pdf = PDF::loadView('template.pdf-undangan-rapat', $data);
-        $pdf->setPaper('Folio', 'potrait');
-        return $pdf->stream('Undangan Rapat ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+        return Pdf::view('template.pdf-undangan-rapat', $data)
+            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
     }
     public function printDaftarHadirPengawasan(Request $request)
     {
@@ -61,9 +64,8 @@ class PrintPengawasanController extends Controller
             'peserta' => $peserta,
             'url' => $url
         ];
-        $pdf = PDF::loadView('template.pdf-daftar-hadir-rapat', $data);
-        $pdf->setPaper('Folio', 'potrait');
-        return $pdf->stream('Daftar Hadir Rapat ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+        return Pdf::view('template.pdf-daftar-hadir-rapat', $data)
+            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
     }
 
     public function printNotulaPengawasan(Request $request)
@@ -83,9 +85,8 @@ class PrintPengawasanController extends Controller
             'disahkan' => $disahkan,
             'url' => $url
         ];
-        $pdf = PDF::loadView('template.pdf-notula-rapat', $data);
-        $pdf->setPaper('Folio', 'potrait');
-        return $pdf->stream('Notula ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+        return Pdf::view('template.pdf-notula-rapat', $data)
+            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
     }
 
     public function printDokumentasiPengawasan(Request $request)
@@ -103,9 +104,8 @@ class PrintPengawasanController extends Controller
             'dokumentasi' => $dokumentasi,
             'url' => $url
         ];
-        $pdf = PDF::loadView('template.pdf-dokumentasi-rapat', $data);
-        $pdf->setPaper('Folio', 'potrait');
-        return $pdf->stream('Dokumentasi ' . $rapat->perihal . ' ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+        return Pdf::view('template.pdf-dokumentasi-rapat', $data)
+            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
 
     }
 
@@ -129,6 +129,8 @@ class PrintPengawasanController extends Controller
         // Generate QR code
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
+        $aplikasi = AplikasiModel::first();
+        $kotaSurat = explode("/", $aplikasi->kota)[0];
         $data = [
             'aplikasi' => AplikasiModel::first(),
             'rapat' => $rapat,
@@ -136,12 +138,12 @@ class PrintPengawasanController extends Controller
             'qrCode' => $qrCode,
             'title' => $pengawasan->first(),
             'periode' => $setPeriode,
+            'kotaSurat' => $kotaSurat,
             'url' => $url
         ];
 
-        $pdf = PDF::loadView('template.pdf-laporan-pengawasan', $data);
-        $pdf->setPaper('Folio', 'potrait');
-        return $pdf->stream('Laporan Pengawasan Bidang ' . $rapat->detailRapat->tanggal_rapat . '.pdf');
+        return Pdf::view('template.pdf-laporan-pengawasan', $data)
+            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
 
     }
 
@@ -161,8 +163,7 @@ class PrintPengawasanController extends Controller
             'hakim' => $hakim
         ];
 
-        $pdf = PDF::loadView('template.pdf-kunjungan-wasbid', $data);
-        $pdf->setPaper('Folio', 'potrait');
-        return $pdf->stream('Kunjungan Pengawasan Bidang ' . $kunjungan->unitKerja->unit_kerja . '.pdf');
+        return Pdf::view('template.pdf-kunjungan-wasbid', $data)
+            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
     }
 }

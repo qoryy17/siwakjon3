@@ -24,11 +24,6 @@
             <div class="card">
                 <div class="card-header">
                     <h3>Kunjungan Pengawasan</h3>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Perhatian !</strong> Harap mengisi kunjungan pengawasan oleh hakim pengawas bidang setiap
-                        bulan
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
                     @if (
                         \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::HAKIM->value ||
                             Auth::user()->roles == 'Superadmin' ||
@@ -38,6 +33,11 @@
                             <i class="ph-duotone ph-file-plus"></i> Tambah
                         </a>
                     @endif
+                    <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+                        <strong>Perhatian !</strong> Harap mengisi kunjungan pengawasan oleh hakim pengawas bidang setiap
+                        bulan
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
@@ -45,7 +45,6 @@
                             <thead>
                                 <tr>
                                     <th width="1%">No</th>
-                                    <th>Kode Kunjungan</th>
                                     <th>Unit Pengawasan</th>
                                     <th>Edoc</th>
                                     <th>Dibuat Oleh</th>
@@ -64,8 +63,10 @@
                                     @endphp
                                     <tr>
                                         <td>{{ $no }}</td>
-                                        <td>{{ $item->kode_kunjungan }}</td>
-                                        <td>{{ $item->unitKerja->unit_kerja }}</td>
+                                        <td>
+                                            {{ $item->unitKerja->unit_kerja }}<br>
+                                            Kode : {{ $item->kode_kunjungan }}
+                                        </td>
                                         <td>
                                             @if ($item->path_file_edoc != null)
                                                 <a target="_blank" href="{{ asset('storage/' . $item->path_file_edoc) }}"

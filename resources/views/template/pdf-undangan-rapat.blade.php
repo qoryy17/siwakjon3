@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- [Favicon] icon -->
-    <link rel="icon" href="{{ public_path('siwakjon2.png') }}" type="image/png" />
+    <link rel="icon" href="{{ asset('siwakjon2.png') }}" type="image/png" />
     <title>
         Undangan {{ $rapat->detailRapat->perihal }}
         {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->tanggal_rapat) }}
@@ -47,19 +47,19 @@
 
         .table-agenda {
             width: 100%;
-            margin-left: 65px;
+            margin-left: 40px;
         }
 
         .qrcode {
             position: fixed;
             right: 0%;
-            top: 95%;
+            top: 93%;
         }
 
         .url {
             position: fixed;
             right: 0%;
-            top: 101%;
+            top: 99%;
             font-size: 10px;
         }
     </style>
@@ -92,7 +92,8 @@
 
     <div class="body-content">
         <p style="text-align: right;">
-            Tanggal, {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->created_at) }}
+            {{ $kotaSurat }},
+            {{ \App\Helpers\TimeSession::convertDateToIndonesian($rapat->detailRapat->created_at) }}
         </p>
 
         <table class="table-content" cellpadding="2">
@@ -126,7 +127,7 @@
         <p style="text-align: justify;line-height: 1.5;">
             Dengan Hormat, <br>
             Mengharapkan kehadiran Bapak/Ibu {!! $rapat->detailRapat->peserta !!} {{ $aplikasi->satuan_kerja }} untuk
-            mengikuti <strong>"{{ $rapat->detailRapat->perihal }}"</strong> yang akan diselenggarakan pada :
+            mengikuti kegiatan <strong>"{{ $rapat->detailRapat->acara }}"</strong> yang akan diselenggarakan pada :
         </p>
         <table class="table-agenda" cellpadding="2">
             <tr>
