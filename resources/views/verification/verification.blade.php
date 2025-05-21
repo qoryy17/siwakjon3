@@ -75,24 +75,33 @@
                                 <img loading="lazy" style="max-width: 100px;" src="{{ asset('siwakjon2.png') }}"
                                     alt="images" class="img-fluid mb-3">
                                 <h4 class="f-w-500 mb-1">{{ env('APP_NAME') }}</h4>
-                                <p class="mb-3">
+                                <p class="text-muted">
                                     {{ env('APP_DESC') }}
                                 </p>
+                                <h4 class="mb-3">Verifikasi Dokumen</h4>
+                                <hr>
                             </div>
                             <form action="{{ route('verification') }}" method="GET">
                                 <div class="mb-3">
                                     <label for="search">Pencarian Dokumen <span class="text-danger">*</span></label>
                                     <input type="search" class="form-control mt-2" id="search" autocomplete="off"
-                                        placeholder="Masukan Kode Dokumen..." required value="{{ old('search') }}"
-                                        name="search">
+                                        placeholder="Masukan Kode Dokumen/ Nomor Dokumen..." required
+                                        value="{{ old('search') }}" name="search">
                                     @error('search')
                                         <small class="text-danger mt-2">* {{ $message }}</small>
                                     @enderror
                                 </div>
                                 <div class="d-grid mt-4">
                                     <button type="submit" class="btn btn-primary">Cari Dokumen</button>
-                                    <a href="{{ route('signin') }}" class="btn btn-warning mt-2">Kembali Ke
-                                        Login</a>
+                                    @if (Auth::check())
+                                        <a href="{{ url()->previous() }}" class="btn btn-warning mt-2">
+                                            Kembali Ke Halaman Sebelumnya
+                                        </a>
+                                    @else
+                                        <a href="{{ route('signin') }}" class="btn btn-warning mt-2">
+                                            Kembali Ke Login
+                                        </a>
+                                    @endif
                                 </div>
                             </form>
                         </div>
@@ -102,7 +111,7 @@
             @if ($result != null)
                 <div class="card container my-4">
                     <div class="card-header">
-                        <h3 class="m-0">Pencarian Dokumen</h3>
+                        <h3 class="m-0">Verifikasi Dokumen</h3>
                         <h4 class="mt-1 text-muted">Perihal : {{ $result['rapat']->detailRapat->perihal }}</h4>
                     </div>
                     <div class="card-body">

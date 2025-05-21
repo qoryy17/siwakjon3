@@ -13,11 +13,10 @@ class VerificationController extends Controller
         // Run validate
         $request->validate(
             [
-                'search' => 'string|uuid'
+                'search' => 'string'
             ],
             [
                 'search.string' => 'Pencarian harus berupa karakter valid !',
-                'search.uuid' => 'Kode Dokumen tidak valid !',
             ]
         );
 
@@ -30,14 +29,12 @@ class VerificationController extends Controller
             'result' => $searchData
         ];
 
-        // return $searchData;
-
         return view('verification.verification', $data);
     }
 
     protected function search($search)
     {
-        $manajemenRapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->where('kode_rapat', '=', $search);
+        $manajemenRapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->where('kode_rapat', '=', $search)->orWhere('nomor_dokumen', '=', $search);
 
         if ($manajemenRapat->exists()) {
 
