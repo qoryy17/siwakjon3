@@ -110,11 +110,11 @@
                                         @foreach ($result['temuan'] as $temuan)
                                             <tr>
                                                 <td style="vertical-align: top;">{{ $no }}</td>
-                                                <td style="vertical-align: top;">{{ $temuan->judul }}</td>
-                                                <td style="text-wrap: wrap; vertical-align: top;">{{ $temuan->kondisi }}
+                                                <td style="vertical-align: top;">{!! $temuan->judul !!}</td>
+                                                <td style="text-wrap: wrap; vertical-align: top;">{!! $temuan->kondisi !!}
                                                 </td>
                                                 <td style="text-wrap: wrap; vertical-align: top;">
-                                                    {{ $temuan->rekomendasi }}</td>
+                                                    {!! $temuan->rekomendasi !!}</td>
                                                 <td style="vertical-align: top;">{{ $temuan->waktu_penyelesaian }}</td>
                                                 <td style="vertical-align: top;">{{ $temuan->created_at }}</td>
                                             </tr>
