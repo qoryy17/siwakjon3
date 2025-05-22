@@ -92,7 +92,7 @@ class KunjunganController extends Controller
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
-        $hakim = HakimPengawasModel::with('pegawai')->whereHas('pegawai', function ($query) {
+        $hakim = HakimPengawasModel::with('unitKerja')->with('pegawai')->whereHas('pegawai', function ($query) {
             $query->orderBy('nama', 'asc');
         })->get();
 

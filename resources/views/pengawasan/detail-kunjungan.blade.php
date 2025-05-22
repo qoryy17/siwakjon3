@@ -224,7 +224,7 @@
         <!-- This form for make agenda (adding data action)-->
         <form action="{{ route('kunjungan.simpan-agenda') }}" method="POST">
             <div class="modal fade modal-animate" id="animateModalAgendaAdd" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Tambah Agenda Kunjungan</h5>
@@ -312,7 +312,7 @@
                                             @foreach ($hakim as $kimwas)
                                                 <option value="{{ $kimwas->id }}"
                                                     @if (old('unitKerja') == $kimwas->id) selected @endif>
-                                                    {{ $kimwas->pegawai->nama }}
+                                                    {{ $kimwas->pegawai->nama }} | {{ $kimwas->unitKerja->unit_kerja }}
                                                 </option>
                                             @endforeach
                                         </select>
