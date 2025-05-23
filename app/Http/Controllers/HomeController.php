@@ -76,7 +76,9 @@ class HomeController extends Controller
             'agendaRapat' => ViewUser::agendaRapat(),
             'informasi' => ViewUser::informasiPengembang(),
             'pengawasTercepat' => ViewUser::pengawasTercepat(),
-            'monev' => ViewUser::monev()
+            'monev' => ViewUser::monev(),
+            'statistikRapat' => $this->loadPieChart(),
+            'edocWasbidKosong' => ViewUser::edocWasbidKosong(),
         ];
 
         return view('home.home-admin', $data);
@@ -107,9 +109,25 @@ class HomeController extends Controller
             'agendaRapat' => ViewUser::agendaRapat(),
             'informasi' => ViewUser::informasiPengembang(),
             'rapatUser' => ViewUser::rapatUser(),
+            'carouselWasbid' => ViewUser::kimWasbid(),
+            'statistikRapat' => $this->loadPieChart(),
         ];
 
         return view('home.home-user', $data);
+    }
+
+    protected function loadPieChart()
+    {
+        $bulanan = ViewUser::countRapatByCategory('Bulanan');
+        $berjenjang = ViewUser::countRapatByCategory('Berjenjang');
+        $lainnya = ViewUser::countRapatByCategory('Lainnya');
+        $pengawasan = ViewUser::countRapatByCategory('Pengawasan');
+        return [
+            'bulanan' => $bulanan,
+            'berjenjang' => $berjenjang,
+            'lainnya' => $lainnya,
+            'pengawasan' => $pengawasan
+        ];
     }
 
     public function version()

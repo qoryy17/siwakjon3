@@ -52,4 +52,9 @@ class DetailRapatModel extends Model
         return $this->belongsTo(DokumentasiRapatModel::class);
     }
 
+    public function edocRapat(): BelongsTo
+    {
+        return $this->belongsTo(EdocRapatModel::class);
+    }
+
 }

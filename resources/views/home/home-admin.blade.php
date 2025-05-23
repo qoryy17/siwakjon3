@@ -30,7 +30,7 @@
                 <div class="col-md-4 col-sm-6">
                     <div class="card statistics-card-1 overflow-hidden ">
                         <div class="card-body">
-                            <img src="{{ asset('assets/images/img-status-4.svg') }}" alt="img"
+                            <img src="{{ asset('assets/images/img-status-9.svg') }}" alt="img"
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Rapat Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
@@ -38,7 +38,7 @@
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
                             <p class="text-muted text-sm mt-3 m-0">Periode
-                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }} {{ date('Y') }}
                             </p>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                 <div class="col-md-4 col-sm-6">
                     <div class="card statistics-card-1 overflow-hidden ">
                         <div class="card-body">
-                            <img src="{{ asset('assets/images/img-status-4.svg') }}" alt="img"
+                            <img src="{{ asset('assets/images/img-status-9.svg') }}" alt="img"
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Pengawasan Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
@@ -54,7 +54,7 @@
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
                             <p class="text-muted text-sm mt-3 m-0">Periode
-                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }} {{ date('Y') }}
                             </p>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                 <div class="col-md-4 col-sm-6">
                     <div class="card statistics-card-1 overflow-hidden ">
                         <div class="card-body">
-                            <img src="{{ asset('assets/images/img-status-4.svg') }}" alt="img"
+                            <img src="{{ asset('assets/images/img-status-9.svg') }}" alt="img"
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Monev Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
@@ -70,7 +70,7 @@
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
                             <p class="text-muted text-sm mt-3 m-0">Periode
-                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }} {{ date('Y') }}
                             </p>
                         </div>
                     </div>
@@ -78,7 +78,18 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4 col-sm-12">
+                <div class="col-md-5 col-sm-12">
+                    <!-- Statistik Rapat -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Statistik Rapat Tahun {{ date('Y') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="statistik-rapat" style="height:200px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Pengawasan Tercepat -->
                     @if ($pengawasTercepat != null)
                         @if ($pengawasTercepat->exists())
                             @php
@@ -86,6 +97,9 @@
                             @endphp
                             @foreach ($hakim as $pengawas)
                                 <div class="card">
+                                    <div class="card-header">
+                                        <h5>Pengawas Tercepat</h5>
+                                    </div>
                                     <div class="card-body position-relative">
                                         <div class="text-center mt-3">
                                             <div class="chat-avtar d-inline-flex mx-auto">
@@ -106,20 +120,13 @@
                                 </div>
                             @endforeach
                         @endif
-                    @else
-                        <div class="card">
-                            <div class="card-body">
-                                <p class="text-center">
-                                    Belum ada pengawasan tercepat...!!!
-                                </p>
-                            </div>
-                        </div>
                     @endif
                 </div>
-                <div class="col-md-8 col-sm-12">
+                <div class="col-md-7 col-sm-12">
+                    <!-- Pelaksanaan Monev -->
                     <div class="card">
                         <div class="card-header">
-                            <h5>Agenda Monev Terbaru</h5>
+                            <h5>Pelaksanaan Monev</h5>
                         </div>
                         <div class="card-body px-0 py-2">
                             <ul class="list-group list-group-flush">
@@ -132,20 +139,70 @@
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 mx-3">
                                                     {{ $itemMonev->nama_agenda }} <br>
-                                                    <small class="text-success">Dibuat oleh : {{ $dibuat->name }} |
-                                                        {{ $itemMonev->created_at }}</small>
+                                                    <small class="text-success">
+                                                        Dibuat oleh : {{ $dibuat->name }} | {{ $itemMonev->created_at }}
+                                                    </small>
                                                 </div>
                                             </div>
                                         </li>
                                     @endforeach
                                 @else
                                     <li class="list-group-item">
-                                        <p>
-                                            Belum ada agenda monev terbaru...!!!
-                                        </p>
+                                        <div class="alert alert-warning m-0 d-flex align-items-center gap-2" role="alert">
+                                            <i class="ti ti-alert-circle f-30"></i> Belum ada pelaksanaan monev terbaru !
+                                        </div>
                                     </li>
                                 @endif
                             </ul>
+                        </div>
+                    </div>
+
+                    <!-- Pengawasan Belum Lengkap -->
+                    <div class="card table-card">
+                        <div class="card-header d-flex align-items-center justify-content-between py-3">
+                            <h5>Edoc Pengawasan Belum Lengkap</h5>
+                        </div>
+                        <div class="card-body">
+                            @if ($edocWasbidKosong->exists())
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Pengawasan</th>
+                                                <th>Tanggal Rapat</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php
+                                                $no = 1;
+                                            @endphp
+                                            @foreach ($edocWasbidKosong->get() as $item)
+                                                <tr>
+                                                    <td>{{ $no++ }}</td>
+                                                    <td>
+                                                        {{ $item->objek_pengawasan }}
+                                                    </td>
+                                                    <td>
+                                                        {{ \App\Helpers\TimeSession::convertDateToIndonesian($item->tanggal_rapat) }}
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{ route('pengawasan.detail', ['id' => Crypt::encrypt($item->detailRapat->manajemen_rapat_id)]) }}"
+                                                            class="avtar avtar-xs btn-link-secondary">
+                                                            <i class="ti ti-eye f-20"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="alert alert-warning m-0 d-flex align-items-center gap-2" role="alert">
+                                    <i class="ti ti-alert-circle f-30"></i> Belum ada pengawasan yang dilaksanakan !
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -167,7 +224,8 @@
                                 <div class="simplebar-mask">
                                     <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
                                         <div class="simplebar-content-wrapper" tabindex="0" role="region"
-                                            aria-label="scrollable content" style="height: 100%; overflow: hidden scroll;">
+                                            aria-label="scrollable content"
+                                            style="height: 100%; overflow: hidden scroll;">
                                             <div class="simplebar-content" style="padding: 0px;">
                                                 <div class="card-body">
                                                     @if ($agendaRapat->exists())
@@ -306,6 +364,9 @@
                                     style="height: 289px; transform: translate3d(0px, 0px, 0px); display: block;"></div>
                             </div>
                         </div>
+                        <div class="card-footer text-center">
+                            {{ env('APP_DESC') }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -318,7 +379,47 @@
             <!-- [ Main Content ] end -->
         </div>
     </div>
+    <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>
     <script>
+        // [ statistik-rapat ] start
+        (function() {
+            var options = {
+                chart: {
+                    height: 300,
+                    type: 'pie',
+                },
+                series: [{{ $statistikRapat['bulanan'] }}, {{ $statistikRapat['berjenjang'] }},
+                    {{ $statistikRapat['lainnya'] }}, {{ $statistikRapat['pengawasan'] }}
+                ],
+                labels: ["Bulanan", "Berjenjang", "Lainnya", "Pengawasan"],
+                legend: {
+                    show: true,
+                    offsetY: 50,
+                },
+                theme: {
+                    monochrome: {
+                        enabled: false,
+                        color: '#1DE9B6',
+                    }
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        chart: {
+                            height: 300,
+
+                        },
+                        legend: {
+                            position: 'bottom',
+                            offsetY: 0,
+                        }
+                    }
+                }]
+            }
+            var chart = new ApexCharts(document.querySelector("#statistik-rapat"), options);
+            chart.render();
+        })();
+        // [ statistik-rapat ] end
         window.onload = function() {
             if (!localStorage.getItem('modalNotificationShown')) {
                 let modal = new bootstrap.Modal(document.getElementById('modalNotification'), {

@@ -37,4 +37,9 @@ class PengawasanBidangModel extends Model
     {
         return $this->belongsTo(TemuanWasbidModel::class, 'id', 'pengawasan_bidang_id');
     }
+
+    public function edocWasbid(): BelongsTo
+    {
+        return $this->belongsTo(EdocWasbidModel::class, 'id', 'pengawasan_bidang_id');
+    }
 }

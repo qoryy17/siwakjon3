@@ -179,14 +179,6 @@
                     <div class="card">
                         <div class="card-header d-flex align-items-center justify-content-between py-3">
                             <h5>Pengguna</h5>
-                            <div class="dropdown">
-                                <a class="avtar avtar-xs btn-link-secondary dropdown-toggle arrow-none" href="#"
-                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                        class="material-icons-two-tone f-18">more_vert</i></a>
-                                <div class="dropdown-menu dropdown-menu-end" style="">
-                                    <a class="dropdown-item" href="#">Lihat</a>
-                                </div>
-                            </div>
                         </div>
                         <div class="card-body">
                             <div class="d-flex align-items-end mb-3">

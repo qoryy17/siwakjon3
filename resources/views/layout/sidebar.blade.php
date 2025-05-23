@@ -5,7 +5,7 @@
             <a href="{{ $routeHome }}" class="b-brand text-primary">
                 <!-- ========   Change your logo from here   ============ -->
                 <img src="{{ asset('siwakjon2.png') }}" alt="logo" style="max-width: 50px;" />
-                <span class="badge bg-success rounded-pill ms-2 theme-version">SIWAKJON
+                <span class="badge bg-success rounded-pill ms-2 theme-version">{{ env('APP_NAME') }}
                     {{ $app ? 'Version ' . $app->patch_version : '' }}
                 </span>
             </a>

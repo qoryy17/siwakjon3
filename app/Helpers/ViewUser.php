@@ -6,6 +6,7 @@ use App\Models\Arsip\AgendaMonevModel;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Arsip\ArsipMonevModel;
+use App\Models\Hakim\HakimPengawasModel;
 use App\Models\Manajemen\DetailRapatModel;
 use App\Models\Manajemen\EdocWasbidModel;
 use App\Models\Manajemen\ManajemenRapatModel;
@@ -99,7 +100,7 @@ class ViewUser
         return ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')
             ->whereMonth('created_at', date('m'))
             ->whereYear('created_at', date('Y'))
-            ->where('dibuat', '=', Auth::user()->id)->orderBy('created_at', 'desc')->limit(5);
+            ->where('dibuat', '=', Auth::user()->id)->orderBy('created_at', 'desc')->limit(10);
     }
 
     public static function pengawasTercepat()
@@ -120,6 +121,37 @@ class ViewUser
 
     public static function monev()
     {
-        return AgendaMonevModel::orderBy('created_at', 'desc')->limit(3);
+        return AgendaMonevModel::orderBy('created_at', 'desc')->limit(5);
+    }
+
+    public static function countRapatByCategory($category)
+    {
+        return ManajemenRapatModel::with('klasifikasiRapat')->whereHas('klasifikasiRapat', function ($query) use ($category) {
+            $query->where('rapat', $category);
+        })->whereYear('created_at', date('Y'))->count();
+    }
+
+    public static function edocWasbidKosong()
+    {
+        return PengawasanBidangModel::with('detailRapat')->with('edocWasbid')
+            ->whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->orderBy('created_at', 'desc')->limit(5);
+    }
+
+    public static function kimWasbid()
+    {
+        $kimWasbid = HakimPengawasModel::with('pegawai')->with('unitKerja')->whereHas('pegawai', function ($query) {
+            $query->where('aktif', 'Y');
+        })->where('aktif', 'Y')->orderBy('ordering', 'asc');
+
+        $countKimWasbid = HakimPengawasModel::with('pegawai')->with('unitKerja')->whereHas('pegawai', function ($query) {
+            $query->where('aktif', 'Y');
+        })->where('aktif', 'Y')->count();
+
+        return [
+            'kimWasbid' => $kimWasbid,
+            'countKimWasbid' => $countKimWasbid,
+        ];
     }
 }
