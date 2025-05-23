@@ -18,10 +18,11 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 (function () {
-    new SimpleMDE({
-        element: document.querySelector("#pc_demo1"),
-    });
-
+    if (document.querySelector("#pc_demo1")) {
+        new SimpleMDE({
+            element: document.querySelector("#pc_demo1"),
+        });
+    }
     if (document.querySelector("#releaseDate")) {
         const d_week = new Datepicker(document.querySelector("#releaseDate"), {
             buttonClass: "btn",

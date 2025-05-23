@@ -335,7 +335,8 @@
         </form>
         @if ($detailKunjungan->exists())
             <form action="{{ route('kunjungan.simpan-agenda') }}" method="POST" id="formAgendaEdit">
-                <div class="modal fade modal-animate" id="animateModalAgendaEdit" tabindex="-1" aria-hidden="true">
+                <div class="modal fade modal-animate" data-pc-animate="fade-in-scale" id="animateModalAgendaEdit"
+                    tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -495,6 +496,8 @@
         @endif
         <!-- Simplemde -->
         <script src="{{ asset('assets/js/plugins/simplemde.min.js') }}"></script>
+        <!-- Ckeditor js -->
+        <script src="{{ asset('assets/js/plugins/ckeditor/classic/ckeditor.js') }}"></script>
         <!--- Bootstrap bundle js -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Date picker -->
@@ -502,6 +505,34 @@
         <!-- Time picker -->
         <script src="{{ asset('assets/js/plugins/flatpickr.min.js') }}"></script>
         <script>
+            (function() {
+                // new SimpleMDE({
+                //     element: document.querySelector("#pembahasan"),
+                // });
+                ClassicEditor.create(document.querySelector('#pembahasan'), {
+                    toolbar: {
+                        items: [
+                            'heading', '|',
+                            'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                            'insertTable', '|', 'mediaEmbed',
+                            'undo', 'redo'
+                        ]
+                    },
+                    removePlugins: ['ImageUpload', 'EasyImage', 'CKFinderUploadAdapter', 'CKFinder']
+                }).catch((error) => {
+                    console.error(error);
+                });
+
+                const d_week = new Datepicker(document.querySelector("#tanggal"), {
+                    buttonClass: "btn",
+                });
+
+            })();
+
+            document.querySelector('#waktu').flatpickr({
+                enableTime: true,
+                noCalendar: true
+            });
             var animateModalAgendaAdd = document.getElementById('animateModalAgendaAdd');
             animateModalAgendaAdd.addEventListener('show.bs.modal', function(event) {
                 var button = event.relatedTarget;
@@ -550,29 +581,25 @@
                 removeClassByPrefix(document.body, 'anim-');
             });
         </script>
-        <script>
-            (function() {
-                new SimpleMDE({
-                    element: document.querySelector("#pembahasan"),
-                });
-
-                const d_week = new Datepicker(document.querySelector("#tanggal"), {
-                    buttonClass: "btn",
-                });
-
-            })();
-
-            document.querySelector('#waktu').flatpickr({
-                enableTime: true,
-                noCalendar: true
-            });
-        </script>
         @if ($detailKunjungan->exists())
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     // for form edit temuan
-                    let pembahasanEdit = new SimpleMDE({
-                        element: document.querySelector("#pembahasanEdit"),
+                    let pembahasanEdit;
+                    ClassicEditor.create(document.querySelector('#pembahasanEdit'), {
+                        toolbar: {
+                            items: [
+                                'heading', '|',
+                                'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                                'insertTable', '|', 'mediaEmbed',
+                                'undo', 'redo'
+                            ]
+                        },
+                        removePlugins: ['ImageUpload', 'EasyImage', 'CKFinderUploadAdapter', 'CKFinder']
+                    }).then(editor => {
+                        pembahasanEdit = editor;
+                    }).catch(error => {
+                        console.error(error);
                     });
 
                     const editButtons = document.querySelectorAll('.edit-kunjungan');
@@ -580,7 +607,7 @@
                     const editForm = document.getElementById('formAgendaEdit');
 
                     editButtons.forEach(button => {
-                        button.addEventListener('click', function() {
+                        button.addEventListener('click', async function() {
                             const id = this.getAttribute('data-id');
                             const tanggal = this.getAttribute('data-tanggal');
                             const waktu = this.getAttribute('data-waktu');
@@ -592,7 +619,6 @@
                             document.getElementById('tanggalEdit').value = tanggal;
                             document.getElementById('waktuEdit').value = waktu;
                             document.getElementById('agendaEdit').value = agenda;
-                            document.getElementById('pembahasanEdit').value = pembahasan;
                             // document.getElementById('hakimEdit').value = hakimPengawas;
                             const selectHakim = document.getElementById('hakimEdit');
 
@@ -606,8 +632,7 @@
                                     }
                                 });
                             }
-                            // loaded incoming data on simplemde
-                            pembahasanEdit.value(pembahasan);
+                            pembahasanEdit.setData(pembahasan);
                             editModal.show();
                         });
                     });

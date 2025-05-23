@@ -32,14 +32,16 @@ class PrintRapatController extends Controller
 
         $aplikasi = AplikasiModel::first();
         $kotaSurat = explode("/", $aplikasi->kota)[0];
+        $kabSurat = explode("/", $aplikasi->kota)[1];
         $data = [
-            'aplikasi' => AplikasiModel::first(),
+            'aplikasi' => $aplikasi,
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'pegawai' => $pegawai,
             'kotaSurat' => $kotaSurat,
             'pejabatPengganti' => $pejabatPengganti,
-            'url' => $url
+            'url' => $url,
+            'kabSurat' => $kabSurat
         ];
         return Pdf::view('template.pdf-undangan-rapat', $data)
             ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
@@ -51,12 +53,15 @@ class PrintRapatController extends Controller
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
+        $aplikasi = AplikasiModel::first();
+        $kabSurat = explode("/", $aplikasi->kota)[1];
         $data = [
-            'aplikasi' => AplikasiModel::first(),
+            'aplikasi' => $aplikasi,
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'peserta' => $peserta,
-            'url' => $url
+            'url' => $url,
+            'kabSurat' => $kabSurat
         ];
         return Pdf::view('template.pdf-daftar-hadir-rapat', $data)
             ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
@@ -71,13 +76,16 @@ class PrintRapatController extends Controller
 
         $notulis = PegawaiModel::findOrFail($rapat->detailRapat->notulen);
         $disahkan = PegawaiModel::findOrFail($rapat->detailRapat->disahkan);
+        $aplikasi = AplikasiModel::first();
+        $kabSurat = explode("/", $aplikasi->kota)[1];
         $data = [
-            'aplikasi' => AplikasiModel::first(),
+            'aplikasi' => $aplikasi,
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'notulis' => $notulis,
             'disahkan' => $disahkan,
-            'url' => $url
+            'url' => $url,
+            'kabSurat' => $kabSurat
         ];
         return Pdf::view('template.pdf-notula-rapat', $data)
             ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
@@ -91,12 +99,15 @@ class PrintRapatController extends Controller
 
         $url = url('/verification') . '/' . $rapat->kode_rapat;
         $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
+        $aplikasi = AplikasiModel::first();
+        $kabSurat = explode("/", $aplikasi->kota)[1];
         $data = [
-            'aplikasi' => AplikasiModel::first(),
+            'aplikasi' => $aplikasi,
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'dokumentasi' => $dokumentasi,
-            'url' => $url
+            'url' => $url,
+            'kabSurat' => $kabSurat
         ];
         return Pdf::view('template.pdf-dokumentasi-rapat', $data)
             ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();

@@ -201,7 +201,7 @@ class KunjunganController extends Controller
             'tanggal' => Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggal')))->format('Y-m-d'),
             'waktu' => htmlspecialchars($request->input('waktu')),
             'agenda' => htmlspecialchars($request->input('agenda')),
-            'pembahasan' => nl2br($request->input('pembahasan')),
+            'pembahasan' => $request->input('pembahasan'),
             'hakim_pengawas_id' => htmlspecialchars($request->input('hakim')),
         ];
 

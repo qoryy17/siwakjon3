@@ -81,7 +81,7 @@
                     </h4>
                     <p style="margin: 0;font-size:13px;">
                         {{ $aplikasi->alamat }} <br>
-                        {{ $aplikasi->kota }} {{ $aplikasi->kode_pos }}, {{ $aplikasi->website }},
+                        {{ $kabSurat }} {{ $aplikasi->kode_pos }}, {{ $aplikasi->website }},
                         {{ $aplikasi->email }}
                     </p>
                 </td>
