@@ -50,7 +50,8 @@
                     </a>
 
                     <a class="btn btn-secondary btn-sm" href="{{ route('monev.index') }}"><i class="fas fa-reply-all"></i>
-                        Kembali</a>
+                        Kembali
+                    </a>
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -239,73 +240,80 @@
                                                     })();
                                                 </script>
                                             @endif
-                                            <a href="javascript:void(0);" data-bs-toggle="modal"
-                                                data-bs-target="#animateModalUnggah{{ $no }}"
-                                                class="avtar avtar-xs btn-link-secondary">
-                                                <i class="ti ti-file-text f-20"></i>
-                                            </a>
-                                            <form action="{{ route('monev.unggah-monev') }}" method="POST"
-                                                enctype="multipart/form-data">
-                                                <div class="modal fade modal-animate"
-                                                    id="animateModalUnggah{{ $no }}" tabindex="-1"
-                                                    aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Unggah Laporan Monev</h5>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close">
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                @csrf
-                                                                @method('POST')
-                                                                <div class="mb-3" hidden>
-                                                                    <label class="form-label" for="nomorAgenda">
-                                                                        Nomor Agenda
-                                                                        <span class="text-danger">*</span>
-                                                                    </label>
-                                                                    <input type="text" class="form-control"
-                                                                        name="nomorAgenda" id="nomorAgenda"
-                                                                        placeholder="Nomor Agenda..."
-                                                                        value="{{ Crypt::encrypt($agendaMonev->id) }}"
-                                                                        required readonly>
+                                            @if (
+                                                $item->unitKerja === \App\Helpers\ViewUser::unitKerja()->unit_kerja ||
+                                                    Auth::user()->roles == App\Enum\RolesEnum::SUPERADMIN->value ||
+                                                    Auth::user()->roles == App\Enum\RolesEnum::ADMIN->value)
+                                                <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                    data-bs-target="#animateModalUnggah{{ $no }}"
+                                                    class="avtar avtar-xs btn-link-secondary">
+                                                    <i class="ti ti-file-text f-20"></i>
+                                                </a>
+                                                <form action="{{ route('monev.unggah-monev') }}" method="POST"
+                                                    enctype="multipart/form-data">
+                                                    <div class="modal fade modal-animate"
+                                                        id="animateModalUnggah{{ $no }}" tabindex="-1"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Unggah Laporan Monev</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal" aria-label="Close">
+                                                                    </button>
                                                                 </div>
-                                                                <div class="mb-3" hidden>
-                                                                    <label class="form-label" for="idAgenda">
-                                                                        ID Agenda
-                                                                        <span class="text-danger">*</span>
-                                                                    </label>
-                                                                    <input type="text" class="form-control"
-                                                                        name="idAgenda" id="idAgenda"
-                                                                        placeholder="ID Agenda..."
-                                                                        value="{{ Crypt::encrypt($item->id) }}" required
-                                                                        readonly>
+                                                                <div class="modal-body">
+                                                                    @csrf
+                                                                    @method('POST')
+                                                                    <div class="mb-3" hidden>
+                                                                        <label class="form-label" for="nomorAgenda">
+                                                                            Nomor Agenda
+                                                                            <span class="text-danger">*</span>
+                                                                        </label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="nomorAgenda" id="nomorAgenda"
+                                                                            placeholder="Nomor Agenda..."
+                                                                            value="{{ Crypt::encrypt($agendaMonev->id) }}"
+                                                                            required readonly>
+                                                                    </div>
+                                                                    <div class="mb-3" hidden>
+                                                                        <label class="form-label" for="idAgenda">
+                                                                            ID Agenda
+                                                                            <span class="text-danger">*</span>
+                                                                        </label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="idAgenda" id="idAgenda"
+                                                                            placeholder="ID Agenda..."
+                                                                            value="{{ Crypt::encrypt($item->id) }}"
+                                                                            required readonly>
+                                                                    </div>
+                                                                    <div class="form-file mb-3">
+                                                                        <label class="form-label" for="fileMonev">
+                                                                            File PDF Laporan Monev & Tindaklanjut
+                                                                            <span class="text-danger">*</span>
+                                                                        </label>
+                                                                        <input type="file" class="form-control"
+                                                                            aria-label="fileMonev" id="fileMonev"
+                                                                            name="fileMonev">
+                                                                        <small class="text-danger mt-1">
+                                                                            * File PDF Laporan Monev & Tindaklanjut maksimal
+                                                                            berukuran 10MB
+                                                                        </small>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="form-file mb-3">
-                                                                    <label class="form-label" for="fileMonev">
-                                                                        File PDF Laporan Monev & Tindaklanjut
-                                                                        <span class="text-danger">*</span>
-                                                                    </label>
-                                                                    <input type="file" class="form-control"
-                                                                        aria-label="fileMonev" id="fileMonev"
-                                                                        name="fileMonev">
-                                                                    <small class="text-danger mt-1">
-                                                                        * File PDF Laporan Monev & Tindaklanjut maksimal
-                                                                        berukuran 10MB
-                                                                    </small>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary shadow-2">Simpan</button>
                                                                 </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Batal</button>
-                                                                <button type="submit"
-                                                                    class="btn btn-primary shadow-2">Simpan</button>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </form>
+                                                </form>
+                                            @else
+                                                <span class="text-danger">Tidak Berwenang</span>
+                                            @endif
                                         </td>
                                     </tr>
                                     @php

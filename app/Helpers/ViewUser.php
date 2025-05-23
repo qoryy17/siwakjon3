@@ -35,18 +35,22 @@ class ViewUser
         return $user->name;
     }
 
+    public static function unitKerja()
+    {
+        $user = User::with('unitKerja')->find(Auth::user()->id);
+        if (!$user) {
+            return null;
+        }
+        return $user;
+    }
+
     public static function jabatan()
     {
-        $pegawai = PegawaiModel::find(Auth::user()->pegawai_id);
+        $pegawai = PegawaiModel::with('jabatan')->find(Auth::user()->pegawai_id);
         if (!$pegawai) {
             return 'Unknown';
         }
-
-        $jabatan = JabatanModel::find($pegawai->jabatan_id);
-        if (!$jabatan) {
-            return 'Unknown';
-        }
-        return $jabatan->jabatan;
+        return $pegawai->jabatan->jabatan;
     }
 
     public static function countPengguna()

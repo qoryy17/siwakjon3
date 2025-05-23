@@ -75,20 +75,10 @@
                                         <td style="vertical-align: top;">{{ $item->created_at }}</td>
                                         <td style="vertical-align: top;">{{ $item->updated_at }}</td>
                                         <td style="vertical-align: top;">
-                                            @if (Auth::user()->unit_kerja_id == $item->unit_kerja_id)
-                                                <a href="{{ route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($item->id)]) }}"
-                                                    class="avtar avtar-xs btn-link-secondary">
-                                                    <i class="ti ti-eye f-20"></i>
-                                                </a>
-                                            @elseif (Auth::user()->roles === App\Enum\RolesEnum::ADMIN->value ||
-                                                    Auth::user()->roles === App\Enum\RolesEnum::SUPERADMIN->value)
-                                                <a href="{{ route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($item->id)]) }}"
-                                                    class="avtar avtar-xs btn-link-secondary">
-                                                    <i class="ti ti-eye f-20"></i>
-                                                </a>
-                                            @else
-                                                <span class="text-danger">Tidak Berwenang</span>
-                                            @endif
+                                            <a href="{{ route('monev.detailAgendaMonev', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                class="avtar avtar-xs btn-link-secondary">
+                                                <i class="ti ti-eye f-20"></i>
+                                            </a>
                                             @if (Auth::user()->roles != App\Enum\RolesEnum::USER->value)
                                                 <a href="{{ route('monev.formAgendaMonev', ['param' => Crypt::encrypt('edit'), 'id' => Crypt::encrypt($item->id)]) }}"
                                                     class="avtar avtar-xs btn-link-secondary">
