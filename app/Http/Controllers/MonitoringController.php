@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Query;
+use App\Helpers\QueryHelper;
 use App\Helpers\RouteLink;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +25,7 @@ class MonitoringController extends Controller
             'title' => env('APP_NAME') . ' | ' . 'Monitoring Rapat',
             'routeHome' => $routeHome,
             'breadcumbs' => $breadcumb,
-            'rapat' => Query::getMonitoringRapat()
+            'rapat' => QueryHelper::getMonitoringRapat()
         ];
 
         return view('monitoring.data-monitoring-rapat', $data);

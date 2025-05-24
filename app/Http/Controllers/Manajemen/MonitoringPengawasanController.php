@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Manajemen;
 
-use App\Helpers\Query;
+use App\Helpers\QueryHelper;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pengaturan\AplikasiModel;
-use App\Models\Manajemen\PengawasanBidangModel;
 use App\Models\Manajemen\TemuanWasbidModel;
 
 class MonitoringPengawasanController extends Controller
@@ -41,7 +40,7 @@ class MonitoringPengawasanController extends Controller
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'aplikasi' => AplikasiModel::first(),
-            'objekPengawasan' => Query::objekPengawasan(),
+            'objekPengawasan' => QueryHelper::objekPengawasan(),
             'result' => $resultSearch
         ];
 

@@ -5,7 +5,7 @@ namespace App\Helpers;
 use App\Models\Pengaturan\UnitKerjaModel;
 use App\Models\Manajemen\ManajemenRapatModel;
 
-class Query
+class QueryHelper
 {
     public static function objekPengawasan()
     {

@@ -210,6 +210,13 @@ class RapatController extends Controller
 
         $uniqueKodeRapat = Str::uuid();
 
+        // Reject perihal ibadah on rapat
+        \App\Helpers\ProbihitionHelper::rejectIbadahOnRapat([
+            'perihal' => $requestRapat->input('perihal'),
+            'acara' => $requestRapat->input('acara'),
+            'agenda' => $requestRapat->input('agenda'),
+        ]);
+
         if ($paramIncoming == 'save') {
             // Denial backward meeting date
             $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->startOfDay();
