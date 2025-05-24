@@ -36,6 +36,12 @@
         <!-- [Mobile Media Block end] -->
         <div class="ms-auto">
             <ul class="list-unstyled">
+                <li class="pc-h-item d-none d-md-inline-flex">
+                    <a href="{{ route('verification') }}" class="btn btn-light-primary">
+                        <i class="ti ti-file-check"></i>
+                        <span class="pc-h-text">Cek Verifikasi Dokumen</span>
+                    </a>
+                </li>
                 <li class="dropdown pc-h-item d-none d-md-inline-flex">
                     <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                         role="button" aria-haspopup="false" aria-expanded="false">

@@ -48,7 +48,7 @@
                                             <p class="mb-0 fw-bold">{{ env('APP_AUTHOR') }}</p>
                                         </div>
                                         <div class="col-md-8">
-                                            <p class="mb-1 text-muted">Lisensi Langganan</p>
+                                            <p class="mb-1 text-muted">Lisensi Aplikasi</p>
                                             <p class="mb-0 fw-bold">Pertahun</p>
                                         </div>
                                     </div>
@@ -56,11 +56,11 @@
                                 <li class="list-group-item px-0">
                                     <p class="mb-1 text-muted">Keterangan</p>
                                     <p class="mb-0" style="text-align: justify;">
-                                        Sistem Informasi Pengawasan Dan Kendali Jadwal Pelaporan (SIWAKJON)
-                                        Merupakan Inovasi Dari Pengadilan Negeri Lubuk Pakam. Yang Bertujuan Untuk
-                                        Memudahkan Penataan Dokumen Rapat, Pengawasan, Laporan Monitoring dan Evaluasi Serta
-                                        Arsip Surat Keputusan Pada Lingkungan Pengadilan Negeri
-                                        Lubuk Pakam.
+                                        Sistem Informasi Pengawasan dan Kendali Jadwal Pelaporan (SIWAKJON)
+                                        merupakan inovasi dari Pengadilan Negeri Lubuk Pakam yang telah hadir sejak tahun
+                                        2020. SIWAKJON bertujuan untuk memudahkan penataan dokumen rapat, pengawasan,
+                                        laporan monitoring dan evaluasi, serta arsip surat keputusan di lingkungan
+                                        Pengadilan Negeri Lubuk Pakam.
                                     </p>
                                 </li>
                                 <li class="list-group-item px-0">
@@ -78,7 +78,7 @@
                                         <li>Setiap pengguna dalam membuat dokumen rapat terkait monitoring dan evaluasi,
                                             wajib mengisi agenda monev pada aplikasi.</li>
                                         <li>Apabila pengguna melanggar ketentuan dalam kebijakan aplikasi ini maka akan akun
-                                            pengguna akan disuspend.</li>
+                                            pengguna akan diblokir.</li>
                                     </ol>
                                     </p>
                                 </li>
@@ -123,7 +123,8 @@
                                         <p class="my-1"><i class="ti ti-brand-instagram"></i> Just Message, No Call</p>
                                     </div>
                                     <div class="flex-shrink-0">
-                                        <a href="https://wa.me/6281376472224" class="avtar avtar-s btn-link-secondary">
+                                        <a target="_blank" href="https://wa.me/6281376472224"
+                                            class="avtar avtar-s btn-link-secondary">
                                             <i class="ti ti-send f-18"></i>
                                         </a>
                                     </div>
@@ -136,7 +137,7 @@
                                         <p class="my-1"><i class="ti ti-brand-whatsapp"></i> Just Message, No Call</p>
                                     </div>
                                     <div class="flex-shrink-0">
-                                        <a href="https://www.instagram.com/qori_chairawan17/"
+                                        <a target="_blank" href="https://www.instagram.com/qori_chairawan17/"
                                             class="avtar avtar-s btn-link-secondary">
                                             <i class="ti ti-send f-18"></i>
                                         </a>
