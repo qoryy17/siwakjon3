@@ -46,6 +46,7 @@ class HomeController extends Controller
             'countRapat' => ViewUser::countRapat(),
             'agendaRapat' => ViewUser::agendaRapat(),
             'logs' => LogsModel::with('user')->orderBy('created_at', 'desc')->first(),
+            'statistikRapat' => $this->loadPieChart(),
         ];
 
         return view('home.home-superadmin', $data);

@@ -7,6 +7,7 @@ use App\Http\Middleware\NonAuthMiddleware;
 use App\Http\Controllers\LicenseController;
 use App\Http\Middleware\RejectUserMiddleware;
 use App\Http\Middleware\SuperadminMiddleware;
+use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\Arsip\MonevController;
 use App\Http\Controllers\Auth\SigninController;
 use App\Http\Controllers\VerificationController;
@@ -307,3 +308,9 @@ Route::prefix('pengaturan-aplikasi')->middleware([AuthMiddleware::class, License
         });
     });
 });
+
+
+Route::prefix('monitoring-superadmin')->middleware([AuthMiddleware::class, SuperadminMiddleware::class])
+    ->controller(MonitoringController::class)->group(function () {
+        Route::get('/rapat', 'monitoringRapat')->name('monitoring-superadmin.rapat');
+    });

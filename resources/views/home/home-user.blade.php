@@ -147,19 +147,19 @@
                                             </td>
                                             <td>
                                                 @if ($rapat->detailRapat->notulen == null)
-                                                    <span class="text-danger">
-                                                        Notulen belum di lengkapi !
+                                                    <span class="badge bg-danger">
+                                                        Notulen belum dilengkapi !
                                                     </span>
                                                 @elseif (!$getDokumentasi)
-                                                    <span class="text-danger">
+                                                    <span class="badge bg-danger">
                                                         Dokumentasi belum dilengkapi !
                                                     </span>
                                                 @elseif (!$getEdoc)
-                                                    <span class="text-danger">
+                                                    <span class="badge bg-danger">
                                                         Edoc PDF belum dilengkapi !
                                                     </span>
                                                 @else
-                                                    <span class="text-success">
+                                                    <span class="badge bg-success">
                                                         Dokumen lengkap !
                                                     </span>
                                                 @endif

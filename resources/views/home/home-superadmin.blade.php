@@ -41,7 +41,7 @@
                 <div class="col-md-4 col-sm-6">
                     <div class="card statistics-card-1 overflow-hidden ">
                         <div class="card-body">
-                            <img src="{{ asset('assets/images/img-status-4.svg') }}" alt="img"
+                            <img src="{{ asset('assets/images/img-status-9.svg') }}" alt="img"
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Rapat Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
@@ -49,7 +49,8 @@
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
                             <p class="text-muted text-sm mt-3 m-0">Periode
-                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }} Tahun
+                                {{ date('Y') }}
                             </p>
                         </div>
                     </div>
@@ -57,7 +58,7 @@
                 <div class="col-md-4 col-sm-6">
                     <div class="card statistics-card-1 overflow-hidden ">
                         <div class="card-body">
-                            <img src="{{ asset('assets/images/img-status-4.svg') }}" alt="img"
+                            <img src="{{ asset('assets/images/img-status-9.svg') }}" alt="img"
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Pengawasan Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
@@ -65,7 +66,8 @@
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
                             <p class="text-muted text-sm mt-3 m-0">Periode
-                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }} Tahun
+                                {{ date('Y') }}
                             </p>
                         </div>
                     </div>
@@ -73,7 +75,7 @@
                 <div class="col-md-4 col-sm-6">
                     <div class="card statistics-card-1 overflow-hidden ">
                         <div class="card-body">
-                            <img src="{{ asset('assets/images/img-status-4.svg') }}" alt="img"
+                            <img src="{{ asset('assets/images/img-status-9.svg') }}" alt="img"
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Monev Bulan Ini</h5>
                             <div class="d-flex align-items-center mt-3">
@@ -81,7 +83,8 @@
                                 <span class="badge bg-light-success ms-2">Dilaksanakan</span>
                             </div>
                             <p class="text-muted text-sm mt-3 m-0">Periode
-                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }}
+                                {{ \App\Helpers\TimeSession::convertMonthIndonesian(date('Y-m-d')) }} Tahun
+                                {{ date('Y') }}
                             </p>
                         </div>
                     </div>
@@ -92,7 +95,7 @@
                 <div class="col-md-6 col-sm-12">
                     <!-- Agenda Rapat -->
                     <div class="card feed-card">
-                        <div class="card-header">
+                        <div class="card-header d-flex align-items-center justify-content-between py-3">
                             <h5>Agenda Rapat Bulan Ini</h5>
                         </div>
                         <div class="latest-scroll simplebar-scrollable-y" style="height:450px;position:relative;"
@@ -170,46 +173,57 @@
                             </div>
                         </div>
                         <div class="card-footer text-center">
-                            <a href="{{ route('rapat.index') }}" class="b-b-primary text-primary">Lihat Semua Agenda
-                                Rapat</a>
+                            <a href="{{ route('rapat.index') }}" class="b-b-primary text-primary">
+                                Lihat Semua Agenda Rapat
+                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
-                    <div class="card">
-                        <div class="card-header d-flex align-items-center justify-content-between py-3">
-                            <h5>Pengguna</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex align-items-end mb-3">
-                                <h4 class="mb-0">{{ $countPengguna }}</h4>
-                                <span class="badge bg-light-success ms-2">Telah Terdaftar</span>
-                            </div>
-                            <p class="text-muted mb-0">Total Seluruh Pengguna {{ env('APP_NAME') }}</p>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header d-flex align-items-center justify-content-between py-3">
-                            <h5>Rapat Tidak Lengkap</h5>
-                            <div class="dropdown">
-                                <a class="avtar avtar-xs btn-link-secondary dropdown-toggle arrow-none" href="#"
-                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                        class="material-icons-two-tone f-18">more_vert</i></a>
-                                <div class="dropdown-menu dropdown-menu-end" style="">
-                                    <a class="dropdown-item" href="#">Lihat</a>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header d-flex align-items-center justify-content-between py-3">
+                                    <h5>Pengguna</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-end mb-3">
+                                        <h4 class="mb-0">{{ $countPengguna }}</h4>
+                                        <span class="badge bg-light-success ms-2">Telah Terdaftar</span>
+                                    </div>
+                                    <p class="text-muted mb-0">Total Seluruh Pengguna {{ env('APP_NAME') }}</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="d-flex align-items-end mb-3">
-                                <h4 class="mb-0">{{ $countRapat }}</h4>
-                                <span class="badge bg-light-danger ms-2">Dokumen Tidak Lengkap</span>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header d-flex align-items-center justify-content-between py-3">
+                                    <h5>Monitoring Rapat</h5>
+                                </div>
+                                <a href="{{ route('monitoring-superadmin.rapat') }}" title="Klik untuk melihat">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-end mb-3">
+                                            <h4 class="mb-0">{{ $countRapat }}</h4>
+                                            <span class="badge bg-light-danger ms-2">Rapat Belum Dilengkapi</span>
+                                        </div>
+                                        <p class="text-muted mb-0">Periode Tahun {{ date('Y') }}</p>
+                                    </div>
+                                </a>
                             </div>
-                            <p class="text-muted mb-0">Total Seluruh Tunggakan Kelengkapan</p>
                         </div>
                     </div>
 
+                    <!-- Statistik Rapat -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Statistik Rapat Tahun {{ date('Y') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="statistik-rapat"></div>
+                        </div>
+                    </div>
+
+                    <!-- Logs Aktivitas Pengguna -->
                     <div class="card">
                         <div class="card-header">
                             <h5>Logs Aktivitas Pengguna</h5>
@@ -219,8 +233,9 @@
                                 @if ($logs)
                                     <li class="list-group-item">
                                         <p>{{ $logs->activity }} </p>
-                                        <small class="text-success">Oleh : {{ $logs->user->name }} |
-                                            {{ $logs->created_at }}</small>
+                                        <small class="text-warning">
+                                            Oleh : {{ $logs->user->name }} | {{ $logs->created_at }}
+                                        </small>
                                     </li>
                                 @else
                                     <li class="list-group-item">
@@ -232,9 +247,52 @@
                             </ul>
                         </div>
                     </div>
+
                 </div>
             </div>
             <!-- [ Main Content ] end -->
         </div>
     </div>
+    <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>
+    <script>
+        // [ statistik-rapat ] start
+        (function() {
+            var options = {
+                chart: {
+                    height: 297,
+                    type: 'pie',
+                },
+                series: [{{ $statistikRapat['bulanan'] }}, {{ $statistikRapat['berjenjang'] }},
+                    {{ $statistikRapat['lainnya'] }}, {{ $statistikRapat['pengawasan'] }}
+                ],
+                labels: ["Bulanan", "Berjenjang", "Lainnya", "Pengawasan"],
+                legend: {
+                    show: true,
+                    offsetY: 50,
+                },
+                theme: {
+                    monochrome: {
+                        enabled: false,
+                        color: '#1DE9B6',
+                    }
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        chart: {
+                            height: 300,
+
+                        },
+                        legend: {
+                            position: 'bottom',
+                            offsetY: 0,
+                        }
+                    }
+                }]
+            }
+            var chart = new ApexCharts(document.querySelector("#statistik-rapat"), options);
+            chart.render();
+        })();
+        // [ statistik-rapat ] end
+    </script>
 @endsection
