@@ -48,7 +48,7 @@ class PengawasanController extends Controller
         ];
 
         $data = [
-            'title' => 'Pengawasan Bidang',
+            'title' => 'Pengawasan Bidang | Rapat Pengawasan',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'rapat' => $rapat

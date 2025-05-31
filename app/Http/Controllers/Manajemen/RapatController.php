@@ -46,7 +46,7 @@ class RapatController extends Controller
         ];
 
         $data = [
-            'title' => 'Manajemen Rapat',
+            'title' => 'Manajemen Rapat | Rapat Dinas',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->where('rapat', '!=', 'Pengawasan')->orderBy('created_at', 'desc')->get(),

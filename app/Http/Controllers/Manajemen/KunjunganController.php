@@ -34,7 +34,7 @@ class KunjunganController extends Controller
         ];
 
         $data = [
-            'title' => 'Pengawasan Bidang',
+            'title' => 'Pengawasan Bidang | Kunjungan Pengawasan',
             'routeHome' => $route,
             'breadcumbs' => $breadcumb,
             'kunjungan' => $kunjungan
