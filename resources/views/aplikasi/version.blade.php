@@ -155,7 +155,7 @@
                 <div class="card-header">
                     <h5>Patch Note</h5>
                 </div>
-                <div class="latest-scroll simplebar-scrollable-y" style="height:200px;position:relative;"
+                <div class="latest-scroll simplebar-scrollable-y" style="height:500px;position:relative;"
                     data-simplebar="init">
                     <div class="simplebar-wrapper" style="margin: 0px;">
                         <div class="simplebar-height-auto-observer-wrapper">
