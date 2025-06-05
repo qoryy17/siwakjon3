@@ -11,6 +11,7 @@ use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\Arsip\MonevController;
 use App\Http\Controllers\Auth\SigninController;
 use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\Pengaturan\AIController;
 use App\Http\Middleware\RejectNonHakimMiddleware;
 use App\Http\Middleware\License\LicenseMiddleware;
 use App\Http\Controllers\Manajemen\RapatController;
@@ -75,21 +76,28 @@ Route::prefix('dashboard')->middleware([AuthMiddleware::class, LicenseMiddleware
     });
 
 Route::prefix('manajemen-rapat/rapat-dinas')->middleware([AuthMiddleware::class, LicenseMiddleware::class])
-    ->controller(RapatController::class)->group(function () {
-        Route::get('/', 'indexRapat')->name('rapat.index');
-        Route::get('/detail/{id}', 'detailRapat')->name('rapat.detail');
-        Route::get('/form/{param}/{id}', 'formUndangan')->name('rapat.form-undangan');
-        Route::get('/notula/{id}', 'formNotula')->name('rapat.form-notula');
-        Route::get('/dokumentasi/{id}', 'formDokumentasi')->name('rapat.form-dokumentasi');
+    ->group(function () {
+        Route::controller(RapatController::class)->group(function () {
+            Route::get('/', 'indexRapat')->name('rapat.index');
+            Route::get('/detail/{id}', 'detailRapat')->name('rapat.detail');
+            Route::get('/form/{param}/{id}', 'formUndangan')->name('rapat.form-undangan');
+            Route::get('/notula/{id}', 'formNotula')->name('rapat.form-notula');
+            Route::get('/dokumentasi/{id}', 'formDokumentasi')->name('rapat.form-dokumentasi');
 
-        Route::post('/simpan', 'saveRapat')->name('rapat.simpan-rapat');
-        Route::delete('/hapus', 'deleteRapat')->name('rapat.hapus-rapat');
-        Route::post('/notula/simpan', 'saveNotula')->name('rapat.simpan-notula');
-        Route::post('/dokumentasi/simpan', 'saveDokumentasi')->name('rapat.simpan-dokumentasi');
-        Route::delete('/dokumentasi/hapus', 'deleteDokumentasi')->name('rapat.hapus-dokumentasi');
-        Route::post('/edoc/simpan', 'saveEdoc')->name('rapat.simpan-edoc');
+            Route::post('/simpan', 'saveRapat')->name('rapat.simpan-rapat');
+            Route::delete('/hapus', 'deleteRapat')->name('rapat.hapus-rapat');
+            Route::post('/notula/simpan', 'saveNotula')->name('rapat.simpan-notula');
+            Route::post('/dokumentasi/simpan', 'saveDokumentasi')->name('rapat.simpan-dokumentasi');
+            Route::delete('/dokumentasi/hapus', 'deleteDokumentasi')->name('rapat.hapus-dokumentasi');
+            Route::post('/edoc/simpan', 'saveEdoc')->name('rapat.simpan-edoc');
 
-        Route::get('/cari-klasifikasi-rapat', 'searchKlasifikasiRapat')->name('rapat.cari-klasifikasi-rapat');
+            Route::get('/cari-klasifikasi-rapat', 'searchKlasifikasiRapat')->name('rapat.cari-klasifikasi-rapat');
+
+        });
+        // Handle AI Model response
+        Route::controller(AIController::class)->group(function () {
+            Route::post('/ai-model/response/', 'generateResponse')->name('rapat.ai-model-response');
+        });
     });
 
 Route::prefix('manajemen-rapat/print')->middleware([AuthMiddleware::class, LicenseMiddleware::class])
@@ -295,6 +303,13 @@ Route::prefix('pengaturan-aplikasi')->middleware([AuthMiddleware::class, License
             Route::get('/version/form/{param}/{id}', 'formVersion')->name('aplikasi.form-version');
             Route::post('/simpan-version', 'saveVersion')->name(name: 'aplikasi.simpan-version');
             Route::delete('/hapus-version', 'deleteVersion')->name('aplikasi.hapus-version');
+        });
+
+        // Konfigurasi AI Gemini
+        Route::controller(AIController::class)->group(function () {
+            Route::get('/ai-model', 'index')->name('aplikasi.ai-model');
+            Route::post('/ai-model/simpan', 'saveAIModel')->name('aplikasi.simpan-ai-model');
+            Route::post('/ai-model/response/', 'generateResponse')->name('aplikasi.ai-model-response');
         });
     });
 

@@ -1,5 +1,5 @@
 @extends('layout.body')
-@section('title', env('APP_ENV') . ' | ' . $title)
+@section('title', env('APP_NAME') . ' | ' . $title)
 @section('content')
     <script src="{{ asset('assets/js/plugins/datepicker-full.min.js') }}"></script>
     <div class="pc-container">

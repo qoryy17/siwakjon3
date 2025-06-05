@@ -6,13 +6,11 @@
         <li>
             Sebagai contoh jika rapat diselenggarakan oleh bagian Kepaniteraan yang ruang lingkupnya
             adalah Panitera Muda Hukum maka pilih penyelenggara rapat Panitera Muda Hukum, begitu
-            juga dengan
-            bagian Kesekretarian. Kecuali Rapat Bulanan penyelanggara harus pimpinan KPN/WKPN.
+            juga dengan bagian Kesekretariatan. Kecuali Rapat Bulanan, penyelanggara harus pimpinan KPN/WKPN.
         </li>
         <li>
             Kemudian jika memilih klasifikasi rapat Lainnya, silahkan masukan kode klasifikasi surat
-            sesuai
-            dengan Keputusan Sekretaris Mahkamah Agung Republik Indonesia Nomor 627/SEK/SK/VII/2023.
+            sesuai dengan Keputusan Sekretaris Mahkamah Agung Republik Indonesia Nomor 627/SEK/SK/VII/2023.
             Terkait agenda perihal dalam rapat yang akan diselenggarakan.
         </li>
         <li>

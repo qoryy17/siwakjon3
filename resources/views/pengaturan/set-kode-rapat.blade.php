@@ -1,5 +1,5 @@
 @extends('layout.body')
-@section('title', env('APP_ENV') . ' | ' . $title)
+@section('title', env('APP_NAME') . ' | ' . $title)
 @section('content')
     <div class="pc-container">
         <div class="pc-content">

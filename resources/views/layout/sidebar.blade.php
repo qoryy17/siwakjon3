@@ -186,6 +186,9 @@
                         </a>
                         <ul class="pc-submenu">
                             <li class="pc-item">
+                                <a class="pc-link" href="{{ route('aplikasi.ai-model') }}">AI Model</a>
+                            </li>
+                            <li class="pc-item">
                                 <a class="pc-link" href="{{ route('aplikasi.pengembang') }}">Catatan Pengembang</a>
                             </li>
                             <li class="pc-item">

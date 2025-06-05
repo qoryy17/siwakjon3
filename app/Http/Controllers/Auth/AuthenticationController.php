@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use App\Helpers\RouteLink;
 use Illuminate\Http\Request;
+use Illuminate\Cache\RateLimiter;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +16,17 @@ class AuthenticationController extends Controller
 {
     public function login(AuthRequest $request): RedirectResponse|string
     {
+        // Rate limiter for  users
+        $ipAddress = $request->ip();
+        $rateLimiter = app(RateLimiter::class);
+        $key = 'auth-attempts:' . $ipAddress;
+
+        if ($rateLimiter->tooManyAttempts($key, 5)) {
+            return redirect()->back()->with('error', 'Terlalu banyak percobaan, silakan tunggu 1 menit.');
+        }
+
+        $rateLimiter->hit($key, 60); // Limit resets after 60 seconds
+
         // Validated all request incoming
         $request->validated();
 

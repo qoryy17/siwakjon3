@@ -188,11 +188,13 @@
     <div class="footer-wrapper container-fluid">
         <div class="row">
             <div class="col-sm-6 my-1">
-                <p class="m-0">Developed by {{ env('APP_AUTHOR') }} </p>
+                <p class="m-0">Developed by
+                    <a class="fw-bold" href="{{ env('APP_AUTHOR_LINK') }}">{{ env('APP_AUTHOR') }}</a>
+                </p>
             </div>
             <div class="col-sm-6 ms-auto my-1">
                 <ul class="list-inline footer-link mb-0 justify-content-sm-end d-flex">
-                    <li class="list-inline-item">{{ env('APP_NAME') }}</li>
+                    <li class="list-inline-item fw-bold text-primary">{{ env('APP_NAME') }}</li>
                     <li class="list-inline-item">
                         {{ env('APP_LICENSE') }}
                     </li>

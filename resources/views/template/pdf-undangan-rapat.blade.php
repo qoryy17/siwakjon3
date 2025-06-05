@@ -115,7 +115,7 @@
             <tr>
                 <td style="width: 10%;vertical-align:top;">Hal</td>
                 <td style="width: 1%;vertical-align:top;">:</td>
-                <td style="vertical-align:top;line-height: 1.5;">{{ $rapat->detailRapat->perihal }}</td>
+                <td style="vertical-align:top;line-height: 1.5;">{!! $rapat->detailRapat->perihal !!}</td>
             </tr>
             <tr>
                 <td style="width: 10%;vertical-align:top;text-align:right;">Yth.</td>

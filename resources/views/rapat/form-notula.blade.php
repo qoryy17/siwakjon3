@@ -1,5 +1,5 @@
 @extends('layout.body')
-@section('title', env('APP_ENV') . ' | ' . $title)
+@section('title', env('APP_NAME') . ' | ' . $title)
 @section('content')
     <div class="pc-container">
         <div class="pc-content">
@@ -99,20 +99,56 @@
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="catatan">Catatan <span class="text-danger">*</span></label>
+                            <label class="form-label" for="catatan">Catatan
+                                <span class="text-danger">*</span>
+                            </label>
                             <textarea name="catatan" id="catatan" class="form-control" placeholder="Catatan..." rows="5">{!! $rapat->detailRapat->catatan ? $rapat->detailRapat->catatan : old('catatan') !!}</textarea>
-                            <small class="text-danger mt-1">*Tekan tombol Shift + Enter untuk baris baru</small>
                             @error('catatan')
-                                <small class="text-danger mt-1">* {{ $message }}</small>
+                                <small class="text-danger mt-1">* {{ $message }}</small></br>
                             @enderror
+                            <p class="text-danger mt-2 mb-1">
+                                * Harap pastikan anda menyalin terlebih dahulu catatan
+                                sebelum memakai fitur dibawah ini, karena jika sudah digenerate oleh AI tidak dapat
+                                dikembalikan ! <br>
+                                * Harap mengoreksi kembali hasil generate AI sebelum disimpan, karena bisa saja terdapat
+                                kekeliruan. <br>
+                                * Keakuratan hasil respon AI tergantung atas apa yang kamu masukan sebagai kesimpulan rapat.
+                            </p>
+                            <div class="mt-2 d-flex justify-content-between">
+                                <button type="button" id="reqResponCatatan" onclick="requestResponAICatatan('catatan')"
+                                    class="btn btn-info btn-sm">
+                                    <i class="ti ti-database"></i> Sempurnakan Catatan Dengan AI
+                                </button>
+                                <small class="text-danger mt-1">
+                                    * Tekan tombol Shift + Enter untuk baris baru pada editor
+                                </small>
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="kesimpulan">Kesimpulan <span class="text-danger">*</span></label>
+                            <label class="form-label" for="kesimpulan">Kesimpulan
+                                <span class="text-danger">*</span>
+                            </label>
                             <textarea name="kesimpulan" id="kesimpulan" class="form-control" placeholder="Kesimpulan...">{!! $rapat->detailRapat->kesimpulan ? $rapat->detailRapat->kesimpulan : old('kesimpulan') !!}</textarea>
-                            <small class="text-danger mt-1">*Tekan tombol Shift + Enter untuk baris baru</small>
                             @error('kesimpulan')
-                                <small class="text-danger mt-1">* {{ $message }}</small>
+                                <small class="text-danger mt-1">* {{ $message }}</small></br>
                             @enderror
+                            <p class="text-danger mt-2 mb-1">
+                                * Harap pastikan anda menyalin terlebih dahulu kesimpulan sebelum memakai fitur dibawah ini,
+                                karena jika sudah digenerate oleh AI tidak dapat
+                                dikembalikan ! <br>
+                                * Harap mengoreksi kembali hasil generate AI sebelum disimpan, karena bisa saja terdapat
+                                kekeliruan. <br>
+                                * Keakuratan hasil respon AI tergantung atas apa yang kamu masukan sebagai kesimpulan rapat.
+                            </p>
+                            <div class="mt-2 d-flex justify-content-between">
+                                <button type="button" id="reqResponKesimpulan"
+                                    onclick="requestResponAIKesimpulan('kesimpulan')" class="btn btn-info btn-sm">
+                                    <i class="ti ti-database"></i> Sempurnakan Kesimpulan Dengan AI
+                                </button>
+                                <small class="text-danger mt-1">
+                                    * Tekan tombol Shift + Enter untuk baris baru pada editor
+                                </small>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="disahkan">Disahkan Oleh
@@ -142,42 +178,15 @@
             <!-- [ Main Content ] end -->
         </div>
     </div>
+    <!-- Modal Notification -->
+    <div id="modalAINotula" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAINotulaTitle"
+        aria-hidden="true">
+        <x-modal.modal-notif-ai-notula />
+    </div>
+    <!-- End Modal Notification -->
     <!-- Time picker -->
     <script src="{{ asset('assets/js/plugins/flatpickr.min.js') }}"></script>
     <!-- Ckeditor js -->
     <script src="{{ asset('assets/js/plugins/ckeditor/classic/ckeditor.js') }}"></script>
-    <script>
-        (function() {
-            ClassicEditor.create(document.querySelector('#catatan'), {
-                toolbar: {
-                    items: [
-                        'heading', '|',
-                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
-                        'insertTable', '|', 'mediaEmbed',
-                        'undo', 'redo'
-                    ]
-                },
-                removePlugins: ['ImageUpload', 'EasyImage', 'CKFinderUploadAdapter', 'CKFinder']
-            }).catch((error) => {
-                console.error(error);
-            });
-            ClassicEditor.create(document.querySelector('#kesimpulan'), {
-                toolbar: {
-                    items: [
-                        'heading', '|',
-                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
-                        'insertTable', '|', 'mediaEmbed',
-                        'undo', 'redo'
-                    ]
-                },
-                removePlugins: ['ImageUpload', 'EasyImage', 'CKFinderUploadAdapter', 'CKFinder']
-            }).catch((error) => {
-                console.error(error);
-            });
-        })();
-        document.querySelector('#jamSelesai').flatpickr({
-            enableTime: true,
-            noCalendar: true
-        });
-    </script>
+    @include('rapat.script-js-notula')
 @endsection
