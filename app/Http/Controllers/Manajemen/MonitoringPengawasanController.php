@@ -24,7 +24,6 @@ class MonitoringPengawasanController extends Controller
             ['title' => 'Monitoring Pengawasan', 'link' => route('monitoring.index'), 'page' => 'aria-current="page"']
         ];
 
-
         if ($request->input('search')) {
             $parameter = [
                 'search' => htmlspecialchars($request->input('search')),
@@ -59,7 +58,7 @@ class MonitoringPengawasanController extends Controller
 
         $temuan = TemuanWasbidModel::where('objek_pengawasan', '=', $objek)->whereYear('created_at', $tahun)->orderBy('created_at', 'asc');
         if (!$temuan->exists()) {
-            return 'Not Found';
+            return redirect()->back()->with('error', 'Temuan pengawasan tidak ditemukan !');
         }
 
         $countTemuan = TemuanWasbidModel::selectRaw('MONTH(created_at) as month, COUNT(*) as total')

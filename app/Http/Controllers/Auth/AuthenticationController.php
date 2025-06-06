@@ -19,7 +19,7 @@ class AuthenticationController extends Controller
         // Rate limiter for  users
         $ipAddress = $request->ip();
         $rateLimiter = app(RateLimiter::class);
-        $key = 'auth-attempts:' . $ipAddress;
+        $key = 'authattempts:' . $ipAddress;
 
         if ($rateLimiter->tooManyAttempts($key, 5)) {
             return redirect()->back()->with('error', 'Terlalu banyak percobaan, silakan tunggu 1 menit.');
@@ -64,7 +64,12 @@ class AuthenticationController extends Controller
 
     public function logout(Request $request): RedirectResponse
     {
+        // Clear cache
+        \App\Helpers\ClearCacheHelper::clearCache();
+
+        // Clear session data and logout
         Auth::logout();
+        \App\Helpers\ClearSessionHelper::clearSession($request);
         return redirect()->route('signin');
     }
 }

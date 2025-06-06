@@ -34,25 +34,14 @@
 
 <body data-pc-preset="preset-8" data-pc-sidebar-theme="light" data-pc-sidebar-caption="true" data-pc-direction="ltr"
     data-pc-theme="light">
-    @if (session()->has('success'))
+    @if (session()->has('success') || session()->has('error'))
         <script>
             'use strict';
             window.onload = function() {
                 Swal.fire({
-                    icon: "success",
+                    icon: "{{ session()->has('success') ? 'success' : 'error' }}",
                     title: "Notifikasi",
-                    text: "{{ session('success') }}"
-                });
-            }
-        </script>
-    @elseif (session()->has('error'))
-        <script>
-            'use strict';
-            window.onload = function() {
-                Swal.fire({
-                    icon: "error",
-                    title: "Notifikasi",
-                    text: "{{ session('error') }}"
+                    text: "{{ session('success') ?? session('error') }}"
                 });
             }
         </script>
@@ -73,7 +62,7 @@
                         <div class="text-center">
                             <img loading="lazy" style="max-width: 100px;" src="{{ asset('siwakjon2.png') }}"
                                 alt="images" class="img-fluid mb-3">
-                            <h4 class="f-w-500 mb-1">{{ env('APP_NAME') }}</h4>
+                            <h4 class="f-w-800 text-primary mb-1">{{ env('APP_NAME') }}</h4>
                             <p class="mb-3">
                                 {{ env('APP_DESC') }}
                             </p>
@@ -83,15 +72,16 @@
                             @method('POST')
                             <div class="mb-3">
                                 <label for="email">Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="email" placeholder="Email..."
-                                    required value="{{ old('email') }}" name="email">
+                                <input type="email" class="form-control" id="email"
+                                    placeholder="user@pn-lubukpakam.go.id..." required value="{{ old('email') }}"
+                                    name="email">
                                 @error('email')
                                     <small class="text-danger mt-2">* {{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="password">Password <span class="text-danger">*</span></label>
-                                <input type="password" class="form-control" id="password" placeholder="Password..."
+                                <input type="password" class="form-control" id="password" placeholder="************"
                                     required value="{{ old('password') }}" name="password">
                                 @error('password')
                                     <small class="text-danger mt-2">* {{ $message }}</small>

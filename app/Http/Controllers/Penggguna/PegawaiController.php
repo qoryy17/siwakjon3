@@ -117,7 +117,7 @@ class PegawaiController extends Controller
 
             if ($request->file('foto')) {
                 // Delete old foto
-                if (Storage::disk('public')->exists($search->foto)) {
+                if (!empty($search->foto) && Storage::disk('public')->exists($search->foto)) {
                     Storage::disk('public')->delete($search->foto);
                 }
                 // Foto upload process
@@ -138,11 +138,11 @@ class PegawaiController extends Controller
             $error = 'Pegawai gagal di perbarui !';
             $activity = 'Memperbarui pegawai : ' . $formData['nama'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
@@ -157,7 +157,7 @@ class PegawaiController extends Controller
         $pegawai = PegawaiModel::findOrFail(Crypt::decrypt($request->id));
         if ($pegawai) {
             // Delete old foto
-            if (Storage::disk('public')->exists($pegawai->foto)) {
+            if (!empty($pegawai->foto) && Storage::disk('public')->exists($pegawai->foto)) {
                 Storage::disk('public')->delete($pegawai->foto);
             }
             // Saving logs activity

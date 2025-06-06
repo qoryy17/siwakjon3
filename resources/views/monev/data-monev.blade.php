@@ -66,7 +66,7 @@
                                             {{ $item->nama_agenda }} <br>
                                             Nomor : {{ $item->nomor_agenda }}
                                         </td>
-                                        <td style="vertical-align: top;">{{ $item->unit_kerja }}</td>
+                                        <td style="vertical-align: top;">{{ $item->unitKerja->unit_kerja }}</td>
                                         <td style="vertical-align: top;">{{ $item->aktif }}</td>
                                         <td style="vertical-align: top;">{{ $dibuat->name }}</td>
                                         <td style="vertical-align: top;" class="text-start">

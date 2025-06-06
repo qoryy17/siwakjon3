@@ -27,12 +27,7 @@ class MonevController extends Controller
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
-        $monev = DB::table('sw_agenda_monev')->select('sw_agenda_monev.*', 'sw_unit_kerja.unit_kerja')->leftjoin(
-            'sw_unit_kerja',
-            'sw_agenda_monev.unit_kerja_id',
-            '=',
-            'sw_unit_kerja.id'
-        )->orderBy('created_at', 'desc')->get();
+        $monev = AgendaMonevModel::with('unitKerja')->orderBy('created_at', 'desc')->get();
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -118,11 +113,11 @@ class MonevController extends Controller
             $error = 'Agenda Monev gagal di perbarui !';
             $activity = 'Memperbarui agenda monev : ' . $search->nama_agenda;
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
@@ -191,14 +186,13 @@ class MonevController extends Controller
             DB::beginTransaction();
             $save = ArsipMonevModel::create($formData);
             DB::commit();
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', $th);
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', 'Monev gagal di simpan !');
+            return redirect()->back()->with('error', 'Monev gagal di simpan !')->withInput();
         }
 
         // Saving logs activity
@@ -231,14 +225,13 @@ class MonevController extends Controller
             $search = ArsipMonevModel::findOrFail(Crypt::decrypt(htmlspecialchars($request->input('idAgenda'))));
             $save = $search->update($formData);
             DB::commit();
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', $th);
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', 'Monev gagal di perbarui !');
+            return redirect()->back()->with('error', 'Monev gagal di perbarui !')->withInput();
         }
 
         // Saving logs activity
@@ -291,11 +284,8 @@ class MonevController extends Controller
             DB::beginTransaction();
             $search = ArsipMonevModel::findOrFail(Crypt::decrypt(htmlspecialchars($request->input('idAgenda'))));
 
-            if ($search && $search->path_monev != null) {
-                // Delete old file pdf
-                if (Storage::disk('public')->exists($search->path_monev)) {
-                    Storage::disk('public')->delete($search->path_monev);
-                }
+            if (!empty($search->path_monev) && Storage::disk('public')->exists($search->path_monev)) {
+                Storage::disk('public')->delete($search->path_monev);
             }
             // File pdf upload process
             $fileMonev = $request->file('fileMonev');
@@ -325,14 +315,13 @@ class MonevController extends Controller
 
             $save = $search->update($formData);
             DB::commit();
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', $th);
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', 'Laporan monev gagal diunggah !');
+            return redirect()->back()->with('error', 'Laporan monev gagal diunggah !')->withInput();
         }
         // Saving logs activity
         $activity = 'Mengunggah laporan monev dengan judul : ' . $search->judul_monev;
@@ -424,11 +413,11 @@ class MonevController extends Controller
             $error = 'Periode Monev gagal di perbarui !';
             $activity = 'Memperbarui periode monev : ' . $formData['periode'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity

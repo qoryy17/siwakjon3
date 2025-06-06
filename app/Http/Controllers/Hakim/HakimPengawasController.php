@@ -92,7 +92,7 @@ class HakimPengawasController extends Controller
             $formTitle = 'Edit';
             $searchHakim = HakimPengawasModel::findOrFail(Crypt::decrypt($request->id));
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak ditemukan !');
+            return redirect()->back()->with('error', 'Parameter tidak ditemukan !')->withInput();
         }
 
         // Redirect home page for role
@@ -133,11 +133,10 @@ class HakimPengawasController extends Controller
             'ordering' => htmlspecialchars($request->input('ordering')),
         ];
 
-
         // Is Hakim ?
         $hakim = PegawaiModel::with('jabatan')->findOrFail($formData['pegawai_id']);
         if ($hakim && $hakim->jabatan->jabatan != 'Hakim') {
-            return redirect()->back()->with('error', 'Hanya jabatan hakim yang di perbolehkan sebagai pengawas !');
+            return redirect()->back()->with('error', 'Hanya jabatan hakim yang di perbolehkan sebagai pengawas !')->withInput();
         }
 
         $paramIncoming = Crypt::decrypt($request->input('param'));
@@ -155,11 +154,11 @@ class HakimPengawasController extends Controller
             $error = 'Hakim Pengawas gagal di perbarui !';
             $activity = 'Memperbarui hakim pengawas : ' . $hakim->nama;
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity

@@ -19,38 +19,45 @@ class ViewUser
 {
     public static function pegawai()
     {
-        $pegawai = PegawaiModel::find(Auth::user()->pegawai_id);
-        if (!$pegawai) {
-            return null;
-        }
-        return $pegawai;
+        $userId = Auth::user()->pegawai_id;
+        return cache()->memo()->remember("pegawai_id_" . $userId, 60, function () use ($userId) {
+            return PegawaiModel::find($userId);
+        });
     }
 
     public static function pengguna($id = null)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return null;
-        }
-        return $user->name;
+        return cache()->memo()->remember("pengguna_" . $id, 60, function () use ($id) {
+            $user = User::find($id);
+            if (!$user) {
+                return null;
+            }
+            return $user->name;
+        });
     }
 
     public static function unitKerja()
     {
-        $user = User::with('unitKerja')->find(Auth::user()->id);
-        if (!$user) {
-            return null;
-        }
-        return $user;
+        $userId = Auth::user()->id;
+        return cache()->memo()->remember("user_unit_kerja_" . $userId, 60, function () use ($userId) {
+            $user = User::with('unitKerja')->find($userId);
+            if (!$user) {
+                return null;
+            }
+            return $user;
+        });
     }
 
     public static function jabatan()
     {
-        $pegawai = PegawaiModel::with('jabatan')->find(Auth::user()->pegawai_id);
-        if (!$pegawai) {
-            return 'Unknown';
-        }
-        return $pegawai->jabatan->jabatan;
+        $userId = Auth::user()->pegawai_id;
+        return cache()->memo()->remember("jabatan_" . $userId, 60, function () use ($userId) {
+            $pegawai = PegawaiModel::with('jabatan')->find($userId);
+            if (!$pegawai || !$pegawai->jabatan) {
+                return 'Unknown';
+            }
+            return $pegawai->jabatan->jabatan;
+        });
     }
 
     public static function countPengguna()

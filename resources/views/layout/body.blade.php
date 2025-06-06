@@ -1,7 +1,15 @@
 @include('layout.header')
 @php
-    $pegawai = \App\Helpers\ViewUser::pegawai();
-    $app = \App\Models\Pengaturan\VersionModel::latest()->first();
+    $pegawai = cache()
+        ->memo()
+        ->remember('auth_pegawai_' . Auth::id(), 60, function () {
+            return \App\Helpers\ViewUser::pegawai();
+        });
+    $app = cache()
+        ->memo()
+        ->remember('latest_app_version', 60, function () {
+            return \App\Models\Pengaturan\VersionModel::latest()->first();
+        });
     $foto = $pegawai && $pegawai->foto ? asset('storage/' . $pegawai->foto) : asset('assets/images/user.png');
 @endphp
 <!-- [ Pre-loader ] start -->

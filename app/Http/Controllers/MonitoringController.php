@@ -12,7 +12,7 @@ class MonitoringController extends Controller
     {
         $route = RouteLink::homeString(Auth::user()->roles);
         $routeHome = RouteLink::homePage(Auth::user()->roles);
-        if (Auth::user()->roles !== "Superadmin") {
+        if (Auth::user()->roles !== \App\Enum\RolesEnum::SUPERADMIN->value) {
             return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
         }
 

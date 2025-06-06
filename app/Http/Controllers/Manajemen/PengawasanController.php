@@ -118,7 +118,7 @@ class PengawasanController extends Controller
             // Get Set Kode Surat on database
             $searchKodeSurat = SetKodeRapatModel::first();
             if (!$searchKodeSurat) {
-                return redirect()->back()->with('error', 'Kode Surat belum di set !');
+                return redirect()->back()->with('error', 'Kode Surat belum di atur !');
             }
 
             // Generate nomor dokumen rapat
@@ -198,7 +198,7 @@ class PengawasanController extends Controller
             $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->startOfDay();
             $nowDate = Carbon::now()->startOfDay();
             if ($inputDate->lt($nowDate)) {
-                return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !');
+                return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !')->withInput();
             }
 
             // Get index number from nomor dokumen
@@ -233,9 +233,9 @@ class PengawasanController extends Controller
                 ];
                 $saveDetailRapat = DetailRapatModel::create($formDetailRapat);
                 DB::commit();
-            } catch (\Throwable $th) {
+            } catch (\Exception $e) {
                 DB::rollBack();
-                return redirect()->back()->with('error', $th);
+                return redirect()->back()->with('error', $e->getMessage())->withInput();
             }
             $success = 'Dokumen Rapat berhasil di simpan !';
             $error = 'Dokumen Rapat gagal di simpan !';
@@ -276,24 +276,24 @@ class PengawasanController extends Controller
                 $saveDetailRapat = $searchDetailRapat->update($formDetailRapat);
 
                 DB::commit();
-            } catch (\Throwable $th) {
+            } catch (\Exception $e) {
                 DB::rollBack();
-                return redirect()->back()->with('error', $th);
+                return redirect()->back()->with('error', $e->getMessage())->withInput();
             }
 
             $success = 'Dokumen Rapat berhasil di perbarui !';
             $error = 'Dokumen Rapat gagal di perbarui !';
             $activity = 'Memperbarui dokumen pengawasan perihal : ' . $formDetailRapat['perihal'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         if (!$saveDetailRapat) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
@@ -317,8 +317,8 @@ class PengawasanController extends Controller
             // Delete dokumentasi
             $dokumentasi = DokumentasiRapatModel::where('detail_rapat_id', '=', $detailRapat->id)->first();
             if ($dokumentasi) {
-                // Delete file dokumentasi
-                if (Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
+                // Delete file dokumentasi if exists
+                if (!empty($dokumentasi->path_file_dokumentasi) && Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
                     Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
                 }
                 $dokumentasi->delete();
@@ -338,7 +338,7 @@ class PengawasanController extends Controller
                 $edoc = EdocWasbidModel::where('pengawasan_bidang_id', '=', $pengawasan->id)->first();
                 if ($edoc) {
                     // Delete file edoc pdf
-                    if (Storage::disk('public')->exists($edoc->path_file_tlhp)) {
+                    if (!empty($edoc->path_file_tlhp) && Storage::disk('public')->exists($edoc->path_file_tlhp)) {
                         Storage::disk('public')->delete($edoc->path_file_tlhp);
                     }
                     $edoc->delete();
@@ -414,13 +414,13 @@ class PengawasanController extends Controller
             $save = $notula->update($formData);
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', $th);
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', 'Notula gagal di simpan !');
+            return redirect()->back()->with('error', 'Notula gagal di simpan !')->withInput();
         }
 
         // Saving logs activity
@@ -498,7 +498,7 @@ class PengawasanController extends Controller
         $save = DokumentasiRapatModel::create($formData);
 
         if (!$save) {
-            return redirect()->back()->with('error', 'Dokumentasi gagal di simpan !');
+            return redirect()->back()->with('error', 'Dokumentasi gagal di simpan !')->withInput();
         }
 
         // Saving logs activity
@@ -513,8 +513,8 @@ class PengawasanController extends Controller
         $dokumentasi = DokumentasiRapatModel::findOrFail(Crypt::decrypt($request->id));
         $detailRapat = DetailRapatModel::findOrFail($dokumentasi->detail_rapat_id);
         if ($dokumentasi) {
-            // Delete old file pdf
-            if (Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
+            // Delete old file dokumentasi if exists
+            if (!empty($dokumentasi->path_file_dokumentasi) && Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
                 Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
             }
             // Saving logs activity
@@ -595,7 +595,7 @@ class PengawasanController extends Controller
                     ];
                 }
             } else {
-                return redirect()->back()->with('error', 'Hakim pengawas tidak tersedia ! Silahkan hubungi Superadmin atau Administrator');
+                return redirect()->back()->with('error', 'Hakim pengawas tidak tersedia ! Silahkan hubungi Superadmin atau Administrator')->withInput();
             }
 
             // Run validated
@@ -667,11 +667,11 @@ class PengawasanController extends Controller
             $activity = 'Menambahkan kesimpulan dan rekomendasi laporan pengawasan perihal : ' . $rapat->detailRapat->perihal;
 
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
@@ -689,7 +689,7 @@ class PengawasanController extends Controller
         // Search pengawasan on database, if not exists redirect back with error message
         $pengawasan = PengawasanBidangModel::findOrFail(Crypt::decrypt($request->input('idWasbid')));
         if (!$pengawasan) {
-            return redirect()->back()->with('error', 'Data pengawasan tidak ditemukan !');
+            return redirect()->back()->with('error', 'Data pengawasan tidak ditemukan !')->withInput();
         }
 
         $formData = [
@@ -718,11 +718,11 @@ class PengawasanController extends Controller
             $error = 'Temuan gagal di perbarui';
             $activity = 'Memperbarui temuan pada ' . $pengawasan->objek_pengawasan;
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
@@ -784,8 +784,8 @@ class PengawasanController extends Controller
 
         $existEdoc = EdocWasbidModel::where('pengawasan_bidang_id', '=', $pengawasan->id)->first();
         if ($existEdoc) {
-            // Delete old file pdf
-            if (Storage::disk('public')->exists($existEdoc->path_file_tlhp)) {
+            // Delete old file pdf if it exists and the path is not empty
+            if (!empty($existEdoc->path_file_tlhp) && Storage::disk('public')->exists($existEdoc->path_file_tlhp)) {
                 Storage::disk('public')->delete($existEdoc->path_file_tlhp);
             }
             $save = $existEdoc->update($formData);
@@ -796,7 +796,7 @@ class PengawasanController extends Controller
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', 'File Edoc gagal di simpan !');
+            return redirect()->back()->with('error', 'File Edoc gagal di simpan !')->withInput();
         }
 
         // Saving logs activity

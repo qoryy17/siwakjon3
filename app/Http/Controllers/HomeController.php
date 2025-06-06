@@ -18,6 +18,7 @@ use App\Http\Requests\Profil\ProfilRequest;
 use App\Models\Manajemen\ManajemenRapatModel;
 use App\Models\Manajemen\KlasifikasiRapatModel;
 use App\Models\Manajemen\KlasifikasiJabatanModel;
+use App\Http\Requests\Profil\ChangePasswordRequest;
 
 class HomeController extends Controller
 {
@@ -25,7 +26,7 @@ class HomeController extends Controller
     {
         $route = RouteLink::homeString(Auth::user()->roles);
         $routeHome = RouteLink::homePage(Auth::user()->roles);
-        if (Auth::user()->roles !== "Superadmin") {
+        if (Auth::user()->roles !== \App\Enum\RolesEnum::SUPERADMIN->value) {
             return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
         }
 
@@ -57,7 +58,7 @@ class HomeController extends Controller
         $route = RouteLink::homeString(Auth::user()->roles);
         $routeHome = RouteLink::homePage(Auth::user()->roles);
 
-        if (Auth::user()->roles !== "Administrator") {
+        if (Auth::user()->roles !== \App\Enum\RolesEnum::ADMIN->value) {
             return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
         }
 
@@ -90,7 +91,7 @@ class HomeController extends Controller
         $route = RouteLink::homeString(Auth::user()->roles);
         $routeHome = RouteLink::homePage(Auth::user()->roles);
 
-        if (Auth::user()->roles !== "User") {
+        if (Auth::user()->roles !== \App\Enum\RolesEnum::USER->value) {
             return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
         }
 
@@ -179,9 +180,10 @@ class HomeController extends Controller
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
-        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->whereHas('klasifikasiRapat', function ($query) {
-            $query->where('rapat', '!=', 'Pengawasan');
-        })->where('dibuat', '=', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')
+            ->whereHas('klasifikasiRapat', function ($query) {
+                $query->where('rapat', '!=', 'Pengawasan');
+            })->where('dibuat', '=', Auth::user()->id)->orderBy('created_at', 'desc')->get();
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -206,9 +208,10 @@ class HomeController extends Controller
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
 
-        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->whereHas('klasifikasiRapat', function ($query) {
-            $query->where('rapat', 'Pengawasan');
-        })->orderBy('created_at', 'desc')->get();
+        $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')
+            ->whereHas('klasifikasiRapat', function ($query) {
+                $query->where('rapat', 'Pengawasan');
+            })->orderBy('created_at', 'desc')->get();
 
         $breadcumb = [
             ['title' => 'Home', 'link' => $route, 'page' => ''],
@@ -254,12 +257,8 @@ class HomeController extends Controller
             ['title' => 'Profil', 'link' => 'javascript:void(0);', 'page' => 'aria-current="page"'],
         ];
 
-        $pengguna = User::findOrFail(Auth::user()->id);
-        if ($pengguna && $pengguna->pegawai_id != null) {
-            $pegawai = PegawaiModel::with('user')->with('jabatan')->findOrFail($pengguna->pegawai_id);
-        } else {
-            $pegawai = null;
-        }
+        $pengguna = Auth::user();
+        $pegawai = $pengguna->pegawai_id ? PegawaiModel::with(['user', 'jabatan'])->find($pengguna->pegawai_id) : null;
 
         $data = [
             'title' => 'Profil Saya',
@@ -272,26 +271,10 @@ class HomeController extends Controller
         return view('pengguna.profil', $data);
     }
 
-    public function gantiPassword(Request $request): RedirectResponse
+    public function gantiPassword(ChangePasswordRequest $request): RedirectResponse
     {
         // Run additional validated
-        $request->validate([
-            'password' => [
-                'required',
-                'min:8',
-                'string',
-                'regex:/[A-Z]/', // must contain at least one uppercase letter
-                'regex:/[a-z]/', // must contain at least one lowercase letter
-                'regex:/[0-9]/', // must contain at least one digit
-                'regex:/[@$!%*?&]/', // must contain a special character
-
-            ],
-        ], [
-            'password.required' => 'Password harus harus di isi !',
-            'password.min' => 'Password harus mengandung 8 karakter !',
-            'password.string' => 'Password harus harus berupa karakter valid !',
-            'password.regex' => 'Password harus mengandung huruf kapital, angka dan karakter !',
-        ]);
+        $request->validated();
 
         $formData = [
             'password' => Hash::make(htmlspecialchars($request->input('password'))),
@@ -304,6 +287,7 @@ class HomeController extends Controller
             return redirect()->back()->with('error', 'Password gagal diperbarui !');
         }
 
+        // Must logout after password has been changed
         Auth::logout();
         $request->session()->regenerate();
         return redirect()->route('signin')->with('success', 'Password berhasil diubah silahkan login ulang !');
@@ -323,10 +307,8 @@ class HomeController extends Controller
 
         if ($request->file('foto')) {
             // Delete old foto
-            if ($search && $search->foto != null) {
-                if (Storage::disk('public')->exists($search->foto)) {
-                    Storage::disk('public')->delete($search->foto);
-                }
+            if (!empty($search->foto) && Storage::disk('public')->exists($search->foto)) {
+                Storage::disk('public')->delete($search->foto);
             }
             // Foto upload process
             $fileFoto = $request->file('foto');

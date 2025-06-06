@@ -94,11 +94,11 @@ class UnitKerjaController extends Controller
             $error = 'Unit Kerja gagal di perbarui !';
             $activity = 'Memperbarui unit kerja : ' . $formData['unit_kerja'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity

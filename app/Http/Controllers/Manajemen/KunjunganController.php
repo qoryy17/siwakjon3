@@ -148,14 +148,14 @@ class KunjunganController extends Controller
             $activity = 'Memperbarui kunjungan unit kerja : ' . $unitKerja->unit_kerja;
             $routeBack = redirect()->route('kunjungan.detail', ['id' => $request->input('id')])->with('success', $success);
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         // Saving logs activity
         \App\Services\LogsService::saveLogs($activity);
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         return $routeBack;
@@ -217,14 +217,14 @@ class KunjunganController extends Controller
             $error = 'Agenda Kunjungan gagal di perbarui !';
             $activity = 'Memperbarui agenda kunjungan : ' . $formData['agenda'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         // Saving logs activity
         \App\Services\LogsService::saveLogs($activity);
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         return redirect()->route('kunjungan.detail', ['id' => $request->input('idKunjungan')])->with('success', $success);
@@ -283,7 +283,7 @@ class KunjunganController extends Controller
 
         if ($existEdoc->path_file_edoc != null) {
             // Delete old file pdf
-            if (Storage::disk('public')->exists($existEdoc->path_file_edoc)) {
+            if (!empty($existEdoc->path_file_edoc) && Storage::disk('public')->exists($existEdoc->path_file_edoc)) {
                 Storage::disk('public')->delete($existEdoc->path_file_edoc);
             }
             $activity = 'Memperbarui edoc kunjungan pengawasan ' . $existEdoc->unitKerja->unit_kerja;
@@ -294,7 +294,7 @@ class KunjunganController extends Controller
         $save = $existEdoc->update($formData);
 
         if (!$save) {
-            return redirect()->back()->with('error', 'File Edoc gagal di simpan !');
+            return redirect()->back()->with('error', 'File Edoc gagal di simpan !')->withInput();
         }
 
         // Saving logs activity

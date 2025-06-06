@@ -174,11 +174,11 @@ class PenggunaController extends Controller
             $error = 'Akun Pengguna gagal di perbarui !';
             $activity = 'Memperbarui pengguna dengan id ' . $request->input('id');
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
@@ -192,7 +192,7 @@ class PenggunaController extends Controller
         $pegawai = PegawaiModel::findOrFail(Crypt::decrypt($request->id));
         if ($pegawai) {
             // Delete old foto
-            if (Storage::disk('public')->exists($pegawai->foto)) {
+            if (!empty($pegawai->foto) && Storage::disk('public')->exists($pegawai->foto)) {
                 Storage::disk('public')->delete($pegawai->foto);
             }
 

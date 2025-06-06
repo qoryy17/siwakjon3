@@ -96,11 +96,11 @@ class JabatanController extends Controller
             $error = 'Jabatan gagal di perbarui !';
             $activity = 'Memperbarui jabatan : ' . $formData['jabatan'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity

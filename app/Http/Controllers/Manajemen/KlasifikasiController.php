@@ -86,7 +86,7 @@ class KlasifikasiController extends Controller
             $formTitle = 'Edit';
             $searchKlasifikasi = $findKlasifikasi;
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak ditemukan !');
+            return redirect()->back()->with('error', 'Parameter tidak ditemukan !')->withInput();
         }
 
         $breadcumb = [
@@ -135,11 +135,11 @@ class KlasifikasiController extends Controller
             $error = 'Klasifikasi Rapat gagal di perbarui !';
             $activity = 'Memperbarui klasifikasi rapat : ' . $formData['rapat'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
@@ -189,11 +189,11 @@ class KlasifikasiController extends Controller
             $error = 'Klasifikasi Surat gagal di perbarui !';
             $activity = 'Memperbarui klasifikasi kode surat : ' . $formData['kode_surat'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
@@ -243,11 +243,11 @@ class KlasifikasiController extends Controller
             $error = 'Klasifikasi Jabatan gagal di perbarui !';
             $activity = 'Memperbarui klasifikasi jabatan : ' . $formData['jabatan'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
@@ -312,11 +312,11 @@ class KlasifikasiController extends Controller
         }
 
         if (!$save) {
-            return redirect()->route('klasifikasi.set-kode')->with('error', 'Set Kode Rapat gagal !');
+            return redirect()->route('klasifikasi.set-kode')->with('error', 'Set Kode Rapat gagal !')->withInput();
         }
 
         // Saving logs activity
-        $activity = 'Mensetting kode rapat';
+        $activity = 'Mengatur kode rapat';
         \App\Services\LogsService::saveLogs($activity);
 
         return redirect()->route('klasifikasi.set-kode')->with('success', 'Set Kode Rapat berhasil !');

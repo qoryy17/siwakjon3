@@ -261,9 +261,9 @@ class RapatController extends Controller
                 ];
                 $saveDetailRapat = DetailRapatModel::create($formDetailRapat);
                 DB::commit();
-            } catch (\Throwable $th) {
+            } catch (\Exception $e) {
                 DB::rollBack();
-                return redirect()->back()->with('error', $th);
+                return redirect()->back()->with('error', $e->getMessage())->withInput();
             }
             $success = 'Dokumen Rapat berhasil di simpan !';
             $error = 'Dokumen Rapat gagal di simpan !';
@@ -308,24 +308,24 @@ class RapatController extends Controller
                 $saveDetailRapat = $searchDetailRapat->update($formDetailRapat);
 
                 DB::commit();
-            } catch (\Throwable $th) {
+            } catch (\Exception $e) {
                 DB::rollBack();
-                return redirect()->back()->with('error', $th);
+                return redirect()->back()->with('error', $e->getMessage())->withInput();
             }
 
             $success = 'Dokumen Rapat berhasil di perbarui !';
             $error = 'Dokumen Rapat gagal di perbarui !';
             $activity = 'Memperbarui rapat perihal ' . $formDetailRapat['perihal'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         if (!$saveDetailRapat) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
@@ -347,7 +347,8 @@ class RapatController extends Controller
             $dokumentasi = DokumentasiRapatModel::where('detail_rapat_id', '=', $detailRapat->id)->first();
             if ($dokumentasi) {
                 // Delete file dokumentasi
-                if (Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
+                // Delete file dokumentasi if exists
+                if (!empty($dokumentasi->path_file_dokumentasi) && Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
                     Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
                 }
                 $dokumentasi->delete();
@@ -355,10 +356,11 @@ class RapatController extends Controller
 
             $edoc = EdocRapatModel::where('detail_rapat_id', '=', $detailRapat->id)->first();
             if ($edoc) {
-                // Delete file edoc pdf
-                if (Storage::disk('public')->exists($edoc->path_file_edoc)) {
+                // Delete file edoc pdf if exists
+                if (!empty($edoc->path_file_edoc) && Storage::disk('public')->exists($edoc->path_file_edoc)) {
                     Storage::disk('public')->delete($edoc->path_file_edoc);
                 }
+                $edoc->delete();
                 $dokumentasi->delete();
             }
 
@@ -378,11 +380,7 @@ class RapatController extends Controller
         // Get data rapat
         $searchRapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
 
-        if ($searchRapat->detailRapat->notulen != null) {
-            $formTitle = 'Edit';
-        } else {
-            $formTitle = 'Tambah';
-        }
+        $formTitle = $searchRapat->detailRapat->notulen !== null ? 'Edit' : 'Tambah';
 
         // Redirect home page for role
         $route = RouteLink::homePage(Auth::user()->roles);
@@ -430,13 +428,13 @@ class RapatController extends Controller
             $save = $notula->update($formData);
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', $th);
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', 'Notula gagal di simpan !');
+            return redirect()->back()->with('error', 'Notula gagal di simpan !')->withInput();
         }
 
         // Saving logs activity
@@ -514,7 +512,7 @@ class RapatController extends Controller
         $save = DokumentasiRapatModel::create($formData);
 
         if (!$save) {
-            return redirect()->back()->with('error', 'Dokumentasi gagal di simpan !');
+            return redirect()->back()->with('error', 'Dokumentasi gagal di simpan !')->withInput();
         }
 
         // Saving logs activity
@@ -529,8 +527,9 @@ class RapatController extends Controller
         $dokumentasi = DokumentasiRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->id));
         if ($dokumentasi) {
             // Delete old file pdf
-            if (Storage::disk('public')->exists($dokumentasi->path_file_dokumentasi)) {
-                Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
+            $path = $dokumentasi->path_file_dokumentasi;
+            if (!empty($path) && Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
             }
             // Saving logs activity
             $activity = 'Menghapus dokumentasi rapat perihal : ' . $dokumentasi->detailRapat->perihal;
@@ -582,7 +581,7 @@ class RapatController extends Controller
         $existEdoc = EdocRapatModel::where('detail_rapat_id', '=', $edocRapat->id)->first();
         if ($existEdoc) {
             // Delete old file pdf
-            if (Storage::disk('public')->exists($existEdoc->path_file_edoc)) {
+            if (!empty($existEdoc->path_file_edoc) && Storage::disk('public')->exists($existEdoc->path_file_edoc)) {
                 Storage::disk('public')->delete($existEdoc->path_file_edoc);
             }
             $save = $existEdoc->update($formData);
@@ -593,7 +592,7 @@ class RapatController extends Controller
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', 'File Edoc gagal di simpan !');
+            return redirect()->back()->with('error', 'File Edoc gagal di simpan !')->withInput();
         }
 
         // Saving logs activity
@@ -612,6 +611,7 @@ class RapatController extends Controller
             ['title' => 'Manajemen Pengaturan', 'link' => 'javascript:void(0);', 'page' => ''],
             ['title' => 'Set Rapat Dinas ', 'link' => route('rapat.set-rapat'), 'page' => 'aria-current="page"']
         ];
+
         $data = [
             'title' => 'Manajemen Pengaturan | Set Rapat Dinas',
             'routeHome' => $route,
@@ -675,7 +675,7 @@ class RapatController extends Controller
         $save = $searchRapat->update($formData);
 
         if (!$save) {
-            return redirect()->back()->with('error', 'Set Rapat Dinas/Pengawasan gagal di simpan !');
+            return redirect()->back()->with('error', 'Set Rapat Dinas/Pengawasan gagal di simpan !')->withInput();
         }
 
         // Saving logs activity

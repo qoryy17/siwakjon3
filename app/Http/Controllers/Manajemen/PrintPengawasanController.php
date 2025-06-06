@@ -25,11 +25,10 @@ class PrintPengawasanController extends Controller
     {
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
 
-        if ($rapat->pejabat_pengganti_id) {
-            $pengganti = PejabatPenggantiModel::findOrFail($rapat->pejabat_pengganti_id);
-            $pejabatPengganti = $pengganti->pejabat;
-        } else {
-            $pejabatPengganti = null;
+        $pejabatPengganti = null;
+        if (!empty($rapat->pejabat_pengganti_id)) {
+            $pengganti = PejabatPenggantiModel::find($rapat->pejabat_pengganti_id);
+            $pejabatPengganti = $pengganti ? $pengganti->pejabat : null;
         }
         // Generate QR code
         $url = url('/verification') . '/' . $rapat->kode_rapat;

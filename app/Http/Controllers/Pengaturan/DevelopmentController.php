@@ -102,7 +102,7 @@ class DevelopmentController extends Controller
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         return redirect()->route('aplikasi.pengembang')->with('success', $success);
@@ -206,7 +206,7 @@ class DevelopmentController extends Controller
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         return redirect()->route('aplikasi.version')->with('success', $success);

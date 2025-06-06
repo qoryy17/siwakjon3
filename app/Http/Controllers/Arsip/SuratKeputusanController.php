@@ -135,7 +135,7 @@ class SuratKeputusanController extends Controller
                 );
 
                 // Delete old file pdf
-                if (Storage::disk('public')->exists($search->path_file_sk)) {
+                if (!empty($search->path_file_sk) && Storage::disk('public')->exists($search->path_file_sk)) {
                     Storage::disk('public')->delete($search->path_file_sk);
                 }
 
@@ -178,8 +178,9 @@ class SuratKeputusanController extends Controller
         $suratKeputusan = ArsipSuratKeputusanModel::findOrFail(Crypt::decrypt($request->id));
         if ($suratKeputusan) {
             // Delete old file pdf
-            if (Storage::disk('public')->exists($suratKeputusan->path_file_sk)) {
-                Storage::disk('public')->delete($suratKeputusan->path_file_sk);
+            $filePath = $suratKeputusan->path_file_sk;
+            if (!empty($filePath) && Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
             }
             // Saving logs activity
             $activity = 'Menghapus arsip surat keputusan : ' . $suratKeputusan->judul;

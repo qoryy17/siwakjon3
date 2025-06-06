@@ -102,8 +102,8 @@ class AplikasiController extends Controller
 
             if ($request->file('logo')) {
                 // Delete old logo
-                if (Storage::disk('public')->exists($directory . $setting->logo)) {
-                    Storage::disk('public')->delete($directory . $setting->logo);
+                if (!empty($setting->logo) && Storage::disk('public')->exists($setting->logo)) {
+                    Storage::disk('public')->delete($setting->logo);
                 }
 
                 // Logo upload process

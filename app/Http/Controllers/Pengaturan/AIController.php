@@ -55,10 +55,10 @@ class AIController extends Controller
             $save = AIModel::create($formData);
         }
         if (!$save) {
-            return redirect()->back()->with('error', 'Pengaturan AI Model gagal disimpan.');
+            return redirect()->back()->with('error', 'Pengaturan AI Model gagal disimpan !')->withInput();
         }
         // Redirect to AI Model page with success message
-        return redirect()->route('aplikasi.ai-model')->with('success', 'Pengaturan AI Model berhasil disimpan.');
+        return redirect()->route('aplikasi.ai-model')->with('success', 'Pengaturan AI Model berhasil disimpan !');
     }
 
     public function generateResponse(Request $request, AIService $aiService)
@@ -70,7 +70,7 @@ class AIController extends Controller
             $key = 'ai-response-attempts:' . $ipAddress;
 
             if ($rateLimiter->tooManyAttempts($key, 15)) {
-                return response()->json(['response' => 'Terlalu banyak percobaan, silakan tunggu 1 menit.']);
+                return response()->json(['response' => 'Terlalu banyak percobaan, silakan tunggu 1 menit !'], 429);
             }
 
             $type = $request->type;

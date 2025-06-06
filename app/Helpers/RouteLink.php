@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Helpers;
-
-use DateTime;
 use App\Enum\RolesEnum;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +15,10 @@ class RouteLink
         } elseif (RolesEnum::USER->value == $roles) {
             $route = route('home.user');
         } else {
+            // Clear cache
+            \App\Helpers\ClearCacheHelper::clearCache();
             Auth::logout();
+            \App\Helpers\ClearSessionHelper::clearSession(request());
             return redirect()->route('signin')->with('error', 'Routing roles not found !');
         }
 
@@ -33,7 +34,10 @@ class RouteLink
         } elseif (RolesEnum::USER->value == $roles) {
             $route = 'home.user';
         } else {
+            // Clear cache
+            \App\Helpers\ClearCacheHelper::clearCache();
             Auth::logout();
+            \App\Helpers\ClearSessionHelper::clearSession(request());
             return redirect()->route('signin')->with('error', 'Routing roles not found !');
         }
 
@@ -49,7 +53,10 @@ class RouteLink
         } elseif (RolesEnum::USER->value == $roles) {
             $route = redirect()->route('home.user');
         } else {
+            // Clear cache
+            \App\Helpers\ClearCacheHelper::clearCache();
             Auth::logout();
+            \App\Helpers\ClearSessionHelper::clearSession(request());
             return redirect()->route('signin')->with('error', 'Routing roles not found !');
         }
 
@@ -65,7 +72,10 @@ class RouteLink
         } elseif (RolesEnum::USER->value == $roles) {
             $route = 'dashboard/user';
         } else {
+            // Clear cache
+            \App\Helpers\ClearCacheHelper::clearCache();
             Auth::logout();
+            \App\Helpers\ClearSessionHelper::clearSession(request());
             return redirect()->route('signin')->with('error', 'Routing roles not found !');
         }
 

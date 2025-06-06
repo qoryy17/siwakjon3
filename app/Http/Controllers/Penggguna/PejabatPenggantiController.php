@@ -95,11 +95,11 @@ class PejabatPenggantiController extends Controller
             $error = 'Pejabat Pengganti gagal di perbarui !';
             $activity = 'Memperbarui pejabat pengganti : ' . $formData['pejabat'];
         } else {
-            return redirect()->back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
         }
 
         if (!$save) {
-            return redirect()->back()->with('error', $error);
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Saving logs activity
