@@ -84,7 +84,8 @@ class PrintPengawasanController extends Controller
             'rapat' => $rapat,
             'qrCode' => $qrCode,
             'peserta' => $peserta,
-            'url' => $url
+            'url' => $url,
+            'kabSurat' => $kabSurat
         ];
 
         $pdf = Pdf::loadView('template.pdf-daftar-hadir-rapat', $data)->setPaper('folio', 'potrait')->setOptions(['isRemoteEnabled' => true]);
