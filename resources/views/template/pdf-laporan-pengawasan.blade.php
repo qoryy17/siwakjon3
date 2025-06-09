@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- [Favicon] icon -->
@@ -89,7 +89,7 @@
             NOMOR SK : {{ $aplikasi->sk_wasbid }}
         </h3>
         <div class="cover-logo">
-            <img src="{{ public_path('storage/' . $aplikasi->logo) }}" alt="" class="logo">
+            <img class="img-logo" width="250px" src="{{ asset('storage/' . $aplikasi->logo) }}" alt="logo">
         </div>
 
         <!-- Identity Pengawas -->
@@ -110,13 +110,16 @@
                 PERIODE {{ $periode }} TAHUN {{ $tahun->year }}
             </h4>
         </div>
+
+        <!-- Disable for sheet -->
+        <div class="qrcode">
+            <img src="{{ $qrCode }}" alt="QR Code {{ $qrCode }}">
+            <span style="display: block; font-size:10px; margin-top: 5px;">
+                Copyright {{ env('APP_NAME') }}, Timestamp At : {{ now() }}
+            </span>
+        </div>
     </div>
-    <!-- Disable for sheet -->
-    <!--<div class="qrcode">
-        <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code {{ $qrCode }}">
-        <span style="display: block; font-size:10px; margin-top: 5px;">Generate By SIWAKJON
-            , Timestamp : {{ now() }}</span>
-    </div>
+
 
     <!-- Break page -->
     <div class="page-break"></div>

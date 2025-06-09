@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Manajemen;
 
 use Illuminate\Http\Request;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 use App\Models\Pengguna\PegawaiModel;
 use Illuminate\Support\Facades\Crypt;
@@ -15,9 +15,24 @@ use App\Models\Manajemen\DokumentasiRapatModel;
 
 class PrintRapatController extends Controller
 {
+    protected $aplikasi;
+    public function __construct()
+    {
+        $this->aplikasi = cache()->remember('aplikasi_data', 60 * 60, function () {
+            return AplikasiModel::first();
+        });
+    }
+    protected function genereteQrCode($url)
+    {
+        $qrCode = QrCode::format('png')
+            ->size(60)
+            ->generate($url);
+
+        $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($qrCode);
+        return $qrCodeBase64;
+    }
     public function printUndanganRapat(Request $request)
     {
-        // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
 
         $pejabatPengganti = null;
@@ -25,11 +40,13 @@ class PrintRapatController extends Controller
             $pengganti = PejabatPenggantiModel::find($rapat->pejabat_pengganti_id);
             $pejabatPengganti = $pengganti ? $pengganti->pejabat : null;
         }
-        $url = url('/verification') . '/' . $rapat->kode_rapat;
-        $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
         $pegawai = PegawaiModel::with('jabatan')->findOrFail($rapat->pejabat_penandatangan);
 
-        $aplikasi = AplikasiModel::first();
+        // Generate QR code
+        $url = url('/verification') . '/' . $rapat->kode_rapat;
+        $qrCode = $this->genereteQrCode($url);
+        $aplikasi = $this->aplikasi;
+
         $kotaSurat = explode("/", $aplikasi->kota)[0];
         $kabSurat = explode("/", $aplikasi->kota)[1];
         $data = [
@@ -42,17 +59,19 @@ class PrintRapatController extends Controller
             'url' => $url,
             'kabSurat' => $kabSurat
         ];
-        return Pdf::view('template.pdf-undangan-rapat', $data)
-            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
+
+        $pdf = Pdf::loadView('template.pdf-undangan-rapat', $data)->setPaper('folio', 'potrait')->setOptions(['isRemoteEnabled' => true]);
+        return $pdf->stream();
     }
     public function printDaftarHadirRapat(Request $request)
     {
         $peserta = $request->jumlahPeserta;
-        // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
+        // Generate QR code
         $url = url('/verification') . '/' . $rapat->kode_rapat;
-        $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
-        $aplikasi = AplikasiModel::first();
+        $qrCode = $this->genereteQrCode($url);
+        $aplikasi = $this->aplikasi;
+
         $kabSurat = explode("/", $aplikasi->kota)[1];
         $data = [
             'aplikasi' => $aplikasi,
@@ -62,20 +81,20 @@ class PrintRapatController extends Controller
             'url' => $url,
             'kabSurat' => $kabSurat
         ];
-        return Pdf::view('template.pdf-daftar-hadir-rapat', $data)
-            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
+        $pdf = Pdf::loadView('template.pdf-daftar-hadir-rapat', $data)->setPaper('folio', 'potrait')->setOptions(['isRemoteEnabled' => true]);
+        return $pdf->stream();
     }
 
     public function printNotulaRapat(Request $request)
     {
-        // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
+        // Generate QR code
         $url = url('/verification') . '/' . $rapat->kode_rapat;
-        $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
+        $qrCode = $this->genereteQrCode($url);
+        $aplikasi = $this->aplikasi;
 
         $notulis = PegawaiModel::findOrFail($rapat->detailRapat->notulen);
         $disahkan = PegawaiModel::findOrFail($rapat->detailRapat->disahkan);
-        $aplikasi = AplikasiModel::first();
         $kabSurat = explode("/", $aplikasi->kota)[1];
         $data = [
             'aplikasi' => $aplikasi,
@@ -86,19 +105,19 @@ class PrintRapatController extends Controller
             'url' => $url,
             'kabSurat' => $kabSurat
         ];
-        return Pdf::view('template.pdf-notula-rapat', $data)
-            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
+        $pdf = Pdf::loadView('template.pdf-notula-rapat', $data)->setPaper('folio', 'potrait')->setOptions(['isRemoteEnabled' => true]);
+        return $pdf->stream();
     }
 
     public function printDokumentasiRapat(Request $request)
     {
-        // Generate QR code
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')->findOrFail(Crypt::decrypt($request->id));
         $dokumentasi = DokumentasiRapatModel::with('detailRapat')->where('detail_rapat_id', '=', $rapat->detailRapat->id)->get();
-
+        // Generate QR code
         $url = url('/verification') . '/' . $rapat->kode_rapat;
-        $qrCode = base64_encode(QrCode::format('png')->size(60)->generate($url));
-        $aplikasi = AplikasiModel::first();
+        $qrCode = $this->genereteQrCode($url);
+        $aplikasi = $this->aplikasi;
+
         $kabSurat = explode("/", $aplikasi->kota)[1];
         $data = [
             'aplikasi' => $aplikasi,
@@ -108,7 +127,7 @@ class PrintRapatController extends Controller
             'url' => $url,
             'kabSurat' => $kabSurat
         ];
-        return Pdf::view('template.pdf-dokumentasi-rapat', $data)
-            ->paperSize('220', '330', 'mm')->margins('10', '10', '10', '10')->portrait();
+        $pdf = Pdf::loadView('template.pdf-dokumentasi-rapat', $data)->setPaper('folio', 'potrait')->setOptions(['isRemoteEnabled' => true]);
+        return $pdf->stream();
     }
 }

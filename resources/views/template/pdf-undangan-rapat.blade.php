@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- [Favicon] icon -->
@@ -70,7 +70,7 @@
         <table class="table-header-kop">
             <tr>
                 <td style="width: 1%">
-                    <img class="img-logo" src="{{ public_path('storage/' . $aplikasi->logo) }}" alt="">
+                    <img class="img-logo" src="{{ asset('storage/' . $aplikasi->logo) }}" alt="">
                 </td>
                 <td>
                     <h4 class="title">
@@ -211,7 +211,7 @@
         </table>
     </div>
     <div class="qrcode">
-        <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code {{ $qrCode }}">
+        <img src="{{ $qrCode }}" alt="QR Code {{ $qrCode }}">
     </div>
     <span class="url">{{ $url }}, Timestamp : {{ now() }}</span>
 </body>
