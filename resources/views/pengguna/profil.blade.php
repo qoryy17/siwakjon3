@@ -40,16 +40,11 @@
                                     <div class="text-center mt-3">
                                         @php
                                             $pegawai = \App\Helpers\ViewUser::pegawai();
+                                            $foto =
+                                                $pegawai && $pegawai->foto
+                                                    ? asset('storage/' . $pegawai->foto)
+                                                    : asset('assets/images/user.png');
                                         @endphp
-                                        @if ($pegawai && $pegawai->foto != null)
-                                            @php
-                                                $foto = asset($pegawai->foto);
-                                            @endphp
-                                        @else
-                                            @php
-                                                $foto = asset('assets/images/user.png');
-                                            @endphp
-                                        @endif
                                         <div class="chat-avtar d-inline-flex mx-auto">
                                             <img class="rounded-circle img-fluid wid-90 img-thumbnail"
                                                 src="{{ $foto }}" alt="User image">
