@@ -340,6 +340,10 @@ class RapatController extends Controller
         $rapat = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->id));
         if ($rapat) {
             $detailRapat = DetailRapatModel::where('manajemen_rapat_id', '=', $rapat->id)->first();
+            // Saving logs activity
+            $activity = 'Menghapus rapat perihal : ' . $detailRapat->perihal;
+            \App\Services\LogsService::saveLogs($activity);
+
             if ($detailRapat) {
                 $detailRapat->delete();
             }
@@ -363,10 +367,6 @@ class RapatController extends Controller
                 $edoc->delete();
                 $dokumentasi->delete();
             }
-
-            // Saving logs activity
-            $activity = 'Menghapus rapat perihal : ' . $rapat->detailRapat->perihal;
-            \App\Services\LogsService::saveLogs($activity);
 
             // After all data delete, remove data rapat on manajemen rapat
             $rapat->delete();

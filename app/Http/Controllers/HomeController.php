@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Helpers\ViewUser;
 use App\Helpers\RouteLink;
 use App\Helpers\TimeSession;
-use Illuminate\Http\Request;
 use App\Models\Pengaturan\LogsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;

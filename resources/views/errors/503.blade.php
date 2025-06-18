@@ -2,7 +2,7 @@
 @section('title', '503 Service Unavailable | ' . env('APP_NAME'))
 @section('content')
     @include('errors.layouts.content-errors', [
-        'code' => $exception->getStatusCode(),
+        'code' => $exception->getStatusCode() . ' Maintance',
         'title' => '503 Service Unavailable | ' . env('APP_NAME'),
         'message' => $exception->getMessage(),
     ])

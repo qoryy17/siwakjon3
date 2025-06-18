@@ -118,7 +118,7 @@
                                                                             </h6>
                                                                         </a>
                                                                     @else
-                                                                        <a title="Rapat {{ $agenda->perihal }}"
+                                                                        <a title="Rapat {{ $agenda->detailRapat->perihal }}"
                                                                             href="{{ route('rapat.detail', ['id' => Crypt::encrypt($agenda->id)]) }}">
                                                                             <h6>
                                                                                 {{ $agenda->detailRapat->perihal }} <br>
