@@ -307,9 +307,12 @@ class PengawasanController extends Controller
         // Checking data manajemen rapat on database
         $rapat = ManajemenRapatModel::findOrFail(Crypt::decrypt($request->id));
         if ($rapat) {
-
             // Delete detail rapat
             $detailRapat = DetailRapatModel::where('manajemen_rapat_id', '=', $rapat->id)->first();
+            // Saving logs activity
+            $activity = 'Menghapus dokumen pengawasan ' . $detailRapat->perihal;
+            \App\Services\LogsService::saveLogs($activity);
+
             if ($detailRapat) {
                 $detailRapat->delete();
             }
@@ -347,9 +350,6 @@ class PengawasanController extends Controller
                 $pengawasan->delete();
 
             }
-            // Saving logs activity
-            $activity = 'Menghapus dokumen pengawasan ' . $detailRapat->perihal;
-            \App\Services\LogsService::saveLogs($activity);
 
             // After all data delete, remove data rapat on manajemen rapat
             $rapat->delete();
