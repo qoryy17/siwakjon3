@@ -272,8 +272,10 @@ class RapatController extends Controller
             $search = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->input('id')));
             // Denial backward meeting date
             $inputDate = Carbon::createFromFormat('m/d/Y', htmlspecialchars($request->input('tanggalRapat')))->startOfDay();
-            $oldDate = Carbon::createFromFormat('Y-m-d', $search->detailRapat->tanggal_rapat)->startOfDay();
-            if ($inputDate->lt($oldDate)) {
+            // $oldDate = Carbon::createFromFormat('Y-m-d', $search->detailRapat->tanggal_rapat)->startOfDay();
+            $nowDate = Carbon::now()->startOfDay();
+            if ($inputDate->lt($nowDate)) {
+                // if ($inputDate->lt($oldDate)) {
                 return redirect()->back()->with('error', 'Waah kamu terdeteksi membuat rapat tanggal mundur. Tidak boleh ya !');
             }
             try {
