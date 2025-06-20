@@ -518,7 +518,7 @@ class PengawasanController extends Controller
                 Storage::disk('public')->delete($dokumentasi->path_file_dokumentasi);
             }
             // Saving logs activity
-            $activity = 'Menyimpan notula rapat perihal ' . $detailRapat->perihal;
+            $activity = 'Menyimpan dokumentasi rapat perihal ' . $detailRapat->perihal;
             \App\Services\LogsService::saveLogs($activity);
             $dokumentasi->delete();
             return redirect()->back()->with('success', 'Dokumentasi berhasil di hapus !');
@@ -574,30 +574,30 @@ class PengawasanController extends Controller
         $rapat = ManajemenRapatModel::with('detailRapat')->findOrFail(Crypt::decrypt($request->input('id')));
         $save = null;
 
+        $unitKerja = htmlspecialchars($request->input('unitKerja'));
+
+        // Search hakim pengawas bidang
+        $hakimWasbid = [];
+        $hakim = HakimPengawasModel::with([
+            'pegawai' => function ($query) {
+                $query->orderBy('nip', 'desc');
+            }
+        ])->where('unit_kerja_id', '=', $unitKerja)->orderBy('ordering', 'asc');
+
+        if ($hakim->exists()) {
+            foreach ($hakim->get() as $kimwas) {
+                $hakimWasbid[] = [
+                    'pegawai_id' => $kimwas->pegawai_id,
+                    'nama' => $kimwas->pegawai->nama
+                ];
+            }
+        } else {
+            return redirect()->back()->with('error', 'Hakim pengawas tidak tersedia ! Silahkan hubungi Superadmin atau Administrator')->withInput();
+        }
+
         if ($paramIncoming == 'save') {
             // Search objek pengawasan
-            $objek = UnitKerjaModel::findOrFail(htmlspecialchars($request->input('unitKerja')));
-            // Search hakim pengawas
-            $hakimWasbid = [];
-            $unitKerja = htmlspecialchars($request->input('unitKerja'));
-
-            $hakim = HakimPengawasModel::with([
-                'pegawai' => function ($query) {
-                    $query->orderBy('nip', 'desc');
-                }
-            ])->where('unit_kerja_id', '=', $unitKerja)->orderBy('ordering', 'asc');
-
-            if ($hakim->exists()) {
-                foreach ($hakim->get() as $kimwas) {
-                    $hakimWasbid[] = [
-                        'pegawai_id' => $kimwas->pegawai_id,
-                        'nama' => $kimwas->pegawai->nama
-                    ];
-                }
-            } else {
-                return redirect()->back()->with('error', 'Hakim pengawas tidak tersedia ! Silahkan hubungi Superadmin atau Administrator')->withInput();
-            }
-
+            $objek = UnitKerjaModel::findOrFail($unitKerja);
             // Run validated
             $request->validate(
                 [
@@ -640,7 +640,6 @@ class PengawasanController extends Controller
             }
 
         } elseif ($paramIncoming == 'update') {
-
             // Run validated
             $request->validate(
                 [
@@ -658,6 +657,7 @@ class PengawasanController extends Controller
             $formData = [
                 'kesimpulan' => $request->input('kesimpulan'),
                 'rekomendasi' => $request->input('rekomendasi'),
+                'hakim_pengawas' => json_encode($hakimWasbid),
             ];
 
             $pengawasan = PengawasanBidangModel::where('detail_rapat_id', '=', $rapat->detailRapat->id);

@@ -112,7 +112,7 @@ class HakimPengawasController extends Controller
             'formTitle' => $formTitle . ' Hakim Pengawas',
             'paramOutgoing' => Crypt::encrypt($paramOutgoing),
             'hakim' => $searchHakim,
-            'hakimPengawas' => PegawaiModel::with('jabatan')->where('aktif', '=', 'Y')
+            'hakimPengawas' => PegawaiModel::with('jabatan')
                 ->whereHas('jabatan', function ($query) {
                     $query->where('jabatan', '=', 'Hakim');
                 })->orderBy('nip', 'desc')->get(),
