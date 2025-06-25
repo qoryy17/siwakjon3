@@ -115,7 +115,10 @@ class RapatController extends Controller
                     'klasifikasiSurat.string' => 'Kode Klasifikasi Surat harus berupa karakter valid !',
                 ]);
 
-                $kodeSurat = htmlspecialchars($request->input('klasifikasiSurat'));
+                // Check forbidden character
+                $kode_surat = htmlspecialchars($request->input('klasifikasiSurat'));
+                \App\Helpers\ProbihitionHelper::rejectStripCode($kode_surat);
+                $kodeSurat = $kode_surat;
 
             } else {
                 // Get Set Kode Surat on database

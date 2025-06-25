@@ -17,4 +17,16 @@ class ProbihitionHelper
             }
         }
     }
+
+    public static function rejectStripCode($parameters)
+    {
+        $senteceDenied = ['-', ' '];
+        foreach ($senteceDenied as $value) {
+            if (str_contains($parameters, $value)) {
+                return redirect()->back()->with('error', 'Kode rapat dinas tidak boleh menggunakan strip code !')->withInput();
+            } elseif (str_contains($parameters, $value)) {
+                return redirect()->back()->with('error', 'Kode rapat dinas tidak boleh kosong !')->withInput();
+            }
+        }
+    }
 }
