@@ -23,18 +23,17 @@
             <!-- [ Main Content ] start -->
             <div class="card">
                 <div class="card-header">
-                    <h3>Laporan Monev</h3>
-                    <small class="d-block mb-2">
-                        Pengumpulan Arsip Laporan Monitoring dan Evaluasi Berserta Tindaklanjut
-                    </small>
-                    @if (Auth::user()->roles == App\Enum\RolesEnum::SUPERADMIN->value ||
-                            Auth::user()->roles == App\Enum\RolesEnum::ADMIN->value ||
-                            App\Helpers\ViewUser::jabatan() == App\Enum\JabatanEnum::HAKIM->value)
-                        <a href="{{ route('monev.formAgendaMonev', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
-                            class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
-                            Tambah
-                        </a>
-                    @endif
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>Laporan Monev</h3>da
+                        @if (Auth::user()->roles == App\Enum\RolesEnum::SUPERADMIN->value ||
+                                Auth::user()->roles == App\Enum\RolesEnum::ADMIN->value ||
+                                App\Helpers\ViewUser::jabatan() == App\Enum\JabatanEnum::HAKIM->value)
+                            <a href="{{ route('monev.formAgendaMonev', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                                class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
+                                Tambah
+                            </a>
+                        @endif
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
@@ -44,7 +43,6 @@
                                     <th width="1%">No</th>
                                     <th>Agenda</th>
                                     <th>Unit Kerja</th>
-                                    <th>Aktif</th>
                                     <th>Dibuat</th>
                                     <th>Tahun</th>
                                     <th>Created At</th>
@@ -64,10 +62,11 @@
                                         <td style="vertical-align: top;" class="text-start">{{ $no }}</td>
                                         <td style="vertical-align: top;">
                                             {{ $item->nama_agenda }} <br>
-                                            Nomor : {{ $item->nomor_agenda }}
+                                            Nomor : {{ $item->nomor_agenda }} <br>
+                                            Aktif Publish : <span
+                                                class="badge {{ $item->aktif ? 'bg-primary' : 'bg-danger' }}">{{ $item->aktif ? 'Y' : 'N' }}</span>
                                         </td>
                                         <td style="vertical-align: top;">{{ $item->unitKerja->unit_kerja }}</td>
-                                        <td style="vertical-align: top;">{{ $item->aktif }}</td>
                                         <td style="vertical-align: top;">{{ $dibuat->name }}</td>
                                         <td style="vertical-align: top;" class="text-start">
                                             {{ Carbon\Carbon::parse($item->created_at)->format('Y') }}

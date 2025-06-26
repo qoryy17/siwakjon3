@@ -23,16 +23,18 @@
             <!-- [ Main Content ] start -->
             <div class="card">
                 <div class="card-header">
-                    <h3>Rapat Pengawasan</h3>
-                    @if (
-                        \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::HAKIM->value ||
-                            Auth::user()->roles == 'Superadmin' ||
-                            Auth::user()->roles == 'Administrator')
-                        <a href="{{ route('pengawasan.form-undangan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
-                            class="btn btn-primary btn-sm">
-                            <i class="ph-duotone ph-file-plus"></i> Tambah
-                        </a>
-                    @endif
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>Rapat Pengawasan</h3>
+                        @if (
+                            \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::HAKIM->value ||
+                                Auth::user()->roles == 'Superadmin' ||
+                                Auth::user()->roles == 'Administrator')
+                            <a href="{{ route('pengawasan.form-undangan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                                class="btn btn-primary btn-sm">
+                                <i class="ph-duotone ph-file-plus"></i> Tambah
+                            </a>
+                        @endif
+                    </div>
                     @include('rapat.alert-notif-rapat')
                 </div>
                 <div class="card-body">
@@ -86,7 +88,7 @@
                                                     <i class="fas fa-file-pdf"></i>
                                                 </a>
                                             @else
-                                                <span class="text-danger">Belum diunggah</span>
+                                                <span class="badge bg-danger">Belum diunggah</span>
                                             @endif
                                         </td>
                                         <td style="vertical-align: top;">{{ $dibuat->name }}</td>

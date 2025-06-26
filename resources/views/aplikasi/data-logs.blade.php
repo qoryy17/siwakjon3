@@ -23,13 +23,15 @@
             <!-- [ Main Content ] start -->
             <div class="card">
                 <div class="card-header">
-                    <h3>Logs</h3>
-                    @if (Auth::user()->roles == \App\Enum\RolesEnum::SUPERADMIN->value)
-                        <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModal"
-                            class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
-                            Hapus
-                        </button>
-                    @endif
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>Logs</h3>
+                        @if (Auth::user()->roles == \App\Enum\RolesEnum::SUPERADMIN->value)
+                            <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModal"
+                                class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
+                                Hapus
+                            </button>
+                        @endif
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">

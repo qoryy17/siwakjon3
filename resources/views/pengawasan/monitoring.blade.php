@@ -70,7 +70,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
-                                <h5 class="mb-0">Grafik Pelaksaaan Pengawasan</h5>
+                                <h5 class="mb-0">Grafik Temuan Pada Pengawasan</h5>
                             </div>
                         </div>
                         <div class="card-body">
@@ -79,7 +79,7 @@
                                     <small class="text-muted">/ Tahun {{ $result['tahun'] }}</small>
                                 </h3>
                             </div>
-                            <p>Total Temuan Pengawasan Bidang Pada {{ $result['objek'] }}</p>
+                            <p>{{ $result['objek'] }}</p>
                             <div id="pengawasan-chart"></div>
                         </div>
                     </div>
@@ -198,6 +198,7 @@
                             strokeDashArray: 4
                         },
                         series: [{
+                            name: 'Total Temuan',
                             data: {{ json_encode($result['barChart']) }}
                         }],
                         xaxis: {

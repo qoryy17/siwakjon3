@@ -3,10 +3,10 @@
     <div class="navbar-wrapper">
         <div class="m-header">
             <a href="{{ $routeHome }}" class="b-brand text-primary">
-                <!-- ========   Change your logo from here   ============ -->
                 <img src="{{ asset('siwakjon2.png') }}" alt="logo" style="max-width: 50px;" />
-                <span class="badge bg-success rounded-pill ms-2 theme-version">{{ env('APP_NAME') }}
-                    {{ $app ? 'Version ' . $app->patch_version : '' }}
+                <span class="badge bg-primary rounded-pill ms-2 fs-6 theme-version">
+                    {{ env('APP_NAME') }}
+                    {{ $app ? 'Ver ' . $app->patch_version : '' }}
                 </span>
             </a>
         </div>
@@ -208,7 +208,8 @@
                         style="background-image: url('{{ asset('assets/images/nav-card-bg.svg') }}')">
                         <h5 class="text-dark">Help Center</h5>
                         <p class="text-dark text-opacity-75">Butuh bantuan kendala masalah sistem ?</p>
-                        <a href="https://wa.me/6281376472224" class="btn btn-primary" target="_blank">
+                        <a href="https://wa.me/6281376472224?text=Hallo Mas {{ env('APP_AUTHOR') }},%20saya%20butuh%20bantuan%20kendala%20teknis%20pada%20sistem"
+                            class="btn btn-primary" target="_blank">
                             Contact Now
                         </a>
                     </div>

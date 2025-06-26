@@ -23,16 +23,18 @@
             <!-- [ Main Content ] start -->
             <div class="card">
                 <div class="card-header">
-                    <h3>Kunjungan Pengawasan</h3>
-                    @if (
-                        \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::HAKIM->value ||
-                            Auth::user()->roles == 'Superadmin' ||
-                            Auth::user()->roles == 'Administrator')
-                        <a href="{{ route('kunjungan.form-kunjungan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
-                            class="btn btn-primary btn-sm">
-                            <i class="ph-duotone ph-file-plus"></i> Tambah
-                        </a>
-                    @endif
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>Kunjungan Pengawasan</h3>
+                        @if (
+                            \App\Helpers\ViewUser::jabatan() == \App\Enum\JabatanEnum::HAKIM->value ||
+                                Auth::user()->roles == 'Superadmin' ||
+                                Auth::user()->roles == 'Administrator')
+                            <a href="{{ route('kunjungan.form-kunjungan', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                                class="btn btn-primary btn-sm">
+                                <i class="ph-duotone ph-file-plus"></i> Tambah
+                            </a>
+                        @endif
+                    </div>
                     <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
                         <strong>Perhatian !</strong> Harap mengisi kunjungan pengawasan oleh hakim pengawas bidang setiap
                         bulan

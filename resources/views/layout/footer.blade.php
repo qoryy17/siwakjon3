@@ -6,22 +6,12 @@
 <script src="{{ asset('assets/js/pcoded.js') }} "></script>
 <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
 <script>
-    layout_change('light');
-</script>
-<script>
-    layout_sidebar_change('light');
-</script>
-<script>
-    change_box_container('false');
-</script>
-<script>
-    layout_caption_change('true');
-</script>
-<script>
-    layout_rtl_change('false');
-</script>
-<script>
-    preset_change("preset-8");
+    // layout_change('light');
+    // layout_sidebar_change('light');
+    // change_box_container('false');
+    // layout_caption_change('true');
+    // layout_rtl_change('false');
+    preset_change("preset-9");
 </script>
 <!-- datatable Js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

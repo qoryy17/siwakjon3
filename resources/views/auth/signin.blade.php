@@ -32,7 +32,7 @@
 <!-- [Head] end -->
 <!-- [Body] Start -->
 
-<body data-pc-preset="preset-8" data-pc-sidebar-theme="light" data-pc-sidebar-caption="true" data-pc-direction="ltr"
+<body data-pc-preset="preset-9" data-pc-sidebar-theme="light" data-pc-sidebar-caption="true" data-pc-direction="ltr"
     data-pc-theme="light">
     @if (session()->has('success') || session()->has('error'))
         <script>
@@ -96,14 +96,14 @@
                         </div>
                         <div class="text-center d-grid">
                             <a href="{{ route('verification') }}" class="btn btn-warning">
-                                Cari Dokumen
+                                Klik Disini
                             </a>
                         </div>
                         <div class="saprator my-1">
                             <span>Belum punya akun ?</span>
                         </div>
                         <div class="text-center">
-                            Hubungi Superadmin {{ env('APP_AUTHOR') }}
+                            Hubungi Superadmin <span class="fw-bold">{{ env('APP_AUTHOR') }}</span>
                         </div>
                     </div>
                 </div>
@@ -111,13 +111,14 @@
             <div class="auth-sidefooter">
                 <div class="row">
                     <div class="col my-1">
-                        <p class="m-0">Development by {{ env('APP_AUTHOR') }}
+                        <p class="m-0 fw-bold">
+                            Development by {{ env('APP_AUTHOR') }}
                         </p>
                     </div>
                     <div class="col-auto my-1">
                         <ul class="list-inline footer-link mb-0">
                             <li class="list-inline-item">{{ env('APP_NAME') }}</li>
-                            <li class="list-inline-item">
+                            <li class="list-inline-item fw-bold">
                                 {{ env('APP_LICENSE') }}
                             </li>
                         </ul>
@@ -135,22 +136,12 @@
     <script src="{{ asset('assets/js/pcoded.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
     <script>
-        layout_change('light');
-    </script>
-    <script>
-        layout_sidebar_change('light');
-    </script>
-    <script>
-        change_box_container('false');
-    </script>
-    <script>
-        layout_caption_change('true');
-    </script>
-    <script>
-        layout_rtl_change('false');
-    </script>
-    <script>
-        preset_change("preset-8");
+        // layout_change('light');
+        // layout_sidebar_change('light');
+        // change_box_container('false');
+        // layout_caption_change('true');
+        // layout_rtl_change('false');
+        preset_change("preset-9");
     </script>
     <script src="{{ asset('assets/js/plugins/sweetalert2.all.min.js') }}"></script>
 </body>

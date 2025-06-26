@@ -57,7 +57,7 @@ class MonitoringPengawasanController extends Controller
         $tahun = $parameter['year'];
 
         $temuan = TemuanWasbidModel::where('objek_pengawasan', '=', $objek)->whereYear('created_at', $tahun)->orderBy('created_at', 'asc');
-        if (!$temuan->exists()) {
+        if (!$temuan) {
             return redirect()->back()->with('error', 'Temuan pengawasan tidak ditemukan !');
         }
 

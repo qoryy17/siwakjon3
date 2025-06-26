@@ -23,11 +23,13 @@
             <!-- [ Main Content ] start -->
             <div class="card">
                 <div class="card-header">
-                    <h3>Rapat Dinas</h3>
-                    <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModal"
-                        class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
-                        Tambah
-                    </button>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>Rapat Dinas</h3>
+                        <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModal"
+                            class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
+                            Tambah
+                        </button>
+                    </div>
                     @include('rapat.alert-notif-rapat')
                     @if ($errors->any())
                         <div class="alert alert-danger">
@@ -86,7 +88,7 @@
                                                     <i class="fas fa-file-pdf"></i>
                                                 </a>
                                             @else
-                                                <span class="text-danger">Belum diunggah</span>
+                                                <span class="badge bg-danger">Belum diunggah</span>
                                             @endif
                                         </td>
                                         <td style="vertical-align: top;">{{ $dibuat->name }}</td>

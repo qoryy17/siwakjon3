@@ -24,11 +24,13 @@
             <!-- [ Main Content ] start -->
             <div class="card">
                 <div class="card-header">
-                    <h3>Klasifikasi Jabatan</h3>
-                    <a href="{{ route('klasifikasi.form', ['klaster' => 'jabatan', 'param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
-                        class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
-                        Tambah
-                    </a>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>Klasifikasi Jabatan</h3>
+                        <a href="{{ route('klasifikasi.form', ['klaster' => 'jabatan', 'param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                            class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
+                            Tambah
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">

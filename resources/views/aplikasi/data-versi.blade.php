@@ -23,11 +23,13 @@
             <!-- [ Main Content ] start -->
             <div class="card">
                 <div class="card-header">
-                    <h3>Versi Sistem</h3>
-                    <a href="{{ route('aplikasi.form-version', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
-                        class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
-                        Tambah
-                    </a>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>Versi Sistem</h3>
+                        <a href="{{ route('aplikasi.form-version', ['param' => Crypt::encrypt('add'), 'id' => 'null']) }}"
+                            class="btn btn-primary btn-sm"><i class="ph-duotone ph-file-plus"></i>
+                            Tambah
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
