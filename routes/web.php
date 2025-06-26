@@ -68,7 +68,6 @@ Route::prefix('dashboard')->middleware([AuthMiddleware::class, LicenseMiddleware
         Route::get('/logs', 'logs')->name('home.logs');
         Route::get('/rapat', 'pintasanRapat')->name('home.pintasan-rapat');
         Route::get('/rapat-pengawasan', 'pintasanPengawasan')->name('home.pintasan-pengawasan');
-        Route::get('/notifikasi', 'notifikasi')->name('home.notifikasi');
         Route::get('/profil', 'profil')->name('home.profil');
         Route::post('/profil/simpan', 'saveProfil')->name('home.simpan-profil');
 

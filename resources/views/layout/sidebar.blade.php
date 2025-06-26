@@ -75,7 +75,7 @@
                 </li>
                 <li class="pc-item pc-hasmenu">
                     <a href="javascript:void(0);" class="pc-link">
-                        <span class="pc-micon"> <i class="ph-duotone ph-file-pdf"></i></span>
+                        <span class="pc-micon"> <i class="ph-duotone ph-files"></i></span>
                         <span class="pc-mtext">Manajemen Monev</span>
                         <span class="pc-arrow">
                             <i data-feather="chevron-right"></i>
@@ -95,7 +95,7 @@
                 </li>
                 <li class="pc-item pc-hasmenu">
                     <a href="javascript:void(0);" class="pc-link">
-                        <span class="pc-micon"> <i class="ph-duotone ph-archive-box"></i></span>
+                        <span class="pc-micon"> <i class="ph-duotone ph-files"></i></span>
                         <span class="pc-mtext">Manajemen Arsip</span>
                         <span class="pc-arrow">
                             <i data-feather="chevron-right"></i>

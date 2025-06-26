@@ -21,23 +21,32 @@ use App\Http\Requests\Profil\ChangePasswordRequest;
 
 class HomeController extends Controller
 {
+    protected $route, $routeHome;
+    public function __construct()
+    {
+        $this->route = RouteLink::homeString(Auth::user()->roles);
+        $this->routeHome = RouteLink::homePage(Auth::user()->roles);
+    }
+
+    protected function breadCumbs()
+    {
+        $breadcumb = [
+            ['title' => 'Home', 'link' => $this->routeHome, 'page' => ''],
+            ['title' => 'Dashboard', 'link' => $this->routeHome, 'page' => 'aria-current="page"']
+        ];
+
+        return $breadcumb;
+    }
     public function berandaSuperadmin()
     {
-        $route = RouteLink::homeString(Auth::user()->roles);
-        $routeHome = RouteLink::homePage(Auth::user()->roles);
         if (Auth::user()->roles !== \App\Enum\RolesEnum::SUPERADMIN->value) {
-            return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
+            return redirect()->route($this->route)->with('error', 'Akses kamu dilarang pada halaman ini !');
         }
-
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $routeHome, 'page' => ''],
-            ['title' => 'Dashboard', 'link' => $routeHome, 'page' => 'aria-current="page"']
-        ];
 
         $data = [
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
-            'routeHome' => $routeHome,
-            'breadcumbs' => $breadcumb,
+            'routeHome' => $this->routeHome,
+            'breadcumbs' => $this->breadcumbs(),
             'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name,
             'countPengguna' => ViewUser::countPengguna(),
             'countRapatBulan' => ViewUser::countRapatBulan(),
@@ -54,22 +63,14 @@ class HomeController extends Controller
 
     public function berandaAdmin()
     {
-        $route = RouteLink::homeString(Auth::user()->roles);
-        $routeHome = RouteLink::homePage(Auth::user()->roles);
-
         if (Auth::user()->roles !== \App\Enum\RolesEnum::ADMIN->value) {
-            return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
+            return redirect()->route($this->route)->with('error', 'Akses kamu dilarang pada halaman ini !');
         }
-
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $routeHome, 'page' => ''],
-            ['title' => 'Dashboard', 'link' => $routeHome, 'page' => 'aria-current="page"']
-        ];
 
         $data = [
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
-            'routeHome' => $routeHome,
-            'breadcumbs' => $breadcumb,
+            'routeHome' => $this->routeHome,
+            'breadcumbs' => $this->breadcumbs(),
             'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name,
             'countRapatBulan' => ViewUser::countRapatBulan(),
             'countRapatWasbid' => ViewUser::countRapatWasbid(),
@@ -87,22 +88,14 @@ class HomeController extends Controller
 
     public function berandaUser()
     {
-        $route = RouteLink::homeString(Auth::user()->roles);
-        $routeHome = RouteLink::homePage(Auth::user()->roles);
-
         if (Auth::user()->roles !== \App\Enum\RolesEnum::USER->value) {
-            return redirect()->route($route)->with('error', 'Akses kamu dilarang pada halaman ini !');
+            return redirect()->route($this->route)->with('error', 'Akses kamu dilarang pada halaman ini !');
         }
-
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $routeHome, 'page' => ''],
-            ['title' => 'Dashboard', 'link' => $routeHome, 'page' => 'aria-current="page"']
-        ];
 
         $data = [
             'title' => env('APP_NAME') . ' | ' . 'Dashboard',
-            'routeHome' => $routeHome,
-            'breadcumbs' => $breadcumb,
+            'routeHome' => $this->routeHome,
+            'breadcumbs' => $this->breadcumbs(),
             'welcome' => 'Selamat ' . TimeSession::istime() . ', ' . Auth::user()->name,
             'countRapatBulan' => ViewUser::countRapatBulan(),
             'countRapatWasbid' => ViewUser::countRapatWasbid(),
@@ -133,19 +126,13 @@ class HomeController extends Controller
 
     public function version()
     {
-        // Redirect home page for role
-        $route = RouteLink::homePage(Auth::user()->roles);
-
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $route, 'page' => ''],
-            ['title' => 'Dashboard', 'link' => 'javascript:void(0);', 'page' => ''],
-            ['title' => 'Version', 'link' => route('home.version'), 'page' => 'aria-current="page"']
-        ];
+        $breadCumb = $this->breadCumbs();
+        $breadCumb[] = ['title' => 'Version', 'link' => route('home.version'), 'page' => 'aria-current="page"'];
 
         $data = [
             'title' => env('APP_NAME') . ' | Version',
-            'routeHome' => $route,
-            'breadcumbs' => $breadcumb,
+            'routeHome' => $this->routeHome,
+            'breadcumbs' => $breadCumb,
             'version' => VersionModel::orderBy('created_at', 'desc'),
             'singleVersion' => VersionModel::orderBy('created_at', 'desc')
         ];
@@ -155,18 +142,12 @@ class HomeController extends Controller
 
     public function logs()
     {
-        // Redirect home page for role
-        $route = RouteLink::homePage(Auth::user()->roles);
-
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $route, 'page' => ''],
-            ['title' => 'Dashboard', 'link' => 'javascript:void(0);', 'page' => ''],
-            ['title' => 'Logs', 'link' => route('home.logs'), 'page' => 'aria-current="page"']
-        ];
+        $breadcumb = $this->breadCumbs();
+        $breadcumb[] = ['title' => 'Logs', 'link' => route('home.logs'), 'page' => 'aria-current="page"'];
 
         $data = [
             'title' => env('APP_NAME') . ' | Logs',
-            'routeHome' => route('home.user'),
+            'routeHome' => $this->routeHome,
             'breadcumbs' => $breadcumb,
             'logs' => LogsModel::with('user')->where('user_id', '=', Auth::user()->id)->orderBy('created_at', 'desc')->get(),
         ];
@@ -176,23 +157,17 @@ class HomeController extends Controller
 
     public function pintasanRapat()
     {
-        // Redirect home page for role
-        $route = RouteLink::homePage(Auth::user()->roles);
-
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')
             ->whereHas('klasifikasiRapat', function ($query) {
                 $query->where('rapat', '!=', 'Pengawasan');
             })->where('dibuat', '=', Auth::user()->id)->orderBy('created_at', 'desc')->get();
 
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $route, 'page' => ''],
-            ['title' => 'Manajemen Rapat', 'link' => 'javascript:void(0);', 'page' => ''],
-            ['title' => 'Rapat Dinas', 'link' => route('rapat.index'), 'page' => 'aria-current="page"']
-        ];
+        $breadcumb = $this->breadCumbs();
+        $breadcumb[] = ['title' => 'Rapat Dinas', 'link' => route('rapat.index'), 'page' => 'aria-current="page"'];
 
         $data = [
             'title' => 'Manajemen Rapat | Rapat Saya',
-            'routeHome' => $route,
+            'routeHome' => $this->routeHome,
             'breadcumbs' => $breadcumb,
             'klasifikasiRapat' => KlasifikasiRapatModel::where('aktif', '=', 'Y')->where('rapat', '!=', 'Pengawasan')->orderBy('created_at', 'desc')->get(),
             'klasifikasiJabatan' => KlasifikasiJabatanModel::where('aktif', '=', 'Y')->orderBy('created_at', 'desc')->get(),
@@ -204,22 +179,17 @@ class HomeController extends Controller
 
     public function pintasanPengawasan()
     {
-        // Redirect home page for role
-        $route = RouteLink::homePage(Auth::user()->roles);
-
         $rapat = ManajemenRapatModel::with('detailRapat')->with('klasifikasiRapat')
             ->whereHas('klasifikasiRapat', function ($query) {
                 $query->where('rapat', 'Pengawasan');
             })->orderBy('created_at', 'desc')->get();
 
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $route, 'page' => ''],
-            ['title' => 'Pengawasan Bidang', 'link' => 'javascript:void(0);', 'page' => ''],
-            ['title' => 'Rapat Pengawasan', 'link' => route('pengawasan.index'), 'page' => 'aria-current="page"']
-        ];
+        $breadcumb = $this->breadCumbs();
+        $breadcumb[] = ['title' => 'Rapat Pengawasan', 'link' => route('pengawasan.index'), 'page' => 'aria-current="page"'];
+
         $data = [
             'title' => 'Pengawasan Bidang | Rapat Saya',
-            'routeHome' => $route,
+            'routeHome' => $this->routeHome,
             'breadcumbs' => $breadcumb,
             'rapat' => $rapat
         ];
@@ -227,41 +197,17 @@ class HomeController extends Controller
         return view('pengawasan.data-rapat-pengawasan', $data);
     }
 
-    public function notifikasi()
-    {
-        // Redirect home page for role
-        $route = RouteLink::homePage(Auth::user()->roles);
-
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $route, 'page' => ''],
-            ['title' => 'Notifikasi', 'link' => 'javascript:void(0);', 'page' => ''],
-            ['title' => 'Pesan Masuk', 'link' => route('pengawasan.index'), 'page' => 'aria-current="page"']
-        ];
-        $data = [
-            'title' => 'Notifikasi | Pesan Masuk',
-            'routeHome' => $route,
-            'breadcumbs' => $breadcumb
-        ];
-
-        return view('aplikasi.notifikasi', $data);
-    }
-
     public function profil()
     {
-        // Redirect home page for role
-        $route = RouteLink::homePage(Auth::user()->roles);
-
-        $breadcumb = [
-            ['title' => 'Home', 'link' => $route, 'page' => ''],
-            ['title' => 'Profil', 'link' => 'javascript:void(0);', 'page' => 'aria-current="page"'],
-        ];
+        $breadcumb = $this->breadCumbs();
+        $breadcumb[] = ['title' => 'Profil', 'link' => 'javascript:void(0);', 'page' => 'aria-current="page"'];
 
         $pengguna = Auth::user();
         $pegawai = $pengguna->pegawai_id ? PegawaiModel::with(['user', 'jabatan'])->find($pengguna->pegawai_id) : null;
 
         $data = [
             'title' => 'Profil Saya',
-            'routeHome' => $route,
+            'routeHome' => $this->routeHome,
             'breadcumbs' => $breadcumb,
             'pengguna' => $pengguna,
             'pegawai' => $pegawai
